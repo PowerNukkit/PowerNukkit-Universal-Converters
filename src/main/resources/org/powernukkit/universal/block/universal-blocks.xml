@@ -1,0 +1,1496 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~     PowerNukkit Universal Worlds & Converters for Minecraft
+  ~     Copyright (C) 2020  José Roberto de Araújo Júnior
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU Affero General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU Affero General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU Affero General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<!DOCTYPE universal-blocks SYSTEM "universal-blocks.dtd">
+<universal-blocks>
+    <block-properties>
+        <block-property id="age1" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <boolean java-false="0" java-true="1" />
+        </block-property>
+        <block-property id="sapling_age" java="stage" bedrock="age_bit">
+            <boolean java-false="0" java-true="1"/>
+        </block-property>
+        <block-property id="age2" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <int-rage to="2"/>
+        </block-property>
+        <block-property id="age3" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <int-rage to="3"/>
+        </block-property>
+        <block-property id="age5" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <int-rage to="5"/>
+        </block-property>
+        <block-property id="age7" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <int-rage to="7"/>
+        </block-property>
+        <block-property id="age15" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <int-rage to="15"/>
+        </block-property>
+        <block-property id="age25" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <int-rage to="25"/>
+        </block-property>
+        <block-property id="allow_underwater" bedrock="allow_underwater_bit" java-requires-adapter="true">
+            <boolean/>
+        </block-property>
+        <block-property id="attached" bedrock="attached_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="attachment">
+            <value java="floor" default="true">standing</value>
+            <value java="ceiling">hanging</value>
+            <value java="single_wall">side</value>
+            <value java="double_wall">multiple</value>
+        </block-property>
+        <block-property id="leaf_size">
+            <value bedrock="no_leaves" default="true">none</value>
+            <value bedrock="small_leaves">small</value>
+            <value bedrock="large_leaves">large</value>
+        </block-property>
+        <block-property id="bamboo_stalk_thickness" java-requires-adapter="true">
+            <value java="0">thin</value>
+            <value java="1">thick</value>
+        </block-property>
+        <block-property id="bites" bedrock="bite_counter">
+            <int-rage to="6"/>
+        </block-property>
+        <block-property id="block_light_level" java-requires-adapter="true">
+            <int-rage to="15"/>
+        </block-property>
+        <block-property id="brewing_stand_slot_a" bedrock="brewing_stand_slot_a_bit" java="has_bottle_0">
+            <boolean/>
+        </block-property>
+        <block-property id="brewing_stand_slot_b" bedrock="brewing_stand_slot_b_bit" java="has_bottle_1">
+            <boolean/>
+        </block-property>
+        <block-property id="brewing_stand_slot_c" bedrock="brewing_stand_slot_c_bit" java="has_bottle_2">
+            <boolean/>
+        </block-property>
+        <block-property id="powered" bedrock="powered_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="button_pressed" bedrock="button_pressed_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="face" bedrock-requires-adapter="true">
+            <value>celling</value>
+            <value>floor</value>
+            <value>wall</value>
+        </block-property>
+        <block-property id="horizontal_direction" bedrock="direction" java="facing">
+            <value bedrock="0" default="true">south</value>
+            <value bedrock="1">west</value>
+            <value bedrock="2">north</value>
+            <value bedrock="3">east</value>
+        </block-property>
+        <block-property id="stairs_direction" bedrock="weirdo_direction" java="facing">
+            <value bedrock="0" default="true">east</value>
+            <value bedrock="1">west</value>
+            <value bedrock="2">south</value>
+            <value bedrock="3">north</value>
+        </block-property>
+        <block-property id="trapdoor_direction" bedrock="direction" java="facing">
+            <copy-values from="stairs_direction"/>
+        </block-property>
+        <block-property id="facing_direction" java="facing">
+            <value bedrock="0" default="true">down</value>
+            <value bedrock="1">up</value>
+            <value bedrock="2">north</value>
+            <value bedrock="3">south</value>
+            <value bedrock="4">west</value>
+            <value bedrock="5">east</value>
+        </block-property>
+        <block-property id="hopper_direction" java="facing">
+            <value bedrock="0" default="true">down</value>
+            <value bedrock="2">north</value>
+            <value bedrock="3">south</value>
+            <value bedrock="4">west</value>
+            <value bedrock="5">east</value>
+        </block-property>
+        <block-property id="door_direction" bedrock="direction" java="facing">
+            <value bedrock="0" default="true">east</value>
+            <value bedrock="1">south</value>
+            <value bedrock="2">west</value>
+            <value bedrock="3">north</value>
+        </block-property>
+        <block-property id="upper_block" bedrock="upper_block_bit" java="half">
+            <boolean java-false="lower" java-true="upper" />
+        </block-property>
+        <block-property id="door_hinge" bedrock="door_hinge_bit" java="hinge">
+            <value bedrock="0">left</value>
+            <value bedrock="1">right</value>
+        </block-property>
+        <block-property id="cauldron_liquid" java-requires-adapter="true">
+            <value default="true">water</value>
+            <value>lava</value>
+        </block-property>
+        <block-property id="open" bedrock="open_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="chemistry_table_type" java-requires-adapter="true">
+            <value>compound_creator</value>
+            <value>material_reducer</value>
+            <value>element_constructor</value>
+            <value>lab_table</value>
+        </block-property>
+        <block-property id="burnable_wood" java-requires-adapter="true">
+            <value>acacia</value>
+            <value>birch</value>
+            <value>dark_oak</value>
+            <value>jungle</value>
+            <value>oak</value>
+            <value>spruce</value>
+        </block-property>
+        <block-property id="fireproof_wood" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <value>crimson</value>
+            <value>warped</value>
+        </block-property>
+        <block-property id="wood_type" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <copy-values from="burnable_wood" />
+            <copy-values from="fireproof_wood" />
+        </block-property>
+        <block-property id="smooth_stone_type" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <value>stone</value>
+            <value>polished_blackstone</value>
+        </block-property>
+        <block-property id="wood_or_stone_type" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <copy-values from="wood_type"/>
+            <copy-values from="smooth_stone_type"/>
+        </block-property>
+        <block-property id="door_type" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <copy-values from="wood_type"/>
+            <value>iron</value>
+        </block-property>
+        <block-property id="fence_type" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <copy-values from="wood_type"/>
+            <value>nether_brick</value>
+        </block-property>
+        <block-property id="chemical_element" java-requires-adapter="true">
+            <int-rage to="118"/>
+        </block-property>
+        <block-property id="in_wall" bedrock="in_wall_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="waterlogged" bedrock-requires-adapter="true">
+            <boolean/>
+        </block-property>
+        <block-property id="connect_east" bedrock-requires-adapter="true" java="east">
+            <boolean/>
+        </block-property>
+        <block-property id="connect_west" bedrock-requires-adapter="true" java="west">
+            <boolean/>
+        </block-property>
+        <block-property id="connect_south" bedrock-requires-adapter="true" java="south">
+            <boolean/>
+        </block-property>
+        <block-property id="connect_north" bedrock-requires-adapter="true" java="north">
+            <boolean/>
+        </block-property>
+        <block-property id="old_leaf_type" java-requires-adapter="true">
+            <value default="true">oak</value>
+            <value>birch</value>
+            <value>jungle</value>
+            <value>spruce</value>
+        </block-property>
+        <block-property id="new_leaf_type" java-requires-adapter="true">
+            <value default="true">acacia</value>
+            <value>dark_oak</value>
+        </block-property>
+        <block-property id="old_log_type" java-requires-adapter="true">
+            <copy-values from="old_leaf_type"/>
+        </block-property>
+        <block-property id="new_log_type" java-requires-adapter="true">
+            <copy-values from="new_leaf_type"/>
+        </block-property>
+        <block-property id="leaves_distance" java="distance" bedrock-requires-adapter="true">
+            <int-rage from="1" to="7"/>
+        </block-property>
+        <block-property id="persistent" bedrock="persistent_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="update" bedrock="update_bit" java-requires-adapter="true">
+            <boolean/>
+        </block-property>
+        <block-property id="stripped" bedrock="stripped_bit" java-requires-adapter="true">
+            <boolean/>
+        </block-property>
+        <block-property id="axis" bedrock="pillar_axis">
+            <value bedrock="0" default="true">y</value>
+            <value bedrock="1">x</value>
+            <value bedrock="2">z</value>
+        </block-property>
+        <block-property id="full_bark" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <boolean/>
+        </block-property>
+        <block-property id="redstone_signal" java="power">
+            <int-rage to="15"/>
+        </block-property>
+        <block-property id="sapling_type">
+            <copy-values from="burnable_wood" />
+        </block-property>
+        <block-property id="compass_rose_direction" bedrock="ground_sign_direction" java="rotation">
+            <value java="0" bedrock="0">south</value>
+            <value java="1" bedrock="1">south_south_west</value>
+            <value java="2" bedrock="2">south_west</value>
+            <value java="3" bedrock="3">west_south_west</value>
+            <value java="4" bedrock="4">west</value>
+            <value java="5" bedrock="5">west_north_west</value>
+            <value java="6" bedrock="6">north_west</value>
+            <value java="7" bedrock="7">north_north_west</value>
+            <value java="8" bedrock="8">north</value>
+            <value java="9" bedrock="9">north_north_east</value>
+            <value java="10" bedrock="10">north_east</value>
+            <value java="11" bedrock="11">east_north_east</value>
+            <value java="12" bedrock="12">east</value>
+            <value java="13" bedrock="13">east_south_east</value>
+            <value java="14" bedrock="14">south_east</value>
+            <value java="15" bedrock="15">south_south_east</value>
+        </block-property>
+        <block-property id="stone_slab_type_1" bedrock="stone_slab_type" java-requires-adapter="true">
+            <value>brick</value>
+            <value>cobblestone</value>
+            <value>nether_brick</value>
+            <value>quartz</value>
+            <value>sandstone</value>
+            <value>smooth_stone</value>
+            <value>stone_brick</value>
+            <value bedrock="wood">petrified_oak</value>
+        </block-property>
+        <block-property id="stone_slab_type_2" bedrock="stone_slab_type" java-requires-adapter="true">
+            <value>mossy_cobblestone</value>
+            <value>prismarine_brick</value>
+            <value bedrock="prismarine_dark">dark_prismarine</value>
+            <value bedrock="prismarine_rough">prismarine</value>
+            <value>purpur</value>
+            <value>red_nether_brick</value>
+            <value>red_sandstone</value>
+            <value>smooth_sandstone</value>
+        </block-property>
+        <block-property id="stone_slab_type_3" bedrock="stone_slab_type" java-requires-adapter="true">
+            <value>andesite</value>
+            <value>diorite</value>
+            <value>end_stone_brick</value>
+            <value>granite</value>
+            <value>polished_andesite</value>
+            <value>polished_diorite</value>
+            <value>polished_granite</value>
+            <value>smooth_red_sandstone</value>
+        </block-property>
+        <block-property id="stone_slab_type_4" bedrock="stone_slab_type" java-requires-adapter="true">
+            <value>cut_red_sandstone</value>
+            <value>cut_sandstone</value>
+            <value>mossy_stone_brick</value>
+            <value>smooth_quartz</value>
+            <value>stone</value>
+        </block-property>
+        <block-property id="slab_type" bedrock-requires-adapter="true" java-requires-adapter="true">
+            <copy-values from="wood_type"/>
+            <copy-values from="stone_slab_type_1"/>
+            <copy-values from="stone_slab_type_2"/>
+            <copy-values from="stone_slab_type_3"/>
+            <copy-values from="stone_slab_type_4"/>
+            <value>blackstone</value>
+            <value>polished_blackstone</value>
+            <value>polished_blackstone_brick</value>
+        </block-property>
+        <block-property id="slab_position" java="type" bedrock-requires-adapter="true">
+            <value default="true">bottom</value>
+            <value>top</value>
+            <value>double</value>
+        </block-property>
+        <block-property id="top_slot" bedrock="top_slot_bit" java-requires-adapter="true">
+            <boolean />
+        </block-property>
+        <block-property id="stairs_type" bedrock-requires-adapter="true" java-requires-adapter="true">
+            <value>oak</value>
+            <value>spruce</value>
+            <value>birch</value>
+            <value>jungle</value>
+            <value>acacia</value>
+            <value>dark_oak</value>
+            <value>crimson</value>
+            <value>warped</value>
+            <value bedrock="normal_stone">stone</value>
+            <value>granite</value>
+            <value>polished_granite</value>
+            <value>diorite</value>
+            <value>polished_diorite</value>
+            <value>andesite</value>
+            <value>polished_andesite</value>
+            <value bedrock="stone">cobblestone</value>
+            <value>mossy_cobblestone</value>
+            <value>stone_brick</value>
+            <value>mossy_stone_brick</value>
+            <value>brick</value>
+            <value bedrock="end_brick">end_stone_brick</value>
+            <value>nether_brick</value>
+            <value>red_nether_brick</value>
+            <value>sandstone</value>
+            <value>smooth_sandstone</value>
+            <value>red_sandstone</value>
+            <value>smooth_red_sandstone</value>
+            <value>quartz</value>
+            <value>smooth_quartz</value>
+            <value>purpur</value>
+            <value>prismarine</value>
+            <value bedrock="prismarine_bricks">prismarine_brick</value>
+            <value>dark_prismarine</value>
+            <value>blackstone</value>
+            <value>polished_blackstone</value>
+            <value>polished_blackstone_brick</value>
+        </block-property>
+        <block-property id="block_half" java="half" bedrock="upside_down_bit">
+            <boolean java-false="bottom" java-true="top"/>
+        </block-property>
+        <block-property id="stairs_shape" java="shape" bedrock-requires-adapter="true">
+            <value>inner_left</value>
+            <value>inner_right</value>
+            <value>outer_left</value>
+            <value>outer_right</value>
+            <value>straight</value>
+        </block-property>
+        <block-property id="rail_active" java="powered" bedrock="rail_data_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="powered_rail_shape" java="shape" bedrock="rail_direction">
+            <value bedrock="0" default="true">north_south</value>
+            <value bedrock="1">east_west</value>
+            <value bedrock="2">ascending_east</value>
+            <value bedrock="3">ascending_west</value>
+            <value bedrock="4">ascending_north</value>
+            <value bedrock="5">ascending_south</value>
+        </block-property>
+        <block-property id="regular_rail_shape" java="shape" bedrock="rail_direction">
+            <copy-values from="powered_rail_shape"/>
+            <value bedrock="6">south_east</value>
+            <value bedrock="7">south_west</value>
+            <value bedrock="8">north_west</value>
+            <value bedrock="9">north_east</value>
+        </block-property>
+        <block-property id="small_flower_type" bedrock="flower_type" java-requires-adapter="true">
+            <value default="true">poppy</value>
+            <value bedrock="orchid">blue_orchid</value>
+            <value>allium</value>
+            <value bedrock="houstonia">azure_bluet</value>
+            <value bedrock="tulip_red">red_tulip</value>
+            <value bedrock="tulip_orange">orange_tulip</value>
+            <value bedrock="tulip_white">white_tulip</value>
+            <value bedrock="tulip_pink">pink_tulip</value>
+            <value bedrock="oxeye">oxeye_daisy</value>
+            <value>cornflower</value>
+            <value>lily_of_the_valley</value>
+        </block-property>
+        <block-property id="stone_type" java-requires-adapter="true">
+            <value default="true">stone</value>
+            <value>granite</value>
+            <value java="polished_granite">granite_smooth</value>
+            <value>diorite</value>
+            <value java="polished_diorite">diorite_smooth</value>
+            <value>andesite</value>
+            <value java="polished_andesite">andesite_smooth</value>
+        </block-property>
+    </block-properties>
+    <block-types>
+        <block-type id="button" java="oak_button" bedrock="wooden_button" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="wood_or_stone_type" on-java="false" on-bedrock="false"/>
+            
+            <uses-property named="face" on-bedrock="false"/>
+            <uses-property named="horizontal_direction" on-bedrock="false"/>
+            <uses-property named="facing_direction" on-universal="false" on-java="false"/>
+
+            <uses-property named="button_pressed" on-java="false" on-universal="false" />
+            <uses-property named="powered" on-bedrock="false" />
+
+            <extra-block on="both" id="acacia_button"/>
+            <extra-block on="both" id="birch_button"/>
+            <extra-block on="both" id="crimson_button"/>
+            <extra-block on="both" id="stone_button"/>
+            <extra-block on="both" id="spruce_button"/>
+            <extra-block on="both" id="jungle_button"/>
+            <extra-block on="both" id="dark_oak_button"/>
+            <extra-block on="both" id="warped_button"/>
+            <extra-block on="both" id="polished_blackstone_button"/>
+        </block-type>
+        
+        <block-type id="door" java="oak_door" bedrock="wooden_door" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="door_type" on-java="false" on-bedrock="false"/>
+            
+            <uses-property named="door_direction"/>
+            <uses-property named="door_hinge"/>
+            <uses-property named="upper_block"/>
+            <uses-property named="open"/>
+            <uses-property named="powered"  on-bedrock="false" on-universal="optional" />
+
+            <extra-block on="both" id="acacia_door"/>
+            <extra-block on="both" id="birch_door"/>
+            <extra-block on="both" id="crimson_door"/>
+            <extra-block on="both" id="spruce_door"/>
+            <extra-block on="both" id="jungle_door"/>
+            <extra-block on="both" id="dark_oak_door"/>
+            <extra-block on="both" id="warped_door"/>
+            <extra-block on="both" id="iron_door"/>
+        </block-type>
+        
+        <block-type id="fence_gate" java="oak_fence_gate" bedrock="fence_gate" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="wood_type" on-bedrock="false" on-java="false" />
+            
+            <uses-property named="in_wall"/>
+            <uses-property named="open"/>
+            <uses-property named="powered" on-bedrock="false" on-universal="optional"/>
+            <uses-property named="horizontal_direction" />
+
+            <extra-block on="both" id="acacia_fence_gate" />
+            <extra-block on="both" id="birch_fence_gate" />
+            <extra-block on="both" id="crimson_fence_gate" />
+            <extra-block on="both" id="spruce_fence_gate" />
+            <extra-block on="both" id="jungle_fence_gate" />
+            <extra-block on="both" id="dark_oak_fence_gate" />
+            <extra-block on="both" id="warped_fence_gate" />
+        </block-type>
+        
+        <block-type id="fence" bedrock="fence" java="oak_fence" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="fence_type" on-bedrock="false" on-java="false"/>
+            
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
+            <uses-property named="connect_east" on-bedrock="false" on-universal="optional" />
+            <uses-property named="connect_west" on-bedrock="false" on-universal="optional" />
+            <uses-property named="connect_south" on-bedrock="false" on-universal="optional" />
+            <uses-property named="connect_north" on-bedrock="false" on-universal="optional" />
+
+            <extra-block on="java" id="acacia_fence"/>
+            <extra-block on="java" id="birch_fence"/>
+            <extra-block on="java" id="dark_oak_fence"/>
+            <extra-block on="java" id="jungle_fence"/>
+            <extra-block on="java" id="spruce_fence"/>
+            <extra-block on="both" id="warped_fence"/>
+            <extra-block on="both" id="crimson_fence"/>
+            <extra-block on="both" id="nether_brick_fence"/>
+        </block-type>
+        
+        <block-type id="leaves" bedrock-requires-adapter="true" java-requires-adapter="true">
+            <uses-property named="wood_type" on-bedrock="false" on-java="false"/>
+            
+            <uses-property named="persistent"/>
+            <uses-property named="leaves_distance" on-bedrock="false" on-universal="optional"/>
+            <uses-property named="update" on-java="false" on-universal="optional" />
+            
+            <extra-block on="bedrock" id="leaves">
+                <uses-property named="old_leaf_type" on-universal="false" on-java="false"/>
+            </extra-block>
+
+            <extra-block on="bedrock" id="leaves2">
+                <uses-property named="new_leaf_type" on-universal="false" on-java="false"/>
+            </extra-block>
+        </block-type>
+        
+        <block-type id="log" java="oak_log" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="wood_type" on-java="false" on-bedrock="false"/>
+            <uses-property named="stripped" on-java="false" on-bedrock="false"/>
+            <uses-property named="full_bark" on-java="false" on-bedrock="false"/>
+
+            <uses-property named="axis"/>
+            
+            <extra-block on="bedrock" id="log">
+                <uses-property named="old_log_type" on-universal="false" on-java="false"/>
+            </extra-block>
+            <extra-block on="bedrock" id="log2">
+                <uses-property named="new_log_type" on-universal="false" on-java="false"/>
+            </extra-block>
+            
+            <extra-block on="both" id="crimson_stem"/>
+            <extra-block on="both" id="warped_stem"/>
+            <extra-block on="both" id="stripped_spruce_log"/>
+            <extra-block on="both" id="stripped_birch_log"/>
+            <extra-block on="both" id="stripped_jungle_log"/>
+            <extra-block on="both" id="stripped_acacia_log"/>
+            <extra-block on="both" id="stripped_dark_oak_log"/>
+            <extra-block on="both" id="stripped_oak_log"/>
+            <extra-block on="both" id="stripped_crimson_stem"/>
+            <extra-block on="both" id="stripped_warped_stem"/>
+            <extra-block on="java" id="dark_oak_log"/>
+            <extra-block on="java" id="acacia_log"/>
+            <extra-block on="java" id="jungle_log"/>
+            <extra-block on="java" id="birch_log"/>
+            <extra-block on="java" id="spruce_log"/>
+            
+            <extra-block on="bedrock" id="wood">
+                <uses-property named="stripped" on-java="false" />
+            </extra-block>
+            <extra-block on="both" id="crimson_hyphae"/>
+            <extra-block on="both" id="warped_hyphae"/>
+            <extra-block on="both" id="stripped_crimson_hyphae"/>
+            <extra-block on="both" id="stripped_warped_hyphae"/>
+            
+            <extra-block on="java" id="stripped_warped_hyphae"/>
+            <extra-block on="java" id="stripped_crimson_hyphae"/>
+            <extra-block on="java" id="stripped_dark_oak_wood"/>
+            <extra-block on="java" id="stripped_acacia_wood"/>
+            <extra-block on="java" id="stripped_jungle_wood"/>
+            <extra-block on="java" id="stripped_birch_wood"/>
+            <extra-block on="java" id="stripped_spruce_wood"/>
+            <extra-block on="java" id="stripped_oak_wood"/>
+            <extra-block on="java" id="warped_hyphae"/>
+            <extra-block on="java" id="crimson_hyphae"/>
+            <extra-block on="java" id="dark_oak_wood"/>
+            <extra-block on="java" id="acacia_wood"/>
+            <extra-block on="java" id="jungle_wood"/>
+            <extra-block on="java" id="birch_wood"/>
+            <extra-block on="java" id="spruce_wood"/>
+            <extra-block on="java" id="oak_wood"/>
+        </block-type>
+        
+        <block-type id="planks" java="oak_planks" bedrock-requires-adapter="true" java-requires-adapter="true">
+            <uses-property named="wood_type" on-bedrock="false" on-java="false" />
+            
+            <extra-block on="bedrock" id="planks">
+                <uses-property named="burnable_wood" on-java="false" on-universal="false"/>
+            </extra-block>
+            <extra-block on="both" id="crimson_planks"/>
+            <extra-block on="both" id="warped_planks"/>
+            
+            <extra-block on="java" id="dark_oak_planks"/>
+            <extra-block on="java" id="acacia_planks"/>
+            <extra-block on="java" id="jungle_planks"/>
+            <extra-block on="java" id="birch_planks"/>
+            <extra-block on="java" id="spruce_planks"/>
+        </block-type>
+        
+        <block-type id="pressure_plate" bedrock="wooden_pressure_plate" java="oak_pressure_plate"
+                    java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="wood_or_stone_type" on-java="false" on-bedrock="false"/>
+            
+            <uses-property named="redstone_signal" on-java="false"/>
+            <uses-property named="powered" on-bedrock="false" on-universal="false"/>
+            
+            <extra-block on="both" id="warped_pressure_plate"/>
+            <extra-block on="both" id="crimson_pressure_plate"/>
+            <extra-block on="both" id="dark_oak_pressure_plate"/>
+            <extra-block on="both" id="acacia_pressure_plate"/>
+            <extra-block on="both" id="jungle_pressure_plate"/>
+            <extra-block on="both" id="birch_pressure_plate"/>
+            <extra-block on="both" id="spruce_pressure_plate"/>
+            <extra-block on="both" id="polished_blackstone_pressure_plate"/>
+            <extra-block on="both" id="stone_pressure_plate"/>
+        </block-type>
+        
+        <block-type id="light_weighted_pressure_plate">
+            <uses-property named="redstone_signal"/>
+        </block-type>
+        
+        <block-type id="heavy_weighted_pressure_plate">
+            <uses-property named="redstone_signal"/>
+        </block-type>
+        
+        <block-type id="sapling" java="oak_sapling" java-requires-adapter="true">
+            <uses-property named="sapling_type" on-java="false"/>
+            <uses-property named="sapling_age"/>
+            
+            <extra-block on="java" id="spruce_sapling"/>
+            <extra-block on="java" id="birch_sapling"/>
+            <extra-block on="java" id="jungle_sapling"/>
+            <extra-block on="java" id="acacia_sapling"/>
+            <extra-block on="java" id="dark_oak_sapling"/>
+        </block-type>
+        
+        <block-type id="standing_sign" java="oak_sign" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="compass_rose_direction"/>
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
+            
+            <extra-block on="both" id="spruce_standing_sign"/>
+            <extra-block on="both" id="birch_standing_sign"/>
+            <extra-block on="both" id="jungle_standing_sign"/>
+            <extra-block on="both" id="acacia_standing_sign"/>
+            <extra-block on="bedrock" id="darkoak_standing_sign"/>
+            <extra-block on="java" id="dark_oak_standing_sign"/>
+            <extra-block on="both" id="crimson_standing_sign"/>
+            <extra-block on="both" id="warped_standing_sign"/>
+        </block-type>
+
+        <block-type id="wall_sign" java="oak_wall_sign" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="facing_direction" on-java="false"/>
+            <uses-property named="horizontal_direction" on-bedrock="false"/>
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
+
+            <extra-block on="both" id="spruce_wall_sign"/>
+            <extra-block on="both" id="birch_wall_sign"/>
+            <extra-block on="both" id="jungle_wall_sign"/>
+            <extra-block on="both" id="acacia_wall_sign"/>
+            <extra-block on="bedrock" id="darkoak_wall_sign"/>
+            <extra-block on="java" id="dark_oak_wall_sign"/>
+            <extra-block on="both" id="crimson_wall_sign"/>
+            <extra-block on="both" id="warped_wall_sign"/>
+        </block-type>
+        
+        <block-type id="slab" bedrock="wooden_slab" java="oak_slab" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="slab_type" on-java="false" on-bedrock="false"/>
+            
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
+            <uses-property named="slab_position" on-bedrock="false"/>
+            
+            <uses-property named="top_slot" on-java="false" on-universal="false"/>
+            
+            <extra-block on="bedrock" id="double_wooden_slab">
+                <uses-property named="burnable_wood" />
+            </extra-block>
+            <extra-block on="bedrock" id="double_stone_slab">
+                <uses-property named="stone_slab_type_1"/>
+            </extra-block>
+            <extra-block on="bedrock" id="double_stone_slab2">
+                <uses-property named="stone_slab_type_2"/>
+            </extra-block>
+            <extra-block on="bedrock" id="double_stone_slab3">
+                <uses-property named="stone_slab_type_3"/>
+            </extra-block>
+            <extra-block on="bedrock" id="double_stone_slab4">
+                <uses-property named="stone_slab_type_4"/>
+            </extra-block>
+            <extra-block on="bedrock" id="wooden_slab">
+                <uses-property named="burnable_wood" />
+            </extra-block>
+            <extra-block on="bedrock" id="stone_slab">
+                <uses-property named="stone_slab_type_1"/>
+            </extra-block>
+            <extra-block on="bedrock" id="stone_slab2">
+                <uses-property named="stone_slab_type_2"/>
+            </extra-block>
+            <extra-block on="bedrock" id="stone_slab3">
+                <uses-property named="stone_slab_type_3"/>
+            </extra-block>
+            <extra-block on="bedrock" id="stone_slab4">
+                <uses-property named="stone_slab_type_4"/>
+            </extra-block>
+            
+            <extra-block on="bedrock" id="crimson_double_slab"/>
+            <extra-block on="bedrock" id="warped_double_slab"/>
+            <extra-block on="bedrock" id="blackstone_double_slab"/>
+            <extra-block on="bedrock" id="polished_blackstone_double_slab"/>
+            <extra-block on="bedrock" id="polished_blackstone_brick_double_slab"/>
+
+            <extra-block on="both" id="crimson_slab"/>
+            <extra-block on="both" id="warped_slab"/>
+            <extra-block on="both" id="blackstone_slab"/>
+            <extra-block on="both" id="polished_blackstone_slab"/>
+            <extra-block on="both" id="polished_blackstone_brick_slab"/>
+
+            <extra-block on="both" id="spruce_slab"/>
+            <extra-block on="both" id="birch_slab"/>
+            <extra-block on="both" id="jungle_slab"/>
+            <extra-block on="both" id="acacia_slab"/>
+            <extra-block on="both" id="dark_oak_slab"/>
+            <extra-block on="both" id="stone_slab"/>
+            <extra-block on="both" id="smooth_stone_slab"/>
+            <extra-block on="both" id="granite_slab"/>
+            <extra-block on="both" id="polished_granite_slab"/>
+            <extra-block on="both" id="diorite_slab"/>
+            <extra-block on="both" id="polished_diorite_slab"/>
+            <extra-block on="both" id="andesite_slab"/>
+            <extra-block on="both" id="polished_andesite_slab"/>
+            <extra-block on="both" id="cobblestone_slab"/>
+            <extra-block on="both" id="mossy_cobblestone_slab"/>
+            <extra-block on="both" id="stone_brick_slab"/>
+            <extra-block on="both" id="mossy_stone_brick_slab"/>
+            <extra-block on="both" id="brick_slab"/>
+            <extra-block on="both" id="end_stone_brick_slab"/>
+            <extra-block on="both" id="nether_brick_slab"/>
+            <extra-block on="both" id="red_nether_brick_slab"/>
+            <extra-block on="both" id="sandstone_slab"/>
+            <extra-block on="both" id="cut_sandstone_slab"/>
+            <extra-block on="both" id="smooth_sandstone_slab"/>
+            <extra-block on="both" id="red_sandstone_slab"/>
+            <extra-block on="both" id="cut_red_sandstone_slab"/>
+            <extra-block on="both" id="smooth_red_sandstone_slab"/>
+            <extra-block on="both" id="quartz_slab"/>
+            <extra-block on="both" id="smooth_quartz_slab"/>
+            <extra-block on="both" id="purpur_slab"/>
+            <extra-block on="both" id="prismarine_slab"/>
+            <extra-block on="both" id="prismarine_brick_slab"/>
+            <extra-block on="both" id="dark_prismarine_slab"/>
+            <extra-block on="both" id="petrified_oak_slab"/>
+        </block-type>
+        
+        <block-type id="stairs" java="oak_stairs" bedrock="oak_stairs" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="stairs_type" on-java="false" on-bedrock="false"/>
+            
+            <uses-property named="block_half"/>
+            <uses-property named="stairs_direction" />
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
+            <uses-property named="stairs_shape" on-bedrock="false" on-universal="optional"/>
+            
+            <extra-block on="both" id="oak_stairs"/>
+            <extra-block on="both" id="spruce_stairs"/>
+            <extra-block on="both" id="birch_stairs"/>
+            <extra-block on="both" id="jungle_stairs"/>
+            <extra-block on="both" id="acacia_stairs"/>
+            <extra-block on="both" id="dark_oak_stairs"/>
+            <extra-block on="both" id="crimson_stairs"/>
+            <extra-block on="both" id="warped_stairs"/>
+            <extra-block on="both" id="granite_stairs"/>
+            <extra-block on="both" id="polished_granite_stairs"/>
+            <extra-block on="both" id="diorite_stairs"/>
+            <extra-block on="both" id="polished_diorite_stairs"/>
+            <extra-block on="both" id="andesite_stairs"/>
+            <extra-block on="both" id="polished_andesite_stairs"/>
+            <extra-block on="both" id="mossy_cobblestone_stairs"/>
+            <extra-block on="both" id="stone_brick_stairs"/>
+            <extra-block on="both" id="mossy_stone_brick_stairs"/>
+            <extra-block on="both" id="brick_stairs"/>
+            <extra-block on="both" id="nether_brick_stairs"/>
+            <extra-block on="both" id="red_nether_brick_stairs"/>
+            <extra-block on="both" id="sandstone_stairs"/>
+            <extra-block on="both" id="smooth_sandstone_stairs"/>
+            <extra-block on="both" id="red_sandstone_stairs"/>
+            <extra-block on="both" id="smooth_red_sandstone_stairs"/>
+            <extra-block on="both" id="quartz_stairs"/>
+            <extra-block on="both" id="smooth_quartz_stairs"/>
+            <extra-block on="both" id="purpur_stairs"/>
+            <extra-block on="both" id="prismarine_stairs"/>
+            <extra-block on="both" id="dark_prismarine_stairs"/>
+            <extra-block on="both" id="blackstone_stairs"/>
+            <extra-block on="both" id="polished_blackstone_stairs"/>
+            <extra-block on="both" id="polished_blackstone_brick_stairs"/>
+
+            <extra-block on="bedrock" id="normal_stone_stairs"/>
+            <extra-block on="java" id="stone_stairs"/>
+
+            <extra-block on="bedrock" id="stone_stairs"/>
+            <extra-block on="java" id="cobblestone_stairs"/>
+
+            <extra-block on="bedrock" id="end_brick_stairs"/>
+            <extra-block on="java" id="end_stone_brick_stairs"/>
+
+            <extra-block on="bedrock" id="prismarine_bricks_stairs"/>
+            <extra-block on="java" id="prismarine_brick_stairs"/>
+        </block-type>
+        
+        <block-type id="trapdoor" bedrock="oak_trapdoor" java="oak_trapdoor" bedrock-requires-adapter="true" java-requires-adapter="true">
+            <uses-property named="door_type" on-bedrock="false" on-java="false"/>
+            
+            <uses-property named="block_half"/>
+            <uses-property named="open"/>
+            <uses-property named="trapdoor_direction"/>
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
+            <uses-property named="powered" on-bedrock="false" on-universal="optional"/>
+            
+            <extra-block on="both" id="warped_trapdoor"/>
+            <extra-block on="both" id="crimson_trapdoor"/>
+            <extra-block on="both" id="dark_oak_trapdoor"/>
+            <extra-block on="both" id="acacia_trapdoor"/>
+            <extra-block on="both" id="jungle_trapdoor"/>
+            <extra-block on="both" id="birch_trapdoor"/>
+            <extra-block on="both" id="spruce_trapdoor"/>
+            <extra-block on="both" id="iron_trapdoor"/>
+        </block-type>
+        
+        <block-type id="activator_rail">
+            <uses-property named="rail_active"/>
+            <uses-property named="powered_rail_shape"/>
+        </block-type>
+        
+        <block-type id="air"/>
+        <block-type id="ancient_debris"/>
+
+        <block-type id="small_flower" bedrock="red_flower" java="poppy" java-requires-adapter="true">
+            <uses-property named="small_flower_type" on-java="false"/>
+
+            <extra-block on="java" id="blue_orchid"/>
+            <extra-block on="java" id="allium"/>
+            <extra-block on="java" id="azure_bluet"/>
+            <extra-block on="java" id="red_tulip"/>
+            <extra-block on="java" id="orange_tulip"/>
+            <extra-block on="java" id="white_tulip"/>
+            <extra-block on="java" id="pink_tulip"/>
+            <extra-block on="java" id="oxeye_daisy"/>
+            <extra-block on="java" id="cornflower"/>
+            <extra-block on="java" id="lily_of_the_valley"/>
+        </block-type>
+        
+        <block-type id="stone" java-requires-adapter="true">
+            <uses-property named="stone_type" on-java="false"/>
+            
+            <extra-block on="both" id="granite"/>
+            <extra-block on="both" id="diorite"/>
+            <extra-block on="both" id="andesite"/>
+            
+            <extra-block on="bedrock" id="granite_smooth"/>
+            <extra-block on="bedrock" id="diorite_smooth"/>
+            <extra-block on="bedrock" id="andesite_smooth"/>
+            
+            <extra-block on="java" id="polished_granite"/>
+            <extra-block on="java" id="polished_diorite"/>
+            <extra-block on="java" id="polished_andesite"/>
+        </block-type>
+        
+        <block-type id="andesite_wall"/>
+        <block-type id="anvil"/>
+        <block-type id="attached_melon_stem"/>
+        <block-type id="attached_pumpkin_stem"/>
+        <block-type id="bamboo"/>
+        <block-type id="bamboo_sapling"/>
+        <block-type id="barrel"/>
+        <block-type id="barrier"/>
+        <block-type id="basalt"/>
+        <block-type id="beacon"/>
+        <block-type id="bedrock"/>
+        <block-type id="beehive"/>
+        <block-type id="bee_nest"/>
+        <block-type id="beetroots"/>
+        <block-type id="bell"/>
+        <block-type id="black_banner"/>
+        <block-type id="black_bed"/>
+        <block-type id="black_carpet"/>
+        <block-type id="black_concrete_powder"/>
+        <block-type id="black_concrete"/>
+        <block-type id="black_glazed_terracotta"/>
+        <block-type id="black_shulker_box"/>
+        <block-type id="black_stained_glass"/>
+        <block-type id="black_stained_glass_pane"/>
+        <block-type id="black_terracotta"/>
+        <block-type id="black_wall_banner"/>
+        <block-type id="black_wool"/>
+        <block-type id="blackstone"/>
+        <block-type id="blackstone_wall"/>
+        <block-type id="blast_furnace"/>
+        <block-type id="blue_banner"/>
+        <block-type id="blue_bed"/>
+        <block-type id="blue_carpet"/>
+        <block-type id="blue_concrete_powder"/>
+        <block-type id="blue_concrete"/>
+        <block-type id="blue_glazed_terracotta"/>
+        <block-type id="blue_ice"/>
+        <block-type id="blue_shulker_box"/>
+        <block-type id="blue_stained_glass"/>
+        <block-type id="blue_stained_glass_pane"/>
+        <block-type id="blue_terracotta"/>
+        <block-type id="blue_wall_banner"/>
+        <block-type id="blue_wool"/>
+        <block-type id="bone_block"/>
+        <block-type id="bookshelf"/>
+        <block-type id="brain_coral"/>
+        <block-type id="brain_coral_block"/>
+        <block-type id="brain_coral_fan"/>
+        <block-type id="brain_coral_wall_fan"/>
+        <block-type id="brewing_stand"/>
+        <block-type id="brick_wall"/>
+        <block-type id="bricks"/>
+        <block-type id="brown_banner"/>
+        <block-type id="brown_bed"/>
+        <block-type id="brown_carpet"/>
+        <block-type id="brown_concrete_powder"/>
+        <block-type id="brown_concrete"/>
+        <block-type id="brown_glazed_terracotta"/>
+        <block-type id="brown_mushroom_block"/>
+        <block-type id="brown_mushroom"/>
+        <block-type id="brown_shulker_box"/>
+        <block-type id="brown_stained_glass"/>
+        <block-type id="brown_stained_glass_pane"/>
+        <block-type id="brown_terracotta"/>
+        <block-type id="brown_wall_banner"/>
+        <block-type id="brown_wool"/>
+        <block-type id="bubble_column"/>
+        <block-type id="bubble_coral"/>
+        <block-type id="bubble_coral_block"/>
+        <block-type id="bubble_coral_fan"/>
+        <block-type id="bubble_coral_wall_fan"/>
+        <block-type id="cactus"/>
+        <block-type id="chain"/>
+        <block-type id="cake"/>
+        <block-type id="campfire"/>
+        <block-type id="carrots"/>
+        <block-type id="cartography_table"/>
+        <block-type id="carved_pumpkin"/>
+        <block-type id="cauldron"/>
+        <block-type id="cave_air" bedrock="missing"/>
+        <block-type id="chain_command_block"/>
+        <block-type id="chest"/>
+        <block-type id="chipped_anvil"/>
+        <block-type id="chiseled_nether_bricks"/>
+        <block-type id="chiseled_polished_blackstone"/>
+        <block-type id="chiseled_quartz_block"/>
+        <block-type id="chiseled_red_sandstone"/>
+        <block-type id="chiseled_sandstone"/>
+        <block-type id="chiseled_stone_bricks"/>
+        <block-type id="chorus_flower"/>
+        <block-type id="chorus_plant"/>
+        <block-type id="clay"/>
+        <block-type id="coal_block"/>
+        <block-type id="coal_ore"/>
+        <block-type id="coarse_dirt"/>
+        <block-type id="cobblestone"/>
+        <block-type id="cobblestone_wall"/>
+        <block-type id="cobweb"/>
+        <block-type id="cocoa"/>
+        <block-type id="command_block"/>
+        <block-type id="comparator"/>
+        <block-type id="composter"/>
+        <block-type id="conduit"/>
+        <block-type id="cracked_nether_bricks"/>
+        <block-type id="cracked_polished_blackstone_bricks"/>
+        <block-type id="cracked_stone_bricks"/>
+        <block-type id="crafting_table"/>
+        <block-type id="creeper_head"/>
+        <block-type id="creeper_wall_head"/>
+        <block-type id="crimson_fungus"/>
+        <block-type id="crimson_nylium"/>
+        <block-type id="crimson_roots"/>
+        <block-type id="crimson_stem"/>
+        <block-type id="crying_obsidian"/>
+        <block-type id="cut_red_sandstone"/>
+        <block-type id="cut_sandstone"/>
+        <block-type id="cyan_banner"/>
+        <block-type id="cyan_bed"/>
+        <block-type id="cyan_carpet"/>
+        <block-type id="cyan_concrete_powder"/>
+        <block-type id="cyan_concrete"/>
+        <block-type id="cyan_glazed_terracotta"/>
+        <block-type id="cyan_shulker_box"/>
+        <block-type id="cyan_stained_glass"/>
+        <block-type id="cyan_stained_glass_pane"/>
+        <block-type id="cyan_terracotta"/>
+        <block-type id="cyan_wall_banner"/>
+        <block-type id="cyan_wool"/>
+        <block-type id="damaged_anvil"/>
+        <block-type id="dandelion" bedrock="yellow_flower" />
+        <block-type id="dark_prismarine"/>
+        <block-type id="daylight_detector"/>
+        <block-type id="dead_brain_coral"/>
+        <block-type id="dead_brain_coral_block"/>
+        <block-type id="dead_brain_coral_fan"/>
+        <block-type id="dead_brain_coral_wall_fan"/>
+        <block-type id="dead_bubble_coral"/>
+        <block-type id="dead_bubble_coral_block"/>
+        <block-type id="dead_bubble_coral_fan"/>
+        <block-type id="dead_bubble_coral_wall_fan"/>
+        <block-type id="dead_bush"/>
+        <block-type id="dead_fire_coral"/>
+        <block-type id="dead_fire_coral_block"/>
+        <block-type id="dead_fire_coral_fan"/>
+        <block-type id="dead_fire_coral_wall_fan"/>
+        <block-type id="dead_horn_coral"/>
+        <block-type id="dead_horn_coral_block"/>
+        <block-type id="dead_horn_coral_fan"/>
+        <block-type id="dead_horn_coral_wall_fan"/>
+        <block-type id="dead_tube_coral"/>
+        <block-type id="dead_tube_coral_block"/>
+        <block-type id="dead_tube_coral_fan"/>
+        <block-type id="dead_tube_coral_wall_fan"/>
+        
+        <block-type id="detector_rail">
+            <uses-property named="rail_active"/>
+            <uses-property named="powered_rail_shape"/>
+        </block-type>
+        
+        <block-type id="diamond_block"/>
+        <block-type id="diamond_ore"/>
+        <block-type id="diorite_wall"/>
+        <block-type id="dirt"/>
+        <block-type id="dispenser"/>
+        <block-type id="dragon_egg"/>
+        <block-type id="dragon_head"/>
+        <block-type id="dragon_wall_head"/>
+        <block-type id="dried_kelp_block"/>
+        <block-type id="dropper"/>
+        <block-type id="emerald_block"/>
+        <block-type id="emerald_ore"/>
+        <block-type id="enchanting_table"/>
+        <block-type id="end_gateway"/>
+        <block-type id="end_portal_frame"/>
+        <block-type id="end_portal"/>
+        <block-type id="end_rod"/>
+        <block-type id="end_stone"/>
+        <block-type id="end_stone_brick_wall"/>
+        <block-type id="end_stone_bricks"/>
+        <block-type id="ender_chest"/>
+        <block-type id="farmland"/>
+        <block-type id="fern"/>
+        <block-type id="fire"/>
+        <block-type id="fire_coral"/>
+        <block-type id="fire_coral_block"/>
+        <block-type id="fire_coral_fan"/>
+        <block-type id="fire_coral_wall_fan"/>
+        <block-type id="fletching_table"/>
+        <block-type id="flower_pot"/>
+        <block-type id="frosted_ice"/>
+        <block-type id="furnace"/>
+        <block-type id="gilded_blackstone"/>
+        <block-type id="glass"/>
+        <block-type id="glass_pane"/>
+        <block-type id="glowstone"/>
+        <block-type id="gold_block"/>
+        <block-type id="gold_ore"/>
+        <block-type id="granite_wall"/>
+        <block-type id="grass_block"/>
+        <block-type id="grass_path"/>
+        <block-type id="grass"/>
+        <block-type id="gravel"/>
+        <block-type id="gray_banner"/>
+        <block-type id="gray_bed"/>
+        <block-type id="gray_carpet"/>
+        <block-type id="gray_concrete_powder"/>
+        <block-type id="gray_concrete"/>
+        <block-type id="gray_glazed_terracotta"/>
+        <block-type id="gray_shulker_box"/>
+        <block-type id="gray_stained_glass"/>
+        <block-type id="gray_stained_glass_pane"/>
+        <block-type id="gray_terracotta"/>
+        <block-type id="gray_wall_banner"/>
+        <block-type id="gray_wool"/>
+        <block-type id="green_banner"/>
+        <block-type id="green_bed"/>
+        <block-type id="green_carpet"/>
+        <block-type id="green_concrete_powder"/>
+        <block-type id="green_concrete"/>
+        <block-type id="green_glazed_terracotta"/>
+        <block-type id="green_shulker_box"/>
+        <block-type id="green_stained_glass"/>
+        <block-type id="green_stained_glass_pane"/>
+        <block-type id="green_terracotta"/>
+        <block-type id="green_wall_banner"/>
+        <block-type id="green_wool"/>
+        <block-type id="grindstone"/>
+        <block-type id="hay_block"/>
+        <block-type id="hopper"/>
+        <block-type id="honey_block"/>
+        <block-type id="honeycomb_block"/>
+        <block-type id="horn_coral"/>
+        <block-type id="horn_coral_block"/>
+        <block-type id="horn_coral_fan"/>
+        <block-type id="horn_coral_wall_fan"/>
+        <block-type id="ice"/>
+        <block-type id="infested_chiseled_stone_bricks"/>
+        <block-type id="infested_cobblestone"/>
+        <block-type id="infested_cracked_stone_bricks"/>
+        <block-type id="infested_mossy_stone_bricks"/>
+        <block-type id="infested_stone"/>
+        <block-type id="infested_stone_bricks"/>
+        <block-type id="iron_bars"/>
+        <block-type id="iron_block"/>
+        <block-type id="iron_ore"/>
+        <block-type id="jack_o_lantern"/>
+        <block-type id="jigsaw"/>
+        <block-type id="jukebox"/>
+        <block-type id="kelp"/>
+        <block-type id="kelp_plant"/>
+        <block-type id="ladder"/>
+        <block-type id="lantern"/>
+        <block-type id="lapis_block"/>
+        <block-type id="lapis_ore"/>
+        <block-type id="large_fern"/>
+        <block-type id="lava"/>
+        <block-type id="lectern"/>
+        <block-type id="lever"/>
+        <block-type id="light_blue_banner"/>
+        <block-type id="light_blue_bed"/>
+        <block-type id="light_blue_carpet"/>
+        <block-type id="light_blue_concrete_powder"/>
+        <block-type id="light_blue_concrete"/>
+        <block-type id="light_blue_glazed_terracotta"/>
+        <block-type id="light_blue_shulker_box"/>
+        <block-type id="light_blue_stained_glass"/>
+        <block-type id="light_blue_stained_glass_pane"/>
+        <block-type id="light_blue_terracotta"/>
+        <block-type id="light_blue_wall_banner"/>
+        <block-type id="light_blue_wool"/>
+        <block-type id="light_gray_banner"/>
+        <block-type id="light_gray_bed"/>
+        <block-type id="light_gray_carpet"/>
+        <block-type id="light_gray_concrete_powder"/>
+        <block-type id="light_gray_concrete"/>
+        <block-type id="light_gray_glazed_terracotta"/>
+        <block-type id="light_gray_shulker_box"/>
+        <block-type id="light_gray_stained_glass"/>
+        <block-type id="light_gray_stained_glass_pane"/>
+        <block-type id="light_gray_terracotta"/>
+        <block-type id="light_gray_wall_banner"/>
+        <block-type id="light_gray_wool"/>
+        <block-type id="lilac"/>
+        <block-type id="lily_pad"/>
+        <block-type id="lime_banner"/>
+        <block-type id="lime_bed"/>
+        <block-type id="lime_carpet"/>
+        <block-type id="lime_concrete_powder"/>
+        <block-type id="lime_concrete"/>
+        <block-type id="lime_glazed_terracotta"/>
+        <block-type id="lime_shulker_box"/>
+        <block-type id="lime_stained_glass"/>
+        <block-type id="lime_stained_glass_pane"/>
+        <block-type id="lime_terracotta"/>
+        <block-type id="lime_wall_banner"/>
+        <block-type id="lime_wool"/>
+        <block-type id="lodestone"/>
+        <block-type id="loom"/>
+        <block-type id="magenta_banner"/>
+        <block-type id="magenta_bed"/>
+        <block-type id="magenta_carpet"/>
+        <block-type id="magenta_concrete_powder"/>
+        <block-type id="magenta_concrete"/>
+        <block-type id="magenta_glazed_terracotta"/>
+        <block-type id="magenta_shulker_box"/>
+        <block-type id="magenta_stained_glass"/>
+        <block-type id="magenta_stained_glass_pane"/>
+        <block-type id="magenta_terracotta"/>
+        <block-type id="magenta_wall_banner"/>
+        <block-type id="magenta_wool"/>
+        <block-type id="magma_block"/>
+        <block-type id="melon"/>
+        <block-type id="melon_stem"/>
+        <block-type id="mossy_cobblestone"/>
+        <block-type id="mossy_cobblestone_wall"/>
+        <block-type id="mossy_stone_brick_wall"/>
+        <block-type id="mossy_stone_bricks"/>
+        <block-type id="moving_piston"/>
+        <block-type id="mushroom_stem"/>
+        <block-type id="mycelium"/>
+        <block-type id="nether_brick_wall"/>
+        <block-type id="nether_bricks"/>
+        <block-type id="nether_gold_ore"/>
+        <block-type id="nether_portal"/>
+        <block-type id="nether_quartz_ore"/>
+        <block-type id="nether_sprouts"/>
+        <block-type id="nether_wart_block"/>
+        <block-type id="nether_wart"/>
+        <block-type id="netherite_block"/>
+        <block-type id="netherrack"/>
+        <block-type id="note_block"/>
+        <block-type id="observer"/>
+        <block-type id="obsidian"/>
+        <block-type id="orange_banner"/>
+        <block-type id="orange_bed"/>
+        <block-type id="orange_carpet"/>
+        <block-type id="orange_concrete_powder"/>
+        <block-type id="orange_concrete"/>
+        <block-type id="orange_glazed_terracotta"/>
+        <block-type id="orange_shulker_box"/>
+        <block-type id="orange_stained_glass"/>
+        <block-type id="orange_stained_glass_pane"/>
+        <block-type id="orange_terracotta"/>
+        <block-type id="orange_wall_banner"/>
+        <block-type id="orange_wool"/>
+        <block-type id="packed_ice"/>
+        <block-type id="peony"/>
+        <block-type id="pink_banner"/>
+        <block-type id="pink_bed"/>
+        <block-type id="pink_carpet"/>
+        <block-type id="pink_concrete_powder"/>
+        <block-type id="pink_concrete"/>
+        <block-type id="pink_glazed_terracotta"/>
+        <block-type id="pink_shulker_box"/>
+        <block-type id="pink_stained_glass"/>
+        <block-type id="pink_stained_glass_pane"/>
+        <block-type id="pink_terracotta"/>
+        <block-type id="pink_wall_banner"/>
+        <block-type id="pink_wool"/>
+        <block-type id="piston_head"/>
+        <block-type id="piston"/>
+        <block-type id="player_head"/>
+        <block-type id="player_wall_head"/>
+        <block-type id="podzol"/>
+        <block-type id="polished_basalt"/>
+        <block-type id="polished_blackstone"/>
+        <block-type id="polished_blackstone_brick_wall"/>
+        <block-type id="polished_blackstone_bricks"/>
+        <block-type id="polished_blackstone_wall"/>
+        <block-type id="potatoes"/>
+        <block-type id="potted_acacia_sapling"/>
+        <block-type id="potted_allium"/>
+        <block-type id="potted_azure_bluet"/>
+        <block-type id="potted_bamboo"/>
+        <block-type id="potted_birch_sapling"/>
+        <block-type id="potted_blue_orchid"/>
+        <block-type id="potted_brown_mushroom"/>
+        <block-type id="potted_cactus"/>
+        <block-type id="potted_cornflower"/>
+        <block-type id="potted_crimson_fungus"/>
+        <block-type id="potted_crimson_roots"/>
+        <block-type id="potted_dandelion"/>
+        <block-type id="potted_dark_oak_sapling"/>
+        <block-type id="potted_dead_bush"/>
+        <block-type id="potted_fern"/>
+        <block-type id="potted_jungle_sapling"/>
+        <block-type id="potted_lily_of_the_valley"/>
+        <block-type id="potted_oak_sapling"/>
+        <block-type id="potted_orange_tulip"/>
+        <block-type id="potted_oxeye_daisy"/>
+        <block-type id="potted_pink_tulip"/>
+        <block-type id="potted_poppy"/>
+        <block-type id="potted_red_mushroom"/>
+        <block-type id="potted_red_tulip"/>
+        <block-type id="potted_spruce_sapling"/>
+        <block-type id="potted_warped_fungus"/>
+        <block-type id="potted_warped_roots"/>
+        <block-type id="potted_white_tulip"/>
+        <block-type id="potted_wither_rose"/>
+        
+        <block-type id="powered_rail">
+            <uses-property named="rail_active"/>
+            <uses-property named="powered_rail_shape"/>
+        </block-type>
+        
+        <block-type id="prismarine"/>
+        <block-type id="prismarine_bricks"/>
+        <block-type id="prismarine_wall"/>
+        <block-type id="pumpkin"/>
+        <block-type id="pumpkin_stem"/>
+        <block-type id="purple_banner"/>
+        <block-type id="purple_bed"/>
+        <block-type id="purple_carpet"/>
+        <block-type id="purple_concrete_powder"/>
+        <block-type id="purple_concrete"/>
+        <block-type id="purple_glazed_terracotta"/>
+        <block-type id="purple_shulker_box"/>
+        <block-type id="purple_stained_glass"/>
+        <block-type id="purple_stained_glass_pane"/>
+        <block-type id="purple_terracotta"/>
+        <block-type id="purple_wall_banner"/>
+        <block-type id="purple_wool"/>
+        <block-type id="purpur_block"/>
+        <block-type id="purpur_pillar"/>
+        <block-type id="quartz_block"/>
+        <block-type id="quartz_bricks"/>
+        <block-type id="quartz_pillar"/>
+        
+        <block-type id="rail">
+            <uses-property named="regular_rail_shape"/>
+        </block-type>
+        
+        <block-type id="red_banner"/>
+        <block-type id="red_bed"/>
+        <block-type id="red_carpet"/>
+        <block-type id="red_concrete_powder"/>
+        <block-type id="red_concrete"/>
+        <block-type id="red_glazed_terracotta"/>
+        <block-type id="red_mushroom_block"/>
+        <block-type id="red_mushroom"/>
+        <block-type id="red_nether_brick_wall"/>
+        <block-type id="red_nether_bricks"/>
+        <block-type id="red_sand"/>
+        <block-type id="red_sandstone"/>
+        <block-type id="red_sandstone_wall"/>
+        <block-type id="red_shulker_box"/>
+        <block-type id="red_stained_glass"/>
+        <block-type id="red_stained_glass_pane"/>
+        <block-type id="red_terracotta"/>
+        <block-type id="red_wall_banner"/>
+        <block-type id="red_wool"/>
+        <block-type id="respawn_anchor"/>
+        <block-type id="redstone_block"/>
+        <block-type id="redstone_lamp"/>
+        <block-type id="redstone_ore"/>
+        <block-type id="redstone_torch"/>
+        <block-type id="redstone_wall_torch"/>
+        <block-type id="redstone_wire"/>
+        <block-type id="repeater"/>
+        <block-type id="repeating_command_block"/>
+        <block-type id="rose_bush"/>
+        <block-type id="sand"/>
+        <block-type id="sandstone"/>
+        <block-type id="sandstone_wall"/>
+        <block-type id="scaffolding"/>
+        <block-type id="sea_lantern"/>
+        <block-type id="sea_pickle"/>
+        <block-type id="seagrass"/>
+        <block-type id="shroomlight"/>
+        <block-type id="shulker_box"/>
+        <block-type id="skeleton_skull"/>
+        <block-type id="skeleton_wall_skull"/>
+        <block-type id="slime_block"/>
+        <block-type id="smithing_table"/>
+        <block-type id="smoker"/>
+        <block-type id="smooth_quartz"/>
+        <block-type id="smooth_red_sandstone"/>
+        <block-type id="smooth_sandstone"/>
+        <block-type id="smooth_stone"/>
+        <block-type id="snow_block"/>
+        <block-type id="snow"/>
+        <block-type id="soul_campfire"/>
+        <block-type id="soul_fire"/>
+        <block-type id="soul_lantern"/>
+        <block-type id="soul_sand"/>
+        <block-type id="soul_soil"/>
+        <block-type id="soul_torch"/>
+        <block-type id="soul_wall_torch"/>
+        <block-type id="spawner"/>
+        <block-type id="sponge"/>
+        <block-type id="sticky_piston"/>
+        <block-type id="stone_brick_wall"/>
+        <block-type id="stone_bricks"/>
+        <block-type id="stonecutter"/>
+        <block-type id="structure_block"/>
+        <block-type id="structure_void"/>
+        <block-type id="sugar_cane"/>
+        <block-type id="sunflower"/>
+        <block-type id="sweet_berry_bush"/>
+        <block-type id="tall_grass"/>
+        <block-type id="tall_seagrass"/>
+        <block-type id="target"/>
+        <block-type id="terracotta"/>
+        <block-type id="tnt"/>
+        <block-type id="torch"/>
+        <block-type id="trapped_chest"/>
+        <block-type id="tripwire_hook"/>
+        <block-type id="tripwire"/>
+        <block-type id="tube_coral"/>
+        <block-type id="tube_coral_block"/>
+        <block-type id="tube_coral_fan"/>
+        <block-type id="tube_coral_wall_fan"/>
+        <block-type id="turtle_egg"/>
+        <block-type id="twisting_vines"/>
+        <block-type id="twisting_vines_plant"/>
+        <block-type id="vine"/>
+        <block-type id="void_air" bedrock="missing"/>
+        <block-type id="wall_torch"/>
+        <block-type id="warped_fungus"/>
+        <block-type id="warped_nylium"/>
+        <block-type id="warped_roots"/>
+        <block-type id="warped_stem"/>
+        <block-type id="warped_wart_block"/>
+        <block-type id="water"/>
+        <block-type id="weeping_vines"/>
+        <block-type id="weeping_vines_plant"/>
+        <block-type id="wet_sponge"/>
+        <block-type id="wheat"/>
+        <block-type id="white_banner"/>
+        <block-type id="white_bed"/>
+        <block-type id="white_carpet"/>
+        <block-type id="white_concrete_powder"/>
+        <block-type id="white_concrete"/>
+        <block-type id="white_glazed_terracotta"/>
+        <block-type id="white_shulker_box"/>
+        <block-type id="white_stained_glass"/>
+        <block-type id="white_stained_glass_pane"/>
+        <block-type id="white_terracotta"/>
+        <block-type id="white_wall_banner"/>
+        <block-type id="white_wool"/>
+        <block-type id="wither_rose"/>
+        <block-type id="wither_skeleton_skull"/>
+        <block-type id="wither_skeleton_wall_skull"/>
+        <block-type id="yellow_banner"/>
+        <block-type id="yellow_bed"/>
+        <block-type id="yellow_carpet"/>
+        <block-type id="yellow_concrete_powder"/>
+        <block-type id="yellow_concrete"/>
+        <block-type id="yellow_glazed_terracotta"/>
+        <block-type id="yellow_shulker_box"/>
+        <block-type id="yellow_stained_glass"/>
+        <block-type id="yellow_stained_glass_pane"/>
+        <block-type id="yellow_terracotta"/>
+        <block-type id="yellow_wall_banner"/>
+        <block-type id="yellow_wool"/>
+        <block-type id="zombie_head"/>
+        <block-type id="zombie_wall_head"/>
+        <!-- ~~ ~~~~~~~ ~~~~ -->
+        <block-type id="flowing_water" />
+        <block-type id="flowing_lava" />
+        <block-type id="noteblock" />
+        <block-type id="bed" />
+        <block-type id="golden_rail" />
+        <block-type id="web" />
+        <block-type id="tallgrass" />
+        <block-type id="deadbush" />
+        <block-type id="pistonarmcollision" />
+        <block-type id="wool" />
+        <block-type id="yellow_flower" />
+        <block-type id="red_flower" />
+        <block-type id="brick_block" />
+        <block-type id="mob_spawner" />
+        <block-type id="lit_furnace" />
+        <block-type id="lit_redstone_ore" />
+        <block-type id="unlit_redstone_torch" />
+        <block-type id="snow_layer" />
+        <block-type id="reeds" />
+        <block-type id="portal" />
+        <block-type id="lit_pumpkin" />
+        <block-type id="unpowered_repeater" />
+        <block-type id="powered_repeater" />
+        <block-type id="invisiblebedrock" />
+        <block-type id="monster_egg" />
+        <block-type id="stonebrick" />
+        <block-type id="melon_block" />
+        <block-type id="waterlily" />
+        <block-type id="nether_brick_block" />
+        <block-type id="lit_redstone_lamp" />
+        <block-type id="skull" />
+        <block-type id="unpowered_comparator" />
+        <block-type id="powered_comparator" />
+        <block-type id="quartz_ore" />
+        <block-type id="stained_hardened_clay" />
+        <block-type id="stained_glass_pane" />
+        <block-type id="leaves2" />
+        <block-type id="log2" />
+        <block-type id="slime" />
+        <block-type id="glow_stick" />
+        <block-type id="sealantern" />
+        <block-type id="carpet" />
+        <block-type id="hardened_clay" />
+        <block-type id="double_plant" />
+        <block-type id="standing_banner" />
+        <block-type id="wall_banner" />
+        <block-type id="daylight_detector_inverted" />
+        <block-type id="double_stone_slab2" />
+        <block-type id="stone_slab2" />
+        <block-type id="hard_glass_pane" />
+        <block-type id="hard_stained_glass_pane" />
+        <block-type id="chemical_heat" />
+        <block-type id="frame" />
+        <block-type id="colored_torch_rg" />
+        <block-type id="colored_torch_bp" />
+        <block-type id="undyed_shulker_box" />
+        <block-type id="end_bricks" />
+        <block-type id="allow" />
+        <block-type id="deny" />
+        <block-type id="border_block" />
+        <block-type id="magma" />
+        <block-type id="red_nether_brick" />
+        <block-type id="silver_glazed_terracotta" />
+        <block-type id="chalkboard" />
+        <block-type id="concrete" />
+        <block-type id="concretepowder" />
+        <block-type id="chemistry_table" />
+        <block-type id="underwater_torch" />
+        <block-type id="stained_glass" />
+        <block-type id="camera" />
+        <block-type id="beetroot" />
+        <block-type id="glowingobsidian" />
+        <block-type id="netherreactor" />
+        <block-type id="info_update" />
+        <block-type id="info_update2" />
+        <block-type id="movingblock" />
+        <block-type id="hard_glass" />
+        <block-type id="hard_stained_glass" />
+        <block-type id="reserved6" />
+        <block-type id="element">
+            <uses-property named="chemical_element"/>
+        </block-type>
+        <block-type id="coral" />
+        <block-type id="coral_block" />
+        <block-type id="coral_fan" />
+        <block-type id="coral_fan_dead" />
+        <block-type id="coral_fan_hang" />
+        <block-type id="coral_fan_hang2" />
+        <block-type id="coral_fan_hang3" />
+        <block-type id="stone_slab3" />
+        <block-type id="stone_slab4" />
+        <block-type id="double_stone_slab3" />
+        <block-type id="double_stone_slab4" />
+        <block-type id="stonecutter_block" />
+        <block-type id="lit_smoker" />
+        <block-type id="lava_cauldron" />
+        <block-type id="wood" />
+        <block-type id="lit_blast_furnace" />
+        <block-type id="light_block" />
+        <block-type id="stickypistonarmcollision" />
+    </block-types>
+</universal-blocks>
