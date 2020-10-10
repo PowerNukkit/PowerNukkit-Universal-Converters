@@ -439,6 +439,27 @@
         <block-property id="age3" java="age" bedrock="age">
             <int-rage to="3"/>
         </block-property>
+        <block-property id="toggle" java="powered" bedrock="toggle_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="dye_color">
+            <value>black</value>
+            <value>red</value>
+            <value>greeen</value>
+            <value>brown</value>
+            <value>blue</value>
+            <value>purple</value>
+            <value>cyan</value>
+            <value>light_gray</value>
+            <value>gray</value>
+            <value>pink</value>
+            <value>lime</value>
+            <value>yellow</value>
+            <value>light_blue</value>
+            <value>magenta</value>
+            <value>orange</value>
+            <value default="true">white</value>
+        </block-property>
     </block-properties>
     <block-entities>
         <block-entity id="sign_text" java="sign" bedrock="Sign">
@@ -470,6 +491,16 @@
             <data name="FlowerPos" type="int_coordinate" bedrock-type="none" bedrock-requires-adapter="true"/>
             <data name="ShouldSpawnBees" type="boolean" java-type="none" />
             <data name="Occupants" java-name="Bees" type="beehive_occupants" />
+        </block-entity>
+        <block-entity id="bell_state" java="bell" bedrock="Bell">
+            <data name="Ringing" type="boolean" optional="true" java-type="none"/>
+            <data name="Direction" type="int" optional="true" java-type="none"/>
+            <data name="Ticks" type="int" optional="true" java-type="none"/>
+        </block-entity>
+        <block-entity id="banner_data" java="banner" bedrock="Banner">
+            <data name="Patterns" type="banner_patterns" />
+            <data name="CustomName" type="text" optional="true" />
+            <data name="Color" type="dye_color" java-type="none" java-requires-adapter="true"/>
         </block-entity>
     </block-entities>
     <block-types>
@@ -1029,8 +1060,56 @@
             <uses-property named="age3" on-bedrock="false" on-universal="false"/>
         </block-type>
         
-        <block-type id="bell"/>
-        <block-type id="black_banner"/>
+        <block-type id="bell">
+            <uses-property named="attachment"/>
+            <uses-property named="horizontal_direction"/>
+            <uses-property named="toggle"/>
+        </block-type>
+        
+        <block-type id="standing_banner" java="white_banner" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="dye_color" on-bedrock="false" on-java="false"/>
+            <uses-property named="compass_rose_direction" />
+            <uses-entity id="banner_data"/>
+            
+            <extra-block on="java" id="orange_banner"/>
+            <extra-block on="java" id="magenta_banner"/>
+            <extra-block on="java" id="light_blue_banner"/>
+            <extra-block on="java" id="yellow_banner"/>
+            <extra-block on="java" id="lime_banner"/>
+            <extra-block on="java" id="pink_banner"/>
+            <extra-block on="java" id="gray_banner"/>
+            <extra-block on="java" id="light_gray_banner"/>
+            <extra-block on="java" id="cyan_banner"/>
+            <extra-block on="java" id="purple_banner"/>
+            <extra-block on="java" id="blue_banner"/>
+            <extra-block on="java" id="brown_banner"/>
+            <extra-block on="java" id="green_banner"/>
+            <extra-block on="java" id="red_banner"/>
+            <extra-block on="java" id="black_banner"/>
+        </block-type>
+
+        <block-type id="wall_banner" java="white_wall_banner" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="dye_color" on-bedrock="false" on-java="false"/>
+            <uses-property named="horizontal_direction" />
+            <uses-entity id="banner_data"/>
+
+            <extra-block on="java" id="orange_wall_banner"/>
+            <extra-block on="java" id="magenta_wall_banner"/>
+            <extra-block on="java" id="light_blue_wall_banner"/>
+            <extra-block on="java" id="yellow_wall_banner"/>
+            <extra-block on="java" id="lime_wall_banner"/>
+            <extra-block on="java" id="pink_wall_banner"/>
+            <extra-block on="java" id="gray_wall_banner"/>
+            <extra-block on="java" id="light_gray_wall_banner"/>
+            <extra-block on="java" id="cyan_wall_banner"/>
+            <extra-block on="java" id="purple_wall_banner"/>
+            <extra-block on="java" id="blue_wall_banner"/>
+            <extra-block on="java" id="brown_wall_banner"/>
+            <extra-block on="java" id="green_wall_banner"/>
+            <extra-block on="java" id="red_wall_banner"/>
+            <extra-block on="java" id="black_wall_banner"/>
+        </block-type>
+        
         <block-type id="black_bed"/>
         <block-type id="black_carpet"/>
         <block-type id="black_concrete_powder"/>
@@ -1040,11 +1119,9 @@
         <block-type id="black_stained_glass"/>
         <block-type id="black_stained_glass_pane"/>
         <block-type id="black_terracotta"/>
-        <block-type id="black_wall_banner"/>
         <block-type id="black_wool"/>
         <block-type id="blackstone"/>
         <block-type id="blast_furnace"/>
-        <block-type id="blue_banner"/>
         <block-type id="blue_bed"/>
         <block-type id="blue_carpet"/>
         <block-type id="blue_concrete_powder"/>
@@ -1055,7 +1132,6 @@
         <block-type id="blue_stained_glass"/>
         <block-type id="blue_stained_glass_pane"/>
         <block-type id="blue_terracotta"/>
-        <block-type id="blue_wall_banner"/>
         <block-type id="blue_wool"/>
         <block-type id="bone_block"/>
         <block-type id="bookshelf"/>
@@ -1065,7 +1141,6 @@
         <block-type id="brain_coral_wall_fan"/>
         <block-type id="brewing_stand"/>
         <block-type id="bricks"/>
-        <block-type id="brown_banner"/>
         <block-type id="brown_bed"/>
         <block-type id="brown_carpet"/>
         <block-type id="brown_concrete_powder"/>
@@ -1077,7 +1152,6 @@
         <block-type id="brown_stained_glass"/>
         <block-type id="brown_stained_glass_pane"/>
         <block-type id="brown_terracotta"/>
-        <block-type id="brown_wall_banner"/>
         <block-type id="brown_wool"/>
         <block-type id="bubble_column"/>
         <block-type id="bubble_coral"/>
@@ -1128,7 +1202,6 @@
         <block-type id="crying_obsidian"/>
         <block-type id="cut_red_sandstone"/>
         <block-type id="cut_sandstone"/>
-        <block-type id="cyan_banner"/>
         <block-type id="cyan_bed"/>
         <block-type id="cyan_carpet"/>
         <block-type id="cyan_concrete_powder"/>
@@ -1138,7 +1211,6 @@
         <block-type id="cyan_stained_glass"/>
         <block-type id="cyan_stained_glass_pane"/>
         <block-type id="cyan_terracotta"/>
-        <block-type id="cyan_wall_banner"/>
         <block-type id="cyan_wool"/>
         <block-type id="damaged_anvil"/>
         <block-type id="dandelion" bedrock="yellow_flower" />
@@ -1211,7 +1283,6 @@
         <block-type id="grass_path"/>
         <block-type id="grass"/>
         <block-type id="gravel"/>
-        <block-type id="gray_banner"/>
         <block-type id="gray_bed"/>
         <block-type id="gray_carpet"/>
         <block-type id="gray_concrete_powder"/>
@@ -1221,9 +1292,7 @@
         <block-type id="gray_stained_glass"/>
         <block-type id="gray_stained_glass_pane"/>
         <block-type id="gray_terracotta"/>
-        <block-type id="gray_wall_banner"/>
         <block-type id="gray_wool"/>
-        <block-type id="green_banner"/>
         <block-type id="green_bed"/>
         <block-type id="green_carpet"/>
         <block-type id="green_concrete_powder"/>
@@ -1233,7 +1302,6 @@
         <block-type id="green_stained_glass"/>
         <block-type id="green_stained_glass_pane"/>
         <block-type id="green_terracotta"/>
-        <block-type id="green_wall_banner"/>
         <block-type id="green_wool"/>
         <block-type id="grindstone"/>
         <block-type id="hay_block"/>
@@ -1267,7 +1335,6 @@
         <block-type id="lava"/>
         <block-type id="lectern"/>
         <block-type id="lever"/>
-        <block-type id="light_blue_banner"/>
         <block-type id="light_blue_bed"/>
         <block-type id="light_blue_carpet"/>
         <block-type id="light_blue_concrete_powder"/>
@@ -1277,9 +1344,7 @@
         <block-type id="light_blue_stained_glass"/>
         <block-type id="light_blue_stained_glass_pane"/>
         <block-type id="light_blue_terracotta"/>
-        <block-type id="light_blue_wall_banner"/>
         <block-type id="light_blue_wool"/>
-        <block-type id="light_gray_banner"/>
         <block-type id="light_gray_bed"/>
         <block-type id="light_gray_carpet"/>
         <block-type id="light_gray_concrete_powder"/>
@@ -1289,11 +1354,9 @@
         <block-type id="light_gray_stained_glass"/>
         <block-type id="light_gray_stained_glass_pane"/>
         <block-type id="light_gray_terracotta"/>
-        <block-type id="light_gray_wall_banner"/>
         <block-type id="light_gray_wool"/>
         <block-type id="lilac"/>
         <block-type id="lily_pad"/>
-        <block-type id="lime_banner"/>
         <block-type id="lime_bed"/>
         <block-type id="lime_carpet"/>
         <block-type id="lime_concrete_powder"/>
@@ -1303,11 +1366,9 @@
         <block-type id="lime_stained_glass"/>
         <block-type id="lime_stained_glass_pane"/>
         <block-type id="lime_terracotta"/>
-        <block-type id="lime_wall_banner"/>
         <block-type id="lime_wool"/>
         <block-type id="lodestone"/>
         <block-type id="loom"/>
-        <block-type id="magenta_banner"/>
         <block-type id="magenta_bed"/>
         <block-type id="magenta_carpet"/>
         <block-type id="magenta_concrete_powder"/>
@@ -1317,7 +1378,6 @@
         <block-type id="magenta_stained_glass"/>
         <block-type id="magenta_stained_glass_pane"/>
         <block-type id="magenta_terracotta"/>
-        <block-type id="magenta_wall_banner"/>
         <block-type id="magenta_wool"/>
         <block-type id="magma_block"/>
         <block-type id="melon"/>
@@ -1338,7 +1398,6 @@
         <block-type id="note_block"/>
         <block-type id="observer"/>
         <block-type id="obsidian"/>
-        <block-type id="orange_banner"/>
         <block-type id="orange_bed"/>
         <block-type id="orange_carpet"/>
         <block-type id="orange_concrete_powder"/>
@@ -1348,11 +1407,9 @@
         <block-type id="orange_stained_glass"/>
         <block-type id="orange_stained_glass_pane"/>
         <block-type id="orange_terracotta"/>
-        <block-type id="orange_wall_banner"/>
         <block-type id="orange_wool"/>
         <block-type id="packed_ice"/>
         <block-type id="peony"/>
-        <block-type id="pink_banner"/>
         <block-type id="pink_bed"/>
         <block-type id="pink_carpet"/>
         <block-type id="pink_concrete_powder"/>
@@ -1362,7 +1419,6 @@
         <block-type id="pink_stained_glass"/>
         <block-type id="pink_stained_glass_pane"/>
         <block-type id="pink_terracotta"/>
-        <block-type id="pink_wall_banner"/>
         <block-type id="pink_wool"/>
         <block-type id="piston_head"/>
         <block-type id="piston"/>
@@ -1415,7 +1471,6 @@
         <block-type id="prismarine"/>
         <block-type id="prismarine_bricks"/>
         <block-type id="pumpkin"/>
-        <block-type id="purple_banner"/>
         <block-type id="purple_bed"/>
         <block-type id="purple_carpet"/>
         <block-type id="purple_concrete_powder"/>
@@ -1425,7 +1480,6 @@
         <block-type id="purple_stained_glass"/>
         <block-type id="purple_stained_glass_pane"/>
         <block-type id="purple_terracotta"/>
-        <block-type id="purple_wall_banner"/>
         <block-type id="purple_wool"/>
         <block-type id="purpur_block"/>
         <block-type id="purpur_pillar"/>
@@ -1437,7 +1491,6 @@
             <uses-property named="regular_rail_shape"/>
         </block-type>
         
-        <block-type id="red_banner"/>
         <block-type id="red_bed"/>
         <block-type id="red_carpet"/>
         <block-type id="red_concrete_powder"/>
@@ -1452,7 +1505,6 @@
         <block-type id="red_stained_glass"/>
         <block-type id="red_stained_glass_pane"/>
         <block-type id="red_terracotta"/>
-        <block-type id="red_wall_banner"/>
         <block-type id="red_wool"/>
         <block-type id="respawn_anchor"/>
         <block-type id="redstone_block"/>
@@ -1529,7 +1581,6 @@
         <block-type id="weeping_vines_plant"/>
         <block-type id="wet_sponge"/>
         <block-type id="wheat"/>
-        <block-type id="white_banner"/>
         <block-type id="white_bed"/>
         <block-type id="white_carpet"/>
         <block-type id="white_concrete_powder"/>
@@ -1539,12 +1590,10 @@
         <block-type id="white_stained_glass"/>
         <block-type id="white_stained_glass_pane"/>
         <block-type id="white_terracotta"/>
-        <block-type id="white_wall_banner"/>
         <block-type id="white_wool"/>
         <block-type id="wither_rose"/>
         <block-type id="wither_skeleton_skull"/>
         <block-type id="wither_skeleton_wall_skull"/>
-        <block-type id="yellow_banner"/>
         <block-type id="yellow_bed"/>
         <block-type id="yellow_carpet"/>
         <block-type id="yellow_concrete_powder"/>
@@ -1554,7 +1603,6 @@
         <block-type id="yellow_stained_glass"/>
         <block-type id="yellow_stained_glass_pane"/>
         <block-type id="yellow_terracotta"/>
-        <block-type id="yellow_wall_banner"/>
         <block-type id="yellow_wool"/>
         <block-type id="zombie_head"/>
         <block-type id="zombie_wall_head"/>
@@ -1603,8 +1651,6 @@
         <block-type id="carpet" />
         <block-type id="hardened_clay" />
         <block-type id="double_plant" />
-        <block-type id="standing_banner" />
-        <block-type id="wall_banner" />
         <block-type id="daylight_detector_inverted" />
         <block-type id="double_stone_slab2" />
         <block-type id="stone_slab2" />
