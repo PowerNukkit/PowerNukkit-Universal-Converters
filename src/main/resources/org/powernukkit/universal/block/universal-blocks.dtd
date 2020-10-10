@@ -55,13 +55,21 @@
         on-java (true|false) "true"
         on-bedrock (true|false) "true">
 
+<!ELEMENT uses-entity EMPTY>
+<!ATTLIST uses-entity
+        id IDREF #REQUIRED
+        on-java (true|false) "true"
+        on-bedrock (true|false) "true"
+        java IDREF #IMPLIED
+        bedrock IDREF #IMPLIED>
+
 <!ELEMENT extra-block (uses-property*)>
 <!ATTLIST extra-block
         on (java|bedrock|both) #REQUIRED
         id  NMTOKEN            #REQUIRED
         inherit-properties  (true|false)    "true">
 
-<!ELEMENT block-type (uses-property*,extra-block*)>
+<!ELEMENT block-type (uses-property*,uses-entity?,extra-block*)>
 <!ATTLIST block-type
         id      ID          #REQUIRED
         java    NMTOKEN     #IMPLIED
@@ -71,4 +79,27 @@
 
 <!ELEMENT block-types (block-type+)>
 
-<!ELEMENT universal-blocks (block-properties,block-types)>
+<!ELEMENT data (data*)>
+<!ATTLIST data
+        name    NMTOKEN     #REQUIRED
+        type    (int|long|string|text|boolean|block_id|status_effect_id|item_stack|dye_color|item_list|loot_table|findable)  #REQUIRED
+        optional    (true|false)    "false"
+        default     CDATA       #IMPLIED
+        java-name    NMTOKEN     #IMPLIED
+        bedrock-name NMTOKEN     #IMPLIED
+        java-optional    (true|false)    #IMPLIED
+        bedrock-optional    (true|false)    #IMPLIED
+        java-type (none|byte|short|int|long|boolean|float|double|string|item_stack|json_text) #IMPLIED
+        bedrock-type (none|byte|short|int|long|boolean|float|double|string|item_stack|i18n_text) #IMPLIED
+        java-requires-adapter       (true|false) "false"
+        bedrock-requires-adapter    (true|false) "false">
+
+<!ELEMENT block-entity (data*)>
+<!ATTLIST block-entity
+        id      ID          #REQUIRED
+        java    NMTOKEN     #REQUIRED
+        bedrock NMTOKEN     #REQUIRED>
+
+<!ELEMENT block-entities (block-entity+)>
+
+<!ELEMENT universal-blocks (block-properties,block-entities,block-types)>

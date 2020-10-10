@@ -35,12 +35,12 @@
             <value java="single_wall">side</value>
             <value java="double_wall">multiple</value>
         </block-property>
-        <block-property id="leaf_size">
+        <block-property id="bamboo_leaves" bedrock="bamboo_leaf_size" java="leaves">
             <value bedrock="no_leaves" default="true">none</value>
             <value bedrock="small_leaves">small</value>
             <value bedrock="large_leaves">large</value>
         </block-property>
-        <block-property id="bamboo_stalk_thickness" java-requires-adapter="true">
+        <block-property id="bamboo_stalk_thickness" java="stage">
             <value java="0">thin</value>
             <value java="1">thick</value>
         </block-property>
@@ -424,7 +424,40 @@
         <block-property id="melon_growth" bedrock="growth" java="age">
             <int-rage to="7"/>
         </block-property>
+        <block-property id="bamboo_age" bedrock="age_bit" java="age">
+            <boolean java-false="0" java-true="1"/>
+        </block-property>
+        <block-property id="infiniburn" bedrock="infiniburn_bit" java-requires-adapter="true">
+            <boolean/>
+        </block-property>
     </block-properties>
+    <block-entities>
+        <block-entity id="sign_text" java="sign" bedrock="Sign">
+            <data name="Text" type="string" default="" java-requires-adapter="true"/>
+            <data name="Color" type="dye_color" default="black" java-type="string" bedrock-requires-adapter="true"/>
+        </block-entity>
+        <block-entity id="barrel_content" java="barrel" bedrock="Barrel">
+            <data name="CustomName" type="text" optional="true"/>
+            <data name="Lock" type="string" optional="true"/>
+            <data name="Items" type="item_list"/>
+            <data name="Findable" type="findable"/>
+            <data name="LootTable" type="loot_table" optional="true" />
+            <data name="LootTableSeed" type="long" optional="true" />
+        </block-entity>
+        <block-entity id="chest_content" java="chest" bedrock="Chest">
+            <data name="CustomName" type="text" optional="true"/>
+            <data name="Lock" type="string" optional="true"/>
+            <data name="Items" type="item_list"/>
+            <data name="Findable" type="findable"/>
+            <data name="LootTable" type="loot_table" optional="true" />
+            <data name="LootTableSeed" type="long" optional="true" />
+        </block-entity>
+        <block-entity id="beacon_state" java="beacon" bedrock="Beacon">
+            <data name="Levels" type="int"/>
+            <data name="Primary" type="status_effect_id" java-type="int" bedrock-type="int"/>
+            <data name="Secondary" type="status_effect_id" java-type="int" bedrock-type="int"/>
+        </block-entity>
+    </block-entities>
     <block-types>
         <block-type id="button" java="oak_button" bedrock="wooden_button" java-requires-adapter="true" bedrock-requires-adapter="true">
             <uses-property named="wood_or_stone_type" on-java="false" on-bedrock="false"/>
@@ -934,13 +967,37 @@
             </extra-block>
         </block-type>
         
-        <block-type id="bamboo"/>
-        <block-type id="bamboo_sapling"/>
-        <block-type id="barrel"/>
+        <block-type id="bamboo">
+            <uses-property named="bamboo_age"/>
+            <uses-property named="bamboo_leaves"/>
+            <uses-property named="bamboo_stalk_thickness"/>
+        </block-type>
+        
+        <block-type id="bamboo_sapling">
+            <uses-property named="sapling_age" on-java="false"/>
+            <uses-property named="sapling_type" on-java="false" on-universal="false"/>
+        </block-type>
+        
+        <block-type id="barrel">
+            <uses-property named="facing_direction"/>
+            <uses-property named="open"/>
+            <uses-entity id="barrel_content"/>
+        </block-type>
+        
         <block-type id="barrier"/>
-        <block-type id="basalt"/>
-        <block-type id="beacon"/>
-        <block-type id="bedrock"/>
+        
+        <block-type id="basalt">
+            <uses-property named="axis"/>
+        </block-type>
+        
+        <block-type id="beacon">
+            <uses-entity id="beacon_state"/>
+        </block-type>
+        
+        <block-type id="bedrock">
+            <uses-property named="infiniburn" on-java="false"/>
+        </block-type>
+        
         <block-type id="beehive"/>
         <block-type id="bee_nest"/>
         <block-type id="beetroots"/>
@@ -1284,7 +1341,11 @@
         <block-type id="player_head"/>
         <block-type id="player_wall_head"/>
         <block-type id="podzol"/>
-        <block-type id="polished_basalt"/>
+        
+        <block-type id="polished_basalt">
+            <uses-property named="axis"/>
+        </block-type>
+        
         <block-type id="polished_blackstone"/>
         <block-type id="polished_blackstone_bricks"/>
         <block-type id="potatoes"/>
