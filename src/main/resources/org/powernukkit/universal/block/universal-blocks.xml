@@ -20,29 +20,8 @@
 <!DOCTYPE universal-blocks SYSTEM "universal-blocks.dtd">
 <universal-blocks>
     <block-properties>
-        <block-property id="age1" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <boolean java-false="0" java-true="1" />
-        </block-property>
         <block-property id="sapling_age" java="stage" bedrock="age_bit">
             <boolean java-false="0" java-true="1"/>
-        </block-property>
-        <block-property id="age2" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <int-rage to="2"/>
-        </block-property>
-        <block-property id="age3" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <int-rage to="3"/>
-        </block-property>
-        <block-property id="age5" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <int-rage to="5"/>
-        </block-property>
-        <block-property id="age7" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <int-rage to="7"/>
-        </block-property>
-        <block-property id="age15" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <int-rage to="15"/>
-        </block-property>
-        <block-property id="age25" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <int-rage to="25"/>
         </block-property>
         <block-property id="allow_underwater" bedrock="allow_underwater_bit" java-requires-adapter="true">
             <boolean/>
@@ -147,7 +126,7 @@
             <value>element_constructor</value>
             <value>lab_table</value>
         </block-property>
-        <block-property id="burnable_wood" java-requires-adapter="true">
+        <block-property id="burnable_wood" bedrock="wood_type" java-requires-adapter="true">
             <value>acacia</value>
             <value>birch</value>
             <value>dark_oak</value>
@@ -402,6 +381,48 @@
             <value java="polished_diorite">diorite_smooth</value>
             <value>andesite</value>
             <value java="polished_andesite">andesite_smooth</value>
+        </block-property>
+        <block-property id="wall_connection_type_east" java="east">
+            <value default="true">none</value>
+            <value java="low">short</value>
+            <value>tall</value>
+        </block-property>
+        <block-property id="wall_connection_type_west" java="west">
+            <copy-values from="wall_connection_type_east"/>
+        </block-property>
+        <block-property id="wall_connection_type_south" java="south">
+            <copy-values from="wall_connection_type_east"/>
+        </block-property>
+        <block-property id="wall_connection_type_north" java="north">
+            <copy-values from="wall_connection_type_east"/>
+        </block-property>
+        <block-property id="wall_post" java="up" bedrock="wall_post_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="stone_wall_type" bedrock="wall_block_type" java-requires-adapter="true">
+            <value>andesite</value>
+            <value>brick</value>
+            <value>cobblestone</value>
+            <value>diorite</value>
+            <value java="end_stone_brick">end_brick</value>
+            <value>granite</value>
+            <value>mossy_cobblestone</value>
+            <value>mossy_stone_brick</value>
+            <value>nether_brick</value>
+            <value>prismarine</value>
+            <value>red_nether_brick</value>
+            <value>red_sandstone</value>
+            <value>sandstone</value>
+            <value>stone_brick</value>
+        </block-property>
+        <block-property id="anvil_damage" bedrock="damage" java-requires-adapter="true">
+            <value java="anvil" default="true">undamaged</value>
+            <value java="chipped_anvil">slightly_damaged</value>
+            <value java="damaged_anvil">very_damaged</value>
+            <value java="_missing_">broken</value>
+        </block-property>
+        <block-property id="melon_growth" bedrock="growth" java="age">
+            <int-rage to="7"/>
         </block-property>
     </block-properties>
     <block-types>
@@ -833,11 +854,86 @@
             <extra-block on="java" id="polished_diorite"/>
             <extra-block on="java" id="polished_andesite"/>
         </block-type>
+
+        <block-type id="stone_wall" bedrock="cobblestone_wall" java="cobblestone_wall">
+            <uses-property named="stone_wall_type" on-java="false" />
+            <uses-property named="waterlogged" on-universal="false" on-bedrock="false"/>
+            <uses-property named="wall_connection_type_east"/>
+            <uses-property named="wall_connection_type_west"/>
+            <uses-property named="wall_connection_type_south"/>
+            <uses-property named="wall_connection_type_north"/>
+            
+            <extra-block on="java" id="andesite_wall"/>
+            <extra-block on="java" id="brick_wall"/>
+            <extra-block on="java" id="diorite_wall"/>
+            <extra-block on="java" id="end_stone_brick_wall"/>
+            <extra-block on="java" id="end_stone_brick_wall"/>
+            <extra-block on="java" id="granite_wall"/>
+            <extra-block on="java" id="mossy_cobblestone_wall"/>
+            <extra-block on="java" id="mossy_stone_brick_wall"/>
+            <extra-block on="java" id="nether_brick_wall"/>
+            <extra-block on="java" id="prismarine_wall"/>
+            <extra-block on="java" id="red_nether_brick_wall"/>
+            <extra-block on="java" id="sandstone_wall"/>
+            <extra-block on="java" id="stone_brick_wall"/>
+        </block-type>
+        <block-type id="blackstone_wall">
+            <uses-property named="waterlogged" on-universal="false" on-bedrock="false"/>
+            <uses-property named="wall_post"/>
+            <uses-property named="wall_connection_type_east"/>
+            <uses-property named="wall_connection_type_west"/>
+            <uses-property named="wall_connection_type_south"/>
+            <uses-property named="wall_connection_type_north"/>
+        </block-type>
+        <block-type id="polished_blackstone_wall">
+            <uses-property named="waterlogged" on-universal="false" on-bedrock="false"/>
+            <uses-property named="wall_post"/>
+            <uses-property named="wall_connection_type_east"/>
+            <uses-property named="wall_connection_type_west"/>
+            <uses-property named="wall_connection_type_south"/>
+            <uses-property named="wall_connection_type_north"/>
+        </block-type>
+        <block-type id="polished_blackstone_brick_wall">
+            <uses-property named="waterlogged" on-universal="false" on-bedrock="false"/>
+            <uses-property named="wall_post"/>
+            <uses-property named="wall_connection_type_east"/>
+            <uses-property named="wall_connection_type_west"/>
+            <uses-property named="wall_connection_type_south"/>
+            <uses-property named="wall_connection_type_north"/>
+        </block-type>
+        <block-type id="border_block" java-requires-adapter="true">
+            <uses-property named="wall_post"/>
+            <uses-property named="wall_connection_type_east"/>
+            <uses-property named="wall_connection_type_west"/>
+            <uses-property named="wall_connection_type_south"/>
+            <uses-property named="wall_connection_type_north"/>
+        </block-type>
         
-        <block-type id="andesite_wall"/>
-        <block-type id="anvil"/>
-        <block-type id="attached_melon_stem"/>
-        <block-type id="attached_pumpkin_stem"/>
+        <block-type id="anvil" java-requires-adapter="true">
+            <uses-property named="anvil_damage" on-java="false"/>
+            
+            <extra-block on="java" id="chipped_anvil"/>
+            <extra-block on="java" id="damaged_anvil"/>
+        </block-type>
+        
+        <block-type id="melon_stem" java-requires-adapter="true">
+            <uses-property named="melon_growth"/>
+            <uses-property named="facing_direction" on-java="false"/>
+            
+            <extra-block on="java" id="attached_melon_stem">
+                <uses-property named="horizontal_direction"/>
+            </extra-block>
+        </block-type>
+
+        <block-type id="pumpkin_stem" java-requires-adapter="true">
+            <uses-property named="melon_growth"/>
+            <uses-property named="facing_direction" on-java="false"/>
+
+            <extra-block on="java" id="attached_pumpkin_stem">
+                <uses-property named="horizontal_direction"/>
+            </extra-block>
+        </block-type>
+        
         <block-type id="bamboo"/>
         <block-type id="bamboo_sapling"/>
         <block-type id="barrel"/>
@@ -862,7 +958,6 @@
         <block-type id="black_wall_banner"/>
         <block-type id="black_wool"/>
         <block-type id="blackstone"/>
-        <block-type id="blackstone_wall"/>
         <block-type id="blast_furnace"/>
         <block-type id="blue_banner"/>
         <block-type id="blue_bed"/>
@@ -884,7 +979,6 @@
         <block-type id="brain_coral_fan"/>
         <block-type id="brain_coral_wall_fan"/>
         <block-type id="brewing_stand"/>
-        <block-type id="brick_wall"/>
         <block-type id="bricks"/>
         <block-type id="brown_banner"/>
         <block-type id="brown_bed"/>
@@ -913,7 +1007,7 @@
         <block-type id="cartography_table"/>
         <block-type id="carved_pumpkin"/>
         <block-type id="cauldron"/>
-        <block-type id="cave_air" bedrock="missing"/>
+        <block-type id="cave_air" bedrock="_missing_"/>
         <block-type id="chain_command_block"/>
         <block-type id="chest"/>
         <block-type id="chipped_anvil"/>
@@ -930,7 +1024,6 @@
         <block-type id="coal_ore"/>
         <block-type id="coarse_dirt"/>
         <block-type id="cobblestone"/>
-        <block-type id="cobblestone_wall"/>
         <block-type id="cobweb"/>
         <block-type id="cocoa"/>
         <block-type id="command_block"/>
@@ -995,7 +1088,6 @@
         
         <block-type id="diamond_block"/>
         <block-type id="diamond_ore"/>
-        <block-type id="diorite_wall"/>
         <block-type id="dirt"/>
         <block-type id="dispenser"/>
         <block-type id="dragon_egg"/>
@@ -1011,7 +1103,6 @@
         <block-type id="end_portal"/>
         <block-type id="end_rod"/>
         <block-type id="end_stone"/>
-        <block-type id="end_stone_brick_wall"/>
         <block-type id="end_stone_bricks"/>
         <block-type id="ender_chest"/>
         <block-type id="farmland"/>
@@ -1031,7 +1122,6 @@
         <block-type id="glowstone"/>
         <block-type id="gold_block"/>
         <block-type id="gold_ore"/>
-        <block-type id="granite_wall"/>
         <block-type id="grass_block"/>
         <block-type id="grass_path"/>
         <block-type id="grass"/>
@@ -1146,15 +1236,11 @@
         <block-type id="magenta_wool"/>
         <block-type id="magma_block"/>
         <block-type id="melon"/>
-        <block-type id="melon_stem"/>
         <block-type id="mossy_cobblestone"/>
-        <block-type id="mossy_cobblestone_wall"/>
-        <block-type id="mossy_stone_brick_wall"/>
         <block-type id="mossy_stone_bricks"/>
         <block-type id="moving_piston"/>
         <block-type id="mushroom_stem"/>
         <block-type id="mycelium"/>
-        <block-type id="nether_brick_wall"/>
         <block-type id="nether_bricks"/>
         <block-type id="nether_gold_ore"/>
         <block-type id="nether_portal"/>
@@ -1200,9 +1286,7 @@
         <block-type id="podzol"/>
         <block-type id="polished_basalt"/>
         <block-type id="polished_blackstone"/>
-        <block-type id="polished_blackstone_brick_wall"/>
         <block-type id="polished_blackstone_bricks"/>
-        <block-type id="polished_blackstone_wall"/>
         <block-type id="potatoes"/>
         <block-type id="potted_acacia_sapling"/>
         <block-type id="potted_allium"/>
@@ -1241,9 +1325,7 @@
         
         <block-type id="prismarine"/>
         <block-type id="prismarine_bricks"/>
-        <block-type id="prismarine_wall"/>
         <block-type id="pumpkin"/>
-        <block-type id="pumpkin_stem"/>
         <block-type id="purple_banner"/>
         <block-type id="purple_bed"/>
         <block-type id="purple_carpet"/>
@@ -1274,11 +1356,9 @@
         <block-type id="red_glazed_terracotta"/>
         <block-type id="red_mushroom_block"/>
         <block-type id="red_mushroom"/>
-        <block-type id="red_nether_brick_wall"/>
         <block-type id="red_nether_bricks"/>
         <block-type id="red_sand"/>
         <block-type id="red_sandstone"/>
-        <block-type id="red_sandstone_wall"/>
         <block-type id="red_shulker_box"/>
         <block-type id="red_stained_glass"/>
         <block-type id="red_stained_glass_pane"/>
@@ -1297,7 +1377,6 @@
         <block-type id="rose_bush"/>
         <block-type id="sand"/>
         <block-type id="sandstone"/>
-        <block-type id="sandstone_wall"/>
         <block-type id="scaffolding"/>
         <block-type id="sea_lantern"/>
         <block-type id="sea_pickle"/>
@@ -1325,7 +1404,6 @@
         <block-type id="spawner"/>
         <block-type id="sponge"/>
         <block-type id="sticky_piston"/>
-        <block-type id="stone_brick_wall"/>
         <block-type id="stone_bricks"/>
         <block-type id="stonecutter"/>
         <block-type id="structure_block"/>
@@ -1350,7 +1428,7 @@
         <block-type id="twisting_vines"/>
         <block-type id="twisting_vines_plant"/>
         <block-type id="vine"/>
-        <block-type id="void_air" bedrock="missing"/>
+        <block-type id="void_air" bedrock="_missing_"/>
         <block-type id="wall_torch"/>
         <block-type id="warped_fungus"/>
         <block-type id="warped_nylium"/>
@@ -1451,7 +1529,6 @@
         <block-type id="end_bricks" />
         <block-type id="allow" />
         <block-type id="deny" />
-        <block-type id="border_block" />
         <block-type id="magma" />
         <block-type id="red_nether_brick" />
         <block-type id="silver_glazed_terracotta" />
