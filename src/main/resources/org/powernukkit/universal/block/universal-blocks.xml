@@ -500,7 +500,7 @@
         <block-entity id="banner_data" java="banner" bedrock="Banner">
             <data name="Patterns" type="banner_patterns" />
             <data name="CustomName" type="text" optional="true" />
-            <data name="Color" type="dye_color" java-type="none" java-requires-adapter="true"/>
+            <data name="Color" type="none" java-type="none" bedrock-type="int" bedrock-requires-adapter="true" />
         </block-entity>
     </block-entities>
     <block-types>
