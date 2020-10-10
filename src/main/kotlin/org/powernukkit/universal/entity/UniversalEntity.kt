@@ -18,8 +18,10 @@
 
 package org.powernukkit.universal.entity
 
+import org.powernukkit.universal.math.EntityPos
+
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalEntity
+class UniversalEntity(val pos: EntityPos)

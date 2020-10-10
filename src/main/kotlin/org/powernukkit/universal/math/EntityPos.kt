@@ -16,17 +16,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.block
-
-import org.powernukkit.universal.entity.UniversalEntity
-import org.powernukkit.universal.math.BlockPos
+package org.powernukkit.universal.math
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlock(val pos: BlockPos) {
-    val blockLayers = mutableListOf<UniversalBlockState>()
-    var blockEntity: UniversalBlockEntity? = null
-    val entities = mutableListOf<UniversalEntity>()
-}
+data class EntityPos(val xPos: Double, val yPos: Double, val zPos: Double)

@@ -18,15 +18,12 @@
 
 package org.powernukkit.universal.block
 
-import org.powernukkit.universal.entity.UniversalEntity
 import org.powernukkit.universal.math.BlockPos
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlock(val pos: BlockPos) {
-    val blockLayers = mutableListOf<UniversalBlockState>()
-    var blockEntity: UniversalBlockEntity? = null
-    val entities = mutableListOf<UniversalEntity>()
+class UniversalStructure {
+    val blocks = mutableMapOf<BlockPos, UniversalBlock>()
 }
