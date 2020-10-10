@@ -430,6 +430,15 @@
         <block-property id="infiniburn" bedrock="infiniburn_bit" java-requires-adapter="true">
             <boolean/>
         </block-property>
+        <block-property id="honey_level">
+            <int-rage to="5"/>
+        </block-property>
+        <block-property id="growth" java="age" bedrock="growth">
+            <int-rage to="7"/>
+        </block-property>
+        <block-property id="age3" java="age" bedrock="age">
+            <int-rage to="3"/>
+        </block-property>
     </block-properties>
     <block-entities>
         <block-entity id="sign_text" java="sign" bedrock="Sign">
@@ -456,6 +465,11 @@
             <data name="Levels" type="int"/>
             <data name="Primary" type="status_effect_id" java-type="int" bedrock-type="int"/>
             <data name="Secondary" type="status_effect_id" java-type="int" bedrock-type="int"/>
+        </block-entity>
+        <block-entity id="beehive_content" java="beehive" bedrock="Beehive">
+            <data name="FlowerPos" type="int_coordinate" bedrock-type="none" bedrock-requires-adapter="true"/>
+            <data name="ShouldSpawnBees" type="boolean" java-type="none" />
+            <data name="Occupants" java-name="Bees" type="beehive_occupants" />
         </block-entity>
     </block-entities>
     <block-types>
@@ -998,9 +1012,23 @@
             <uses-property named="infiniburn" on-java="false"/>
         </block-type>
         
-        <block-type id="beehive"/>
-        <block-type id="bee_nest"/>
-        <block-type id="beetroots"/>
+        <block-type id="beehive">
+            <uses-property named="facing_direction"/>
+            <uses-property named="honey_level"/>
+            <uses-entity id="beehive_content"/>
+        </block-type>
+        
+        <block-type id="bee_nest">
+            <uses-property named="facing_direction"/>
+            <uses-property named="honey_level"/>
+            <uses-entity id="beehive_content"/>
+        </block-type>
+        
+        <block-type id="beetroot" java="beetroots" java-requires-adapter="true">
+            <uses-property named="growth" on-java="false"/>
+            <uses-property named="age3" on-bedrock="false" on-universal="false"/>
+        </block-type>
+        
         <block-type id="bell"/>
         <block-type id="black_banner"/>
         <block-type id="black_bed"/>
@@ -1600,7 +1628,6 @@
         <block-type id="underwater_torch" />
         <block-type id="stained_glass" />
         <block-type id="camera" />
-        <block-type id="beetroot" />
         <block-type id="glowingobsidian" />
         <block-type id="netherreactor" />
         <block-type id="info_update" />
