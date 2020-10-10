@@ -19,12 +19,7 @@
 package org.powernukkit.universal.block
 
 /**
- * 
  * @author joserobjr
- * @since 2020-10-09
+ * @since 2020-10-10
  */
-class UniversalBlockType(
-        val id: String,
-        val blockProperties: List<UniversalBlockProperty>,
-        val blockEntity: UniversalBlockEntityType?
-)
+class UniversalBlockEntityType(val id: String)

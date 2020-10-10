@@ -18,13 +18,14 @@
 
 package org.powernukkit.universal.block
 
+import org.powernukkit.universal.entity.UniversalEntity
+
 /**
- * 
  * @author joserobjr
- * @since 2020-10-09
+ * @since 2020-10-10
  */
-class UniversalBlockType(
-        val id: String,
-        val blockProperties: List<UniversalBlockProperty>,
-        val blockEntity: UniversalBlockEntityType?
-)
+class UniversalBlock {
+    val blockLayers = mutableListOf<UniversalBlockState>()
+    var blockEntity: UniversalBlockEntity? = null
+    val entities = mutableListOf<UniversalEntity>()
+}
