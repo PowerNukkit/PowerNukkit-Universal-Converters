@@ -16,15 +16,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.api.block
+package org.powernukkit.converters.java.entity
 
-import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.api.entity.PlatformEntity
+import org.powernukkit.converters.java.JavaPlatform
+import org.powernukkit.converters.math.EntityPos
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockState<P: Platform> {
-    abstract val type: PlatformBlockType<P>
-    val platform: P get() = type.platform
-}
+class JavaEntity(platform: JavaPlatform, pos: EntityPos) : PlatformEntity<JavaPlatform>(platform, pos)

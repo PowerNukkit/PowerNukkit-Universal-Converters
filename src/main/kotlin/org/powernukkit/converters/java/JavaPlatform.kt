@@ -16,15 +16,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.api.block
+package org.powernukkit.converters.java
 
+import org.powernukkit.converters.api.MinecraftEdition
 import org.powernukkit.converters.api.Platform
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockState<P: Platform> {
-    abstract val type: PlatformBlockType<P>
-    val platform: P get() = type.platform
-}
+class JavaPlatform(name: String): Platform(name, MinecraftEdition.JAVA)
