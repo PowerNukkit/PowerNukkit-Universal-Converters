@@ -16,18 +16,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.api.block
-
-import org.powernukkit.converters.api.Platform
+package org.powernukkit.converters.api
 
 /**
+ * Minecraft editions that are supported by the converters.
+ * 
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockType<P: Platform>(
-    val platform: P,
-    val id: String
-) {
-    abstract val blockProperties: List<PlatformBlockProperty<P>>
-    abstract val blockEntityType: PlatformBlockEntityType<P>?
+enum class MinecraftEdition {
+    /**
+     * This is not a real Minecraft Edition, this enum constant is used by the intermediary platform 
+     * during the conversions.
+     */
+    UNIVERSAL,
+
+    JAVA, BEDROCK
 }

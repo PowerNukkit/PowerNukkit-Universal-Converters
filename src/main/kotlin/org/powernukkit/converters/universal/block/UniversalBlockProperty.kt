@@ -18,8 +18,12 @@
 
 package org.powernukkit.converters.universal.block
 
+import org.powernukkit.converters.api.block.PlatformBlockProperty
+import org.powernukkit.converters.universal.UniversalPlatform
+
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockProperty(val id: String)
+class UniversalBlockProperty(id: String): PlatformBlockProperty<UniversalPlatform>(UniversalPlatform, id)
+

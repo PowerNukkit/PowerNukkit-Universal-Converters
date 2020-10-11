@@ -24,10 +24,7 @@ import org.powernukkit.converters.api.Platform
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockType<P: Platform>(
+abstract class PlatformBlockEntityType<P: Platform>(
     val platform: P,
     val id: String
-) {
-    abstract val blockProperties: List<PlatformBlockProperty<P>>
-    abstract val blockEntityType: PlatformBlockEntityType<P>?
-}
+)

@@ -18,10 +18,12 @@
 
 package org.powernukkit.converters.universal.entity
 
+import org.powernukkit.converters.api.entity.PlatformEntity
 import org.powernukkit.converters.math.EntityPos
+import org.powernukkit.converters.universal.UniversalPlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalEntity(val pos: EntityPos)
+class UniversalEntity(pos: EntityPos): PlatformEntity<UniversalPlatform>(UniversalPlatform, pos)

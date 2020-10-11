@@ -18,5 +18,7 @@
 
 package org.powernukkit.converters.api
 
-abstract class Platform {
-}
+abstract class Platform (
+    val name: String,
+    val minecraftEdition: MinecraftEdition
+)

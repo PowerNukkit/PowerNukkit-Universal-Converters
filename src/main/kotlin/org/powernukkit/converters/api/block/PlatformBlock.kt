@@ -19,15 +19,18 @@
 package org.powernukkit.converters.api.block
 
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.api.entity.PlatformEntity
+import org.powernukkit.converters.math.BlockPos
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockType<P: Platform>(
+abstract class PlatformBlock<P: Platform>(
     val platform: P,
-    val id: String
+    val pos: BlockPos
 ) {
-    abstract val blockProperties: List<PlatformBlockProperty<P>>
-    abstract val blockEntityType: PlatformBlockEntityType<P>?
+    protected abstract val blockLayers: List<PlatformBlockState<P>>
+    protected abstract val blockEntity: PlatformBlockEntity<P>?
+    protected abstract val entities: List<PlatformEntity<P>>
 }

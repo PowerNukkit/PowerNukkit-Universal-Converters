@@ -18,8 +18,11 @@
 
 package org.powernukkit.converters.universal.block
 
+import org.powernukkit.converters.api.block.PlatformBlockEntity
+import org.powernukkit.converters.universal.UniversalPlatform
+
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockEntity(val type: UniversalBlockEntityType)
+class UniversalBlockEntity(override val type: UniversalBlockEntityType): PlatformBlockEntity<UniversalPlatform>()

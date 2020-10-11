@@ -19,15 +19,8 @@
 package org.powernukkit.converters.api.block
 
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.math.BlockPos
 
-/**
- * @author joserobjr
- * @since 2020-10-11
- */
-abstract class PlatformBlockType<P: Platform>(
-    val platform: P,
-    val id: String
-) {
-    abstract val blockProperties: List<PlatformBlockProperty<P>>
-    abstract val blockEntityType: PlatformBlockEntityType<P>?
+abstract class PlatformStructure<P: Platform, B: PlatformBlock<P>>(val platform: P) {
+    val blocks = mutableMapOf<BlockPos, B>()
 }

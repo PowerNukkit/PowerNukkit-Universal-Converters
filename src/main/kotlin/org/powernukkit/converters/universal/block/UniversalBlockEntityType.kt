@@ -18,8 +18,11 @@
 
 package org.powernukkit.converters.universal.block
 
+import org.powernukkit.converters.api.block.PlatformBlockEntityType
+import org.powernukkit.converters.universal.UniversalPlatform
+
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockEntityType(val id: String)
+class UniversalBlockEntityType(id: String): PlatformBlockEntityType<UniversalPlatform>(UniversalPlatform, id)

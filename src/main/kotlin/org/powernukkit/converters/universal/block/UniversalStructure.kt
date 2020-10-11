@@ -18,12 +18,11 @@
 
 package org.powernukkit.converters.universal.block
 
-import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.api.block.PlatformStructure
+import org.powernukkit.converters.universal.UniversalPlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalStructure {
-    val blocks = mutableMapOf<BlockPos, UniversalBlock>()
-}
+class UniversalStructure: PlatformStructure<UniversalPlatform, UniversalBlock>(UniversalPlatform)

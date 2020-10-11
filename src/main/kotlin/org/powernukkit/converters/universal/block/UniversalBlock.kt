@@ -18,15 +18,17 @@
 
 package org.powernukkit.converters.universal.block
 
-import org.powernukkit.converters.universal.entity.UniversalEntity
+import org.powernukkit.converters.api.block.PlatformBlock
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.universal.UniversalPlatform
+import org.powernukkit.converters.universal.entity.UniversalEntity
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlock(val pos: BlockPos) {
-    val blockLayers = mutableListOf<UniversalBlockState>()
-    var blockEntity: UniversalBlockEntity? = null
-    val entities = mutableListOf<UniversalEntity>()
+class UniversalBlock(pos: BlockPos): PlatformBlock<UniversalPlatform>(UniversalPlatform, pos) {
+    override val blockLayers = mutableListOf<UniversalBlockState>()
+    override var blockEntity: UniversalBlockEntity? = null
+    override val entities = mutableListOf<UniversalEntity>()
 }
