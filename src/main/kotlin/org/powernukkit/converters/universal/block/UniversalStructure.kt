@@ -16,12 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.entity
+package org.powernukkit.converters.universal.block
 
-import org.powernukkit.universal.math.EntityPos
+import org.powernukkit.converters.math.BlockPos
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalEntity(val pos: EntityPos)
+class UniversalStructure {
+    val blocks = mutableMapOf<BlockPos, UniversalBlock>()
+}

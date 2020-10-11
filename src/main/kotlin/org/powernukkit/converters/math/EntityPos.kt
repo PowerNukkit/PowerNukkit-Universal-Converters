@@ -16,10 +16,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.block
+package org.powernukkit.converters.math
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockEntityType(val id: String)
+data class EntityPos(val xPos: Double, val yPos: Double, val zPos: Double)

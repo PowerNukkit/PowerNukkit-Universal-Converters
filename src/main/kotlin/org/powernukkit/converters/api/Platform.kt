@@ -16,14 +16,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.block
+package org.powernukkit.converters.api
 
-/**
- * @author joserobjr
- * @since 2020-10-11
- */
-abstract class PlatformBlockType(
-    val id: String,
-    val blockProperties: List<UniversalBlockProperty>,
-    val blockEntityType: UniversalBlockEntityType?
-)
+abstract class Platform {
+}

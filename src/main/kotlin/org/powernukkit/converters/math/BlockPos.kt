@@ -16,10 +16,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.block
+package org.powernukkit.converters.math
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockState(val type: UniversalBlockType)
+data class BlockPos(val xPos: Int, val yPos: Int, val zPos: Int)

@@ -16,10 +16,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.block
+package org.powernukkit.converters.universal.block
 
 /**
  * @author joserobjr
- * @since 2020-10-11
+ * @since 2020-10-10
  */
-abstract class PlatformBlockProperty(val id: String)
+class UniversalBlockEntityType(val id: String)

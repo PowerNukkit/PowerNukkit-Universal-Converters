@@ -48,7 +48,7 @@
         <kotlin.code.style>official</kotlin.code.style>
         <experimentalCoroutines>enable</experimentalCoroutines>
         <dokka.version>0.10.0</dokka.version>
-        <main.class>org.powernukkit.universal.WorldConverterCLI</main.class>
+        <main.class>org.powernukkit.converters.WorldConverterCLI</main.class>
         <maven.test.skip>false</maven.test.skip>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

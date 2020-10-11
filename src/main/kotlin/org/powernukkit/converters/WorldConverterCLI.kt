@@ -16,14 +16,21 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.block
-
-import org.powernukkit.universal.math.BlockPos
+package org.powernukkit.converters
 
 /**
+ * Executes the world conversion from the system's command line.
+ * 
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-09
  */
-class UniversalStructure {
-    val blocks = mutableMapOf<BlockPos, UniversalBlock>()
+object WorldConverterCLI {
+    /**
+     * The entry point of the command line interface.
+     * @param args The arguments that was given in the command line.
+     */
+    @JvmStatic
+    fun main(args: Array<String>) {
+        TODO("Implement")
+    }
 }

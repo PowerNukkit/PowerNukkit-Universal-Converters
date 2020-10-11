@@ -16,10 +16,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.universal.math
+package org.powernukkit.converters.universal.entity
+
+import org.powernukkit.converters.math.EntityPos
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-data class BlockPos(val xPos: Int, val yPos: Int, val zPos: Int)
+class UniversalEntity(val pos: EntityPos)
