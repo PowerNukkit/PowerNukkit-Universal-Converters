@@ -16,18 +16,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.java.block
+package org.powernukkit.converters.bedrock.entity
 
-import org.powernukkit.converters.api.block.PlatformBlockType
-import org.powernukkit.converters.java.JavaPlatform
+import org.powernukkit.converters.api.entity.PlatformEntity
+import org.powernukkit.converters.bedrock.BedrockPlatform
+import org.powernukkit.converters.math.EntityPos
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaBlockType(
-    platform: JavaPlatform,
-    id: String,
-    override val blockProperties: List<JavaBlockProperty>,
-    override val blockEntityType: JavaBlockEntityType?
-): PlatformBlockType<JavaPlatform>(platform, id)
+class BedrockEntity(platform: BedrockPlatform, pos: EntityPos) : PlatformEntity<BedrockPlatform>(platform, pos)
