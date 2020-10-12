@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.universal.definitions.model.block.type
+package org.powernukkit.converters.universal.definitions.model.block.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -28,33 +28,22 @@ import javax.xml.bind.annotation.XmlAttribute
  * @author joserobjr
  * @since 2020-10-12
  */
-@JsonRootName("block-type")
+@JsonRootName("block-entity")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-data class ModelBlockType (
+data class ModelBlockEntity (
+    @JsonProperty(required = true)
     @XmlAttribute
     val id: String,
 
+    @JsonProperty(required = true)
     @XmlAttribute
-    val java: String? = null,
+    val java: String,
 
+    @JsonProperty(required = true)
     @XmlAttribute
-    val bedrock: String? = null,
-
-    @XmlAttribute(name = "java-requires-adapter")
-    val javaRequiresAdapter: Boolean = false,
-
-    @XmlAttribute(name = "bedrock-requires-adapter")
-    val bedrockRequiresAdapter: Boolean = false,
+    val bedrock: String,
 
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JsonProperty("uses-property")
-    val usesProperties: List<ModelUsesProperty> = emptyList(),
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JsonProperty("uses-block-entity")
-    val usesBlockEntities: List<ModelUsesBlockEntity> = emptyList(),
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JsonProperty("extra-block")
-    val extraBlocks: List<ModelExtraBlock> = emptyList(),
+    @JsonProperty("data")
+    val dataSpecification: List<ModelData> = emptyList(),
 )

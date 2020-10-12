@@ -16,45 +16,80 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.universal.definitions.model.block.type
+package org.powernukkit.converters.universal.definitions.model.block.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import javax.xml.bind.annotation.XmlAttribute
 
 /**
  * @author joserobjr
  * @since 2020-10-12
  */
-@JsonRootName("block-type")
+@JsonRootName("data")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-data class ModelBlockType (
+data class ModelData (
+    @JsonProperty(required = true)
     @XmlAttribute
-    val id: String,
+    val name: String,
+    
+    @JsonProperty(required = true)
+    @XmlAttribute
+    val type: Type,
+    
+    @XmlAttribute
+    val optional: Boolean = false,
+    
+    @XmlAttribute
+    val default: String? = null,
 
-    @XmlAttribute
-    val java: String? = null,
+    @XmlAttribute(name = "java-name")
+    val javaName: String? = null,
 
-    @XmlAttribute
-    val bedrock: String? = null,
+    @XmlAttribute(name = "bedrock-name")
+    val bedrockName: String? = null,
+
+    @XmlAttribute(name = "java-optional")
+    val javaOptional: Boolean? = null,
+
+    @XmlAttribute(name = "bedrock-optional")
+    val bedrockOptional: Boolean? = null,
+
+    @XmlAttribute(name = "java-type")
+    val javaType: Type? = null,
+
+    @XmlAttribute(name = "bedrock-type")
+    val bedrockType: Type? = null,
 
     @XmlAttribute(name = "java-requires-adapter")
     val javaRequiresAdapter: Boolean = false,
-
+    
     @XmlAttribute(name = "bedrock-requires-adapter")
     val bedrockRequiresAdapter: Boolean = false,
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JsonProperty("uses-property")
-    val usesProperties: List<ModelUsesProperty> = emptyList(),
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JsonProperty("uses-block-entity")
-    val usesBlockEntities: List<ModelUsesBlockEntity> = emptyList(),
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JsonProperty("extra-block")
-    val extraBlocks: List<ModelExtraBlock> = emptyList(),
-)
+) {
+    enum class Type {
+        INT,
+        LONG,
+        STRING,
+        TEXT,
+        BOOLEAN,
+        BLOCK_ID,
+        STATUS_EFFECT_ID,
+        ITEM_STACK,
+        DYE_COLOR,
+        ITEM_LIST,
+        LOOT_TABLE,
+        FINDABLE,
+        INT_COORDINATE,
+        BEEHIVE_OCCUPANTS,
+        BANNER_PATTERNS,
+        NONE,
+        JSON_TEXT,
+        I18N_TEXT;
+        
+        override fun toString(): String {
+            return name.toLowerCase()
+        }
+    }
+}

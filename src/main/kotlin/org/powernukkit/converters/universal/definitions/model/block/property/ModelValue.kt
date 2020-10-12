@@ -35,15 +35,15 @@ class ModelValue (
     val default: Boolean = false,
     
     @XmlAttribute
-    val java: String = "",
+    val java: String? = null,
     
     @XmlAttribute
-    val bedrock: String = ""
+    val bedrock: String? = null
 ) {
     @set:JacksonXmlText
     var value: String by InitOnceDelegator("")
     
-    constructor(value: String, default: Boolean = false, java: String = "", bedrock: String = ""): this(default, java, bedrock) {
+    constructor(value: String, default: Boolean = false, java: String? = null, bedrock: String? = null): this(default, java, bedrock) {
         this.value = value
     }
     
@@ -52,7 +52,7 @@ class ModelValue (
     @JvmSynthetic operator fun component3() = java
     @JvmSynthetic operator fun component4() = bedrock
     
-    fun copy(value: String = this.value, default: Boolean = this.default, java: String = this.java, bedrock: String = this.bedrock)
+    fun copy(value: String = this.value, default: Boolean = this.default, java: String? = this.java, bedrock: String? = this.bedrock)
         = ModelValue(value, default, java, bedrock)
     
     

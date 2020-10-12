@@ -23,7 +23,7 @@
 
 <!ELEMENT value (#PCDATA)>
 <!ATTLIST value
-        default CDATA       #IMPLIED
+        default (true|false)  "false"
         java    NMTOKEN     #IMPLIED
         bedrock NMTOKEN     #IMPLIED>
 
@@ -78,7 +78,7 @@
 
 <!ELEMENT block-types (block-type+)>
 
-<!ELEMENT data (data*)>
+<!ELEMENT data EMPTY>
 <!ATTLIST data
         name    NMTOKEN     #REQUIRED
         type    (int|long|string|text|boolean|block_id|status_effect_id|item_stack|dye_color|item_list|loot_table|findable|int_coordinate|beehive_occupants|banner_patterns|none)  #REQUIRED

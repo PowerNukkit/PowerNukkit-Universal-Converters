@@ -48,13 +48,12 @@ data class ModelExtraBlock (
     val usesProperties: List<ModelUsesProperty> = emptyList(),
 ) {
     enum class On {
-        @JsonProperty("java")
         JAVA,
-
-        @JsonProperty("bedrock")
         BEDROCK,
+        BOTH;
 
-        @JsonProperty("both")
-        BOTH
+        override fun toString(): String {
+            return name.toLowerCase()
+        }
     }
 }

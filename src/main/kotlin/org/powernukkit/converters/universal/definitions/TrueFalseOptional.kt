@@ -18,19 +18,16 @@
 
 package org.powernukkit.converters.universal.definitions
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
 /**
  * @author joserobjr
  * @since 2020-10-12
  */
 enum class TrueFalseOptional {
-    @JsonProperty("true")
     TRUE,
-    
-    @JsonProperty("false")
     FALSE,
+    OPTIONAL;
 
-    @JsonProperty("optional")
-    OPTIONAL
+    override fun toString(): String {
+        return name.toLowerCase()
+    }
 }

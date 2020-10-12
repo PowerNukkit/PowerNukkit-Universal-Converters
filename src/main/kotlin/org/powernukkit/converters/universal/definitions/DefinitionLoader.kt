@@ -40,6 +40,7 @@ class DefinitionLoader {
         .enable(SerializationFeature.INDENT_OUTPUT)
         .enable(SerializationFeature.WRAP_ROOT_VALUE)
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
         .defaultUseWrapper(false)
         .serializationInclusion(JsonInclude.Include.NON_DEFAULT)
         .build()
