@@ -16,22 +16,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.api.block
+package org.powernukkit.converters.universal
 
-import org.powernukkit.converters.api.Platform
 import org.powernukkit.converters.api.PlatformObject
-import org.powernukkit.converters.api.entity.PlatformEntity
-import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.api.UniversalAdapter
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlock<P: Platform>(
-    override val platform: P,
-    val pos: BlockPos
-): PlatformObject<P> {
-    protected abstract val blockLayers: List<PlatformBlockState<P>>
-    protected abstract val blockEntity: PlatformBlockEntity<P>?
-    protected abstract val entities: List<PlatformEntity<P>>
+object SelfUniversalAdapter: UniversalAdapter<PlatformObject<UniversalPlatform>, PlatformObject<UniversalPlatform>> {
+    
+    fun <O: PlatformObject<UniversalPlatform>> get(): UniversalAdapter<O, O> {
+        @Suppress("UNCHECKED_CAST")
+        return this as UniversalAdapter<O, O>
+    }
+    
+    override fun toUniversal(platformObject: PlatformObject<UniversalPlatform>): PlatformObject<UniversalPlatform> {
+        return platformObject
+    }
+
+    override fun toPlatform(universalObject: PlatformObject<UniversalPlatform>): PlatformObject<UniversalPlatform> {
+        return universalObject
+    }
 }

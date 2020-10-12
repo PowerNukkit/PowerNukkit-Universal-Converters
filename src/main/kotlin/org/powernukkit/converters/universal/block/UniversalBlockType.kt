@@ -29,4 +29,5 @@ class UniversalBlockType(
     id: String,
     override val blockProperties: List<UniversalBlockProperty>,
     override val blockEntityType: UniversalBlockEntityType?
-): PlatformBlockType<UniversalPlatform>(UniversalPlatform, id)
+): PlatformBlockType<UniversalPlatform>(UniversalPlatform, id) {
+}

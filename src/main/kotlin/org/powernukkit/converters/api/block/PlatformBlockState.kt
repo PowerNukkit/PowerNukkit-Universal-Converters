@@ -19,12 +19,13 @@
 package org.powernukkit.converters.api.block
 
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.api.PlatformObject
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockState<P: Platform> {
+abstract class PlatformBlockState<P: Platform>: PlatformObject<P> {
     abstract val type: PlatformBlockType<P>
-    val platform: P get() = type.platform
+    override val platform: P get() = type.platform
 }

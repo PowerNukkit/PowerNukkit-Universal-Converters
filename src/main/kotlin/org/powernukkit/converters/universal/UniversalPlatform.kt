@@ -25,4 +25,6 @@ import org.powernukkit.converters.api.Platform
  * @author joserobjr
  * @since 2020-10-11
  */
-object UniversalPlatform: Platform("Intermediary (Universal)", MinecraftEdition.UNIVERSAL)
+object UniversalPlatform: Platform("Intermediary (Universal)", MinecraftEdition.UNIVERSAL) {
+    
+}

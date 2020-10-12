@@ -19,6 +19,7 @@
 package org.powernukkit.converters.api.entity
 
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.api.PlatformObject
 import org.powernukkit.converters.math.EntityPos
 
 /**
@@ -26,6 +27,6 @@ import org.powernukkit.converters.math.EntityPos
  * @since 2020-10-11
  */
 abstract class PlatformEntity<P: Platform>(
-    val platform: P,
+    override val platform: P,
     val pos: EntityPos
-)
+): PlatformObject<P>

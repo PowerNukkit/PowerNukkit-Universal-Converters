@@ -29,5 +29,5 @@ class BedrockBlockType(
     platform: BedrockPlatform,
     id: String,
     override val blockProperties: List<BedrockBlockProperty>,
-    override val blockEntityType: BedrockBlockEntityType?
+    override val blockEntityType: BedrockBlockEntityType?,
 ) : PlatformBlockType<BedrockPlatform>(platform, id)

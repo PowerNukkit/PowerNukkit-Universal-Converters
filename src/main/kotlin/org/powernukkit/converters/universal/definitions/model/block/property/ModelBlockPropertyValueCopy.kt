@@ -16,22 +16,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.api.block
+package org.powernukkit.converters.universal.definitions.model.block.property
 
-import org.powernukkit.converters.api.Platform
-import org.powernukkit.converters.api.PlatformObject
-import org.powernukkit.converters.api.entity.PlatformEntity
-import org.powernukkit.converters.math.BlockPos
+import com.fasterxml.jackson.annotation.JsonInclude
+import javax.xml.bind.annotation.XmlAttribute
+import javax.xml.bind.annotation.XmlIDREF
+import javax.xml.bind.annotation.XmlRootElement
 
 /**
  * @author joserobjr
- * @since 2020-10-11
+ * @since 2020-10-12
  */
-abstract class PlatformBlock<P: Platform>(
-    override val platform: P,
-    val pos: BlockPos
-): PlatformObject<P> {
-    protected abstract val blockLayers: List<PlatformBlockState<P>>
-    protected abstract val blockEntity: PlatformBlockEntity<P>?
-    protected abstract val entities: List<PlatformEntity<P>>
-}
+@XmlRootElement(name = "copy-values")
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+data class ModelBlockPropertyValueCopy(
+    @XmlAttribute
+    @XmlIDREF
+    val from: String
+)

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~     PowerNukkit Universal Worlds & Converters for Minecraft
-  ~     Copyright (C) 2020  José Roberto de Araújo Júnior
-  ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU Affero General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU Affero General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU Affero General Public License
-  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ PowerNukkit Universal Worlds & Converters for Minecraft
+  ~  Copyright (C) 2020  José Roberto de Araújo Júnior
+  ~  
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU Affero General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~  
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU Affero General Public License for more details.
+  ~  
+  ~  You should have received a copy of the GNU Affero General Public License
+  ~  along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <!DOCTYPE universal-blocks SYSTEM "universal-blocks.dtd">
@@ -45,10 +45,10 @@
             <value java="1">thick</value>
         </block-property>
         <block-property id="bites" bedrock="bite_counter">
-            <int-rage to="6"/>
+            <int-range to="6"/>
         </block-property>
         <block-property id="block_light_level" java-requires-adapter="true">
-            <int-rage to="15"/>
+            <int-range to="15"/>
         </block-property>
         <block-property id="brewing_stand_slot_a" bedrock="brewing_stand_slot_a_bit" java="has_bottle_0">
             <boolean/>
@@ -159,7 +159,7 @@
             <value>nether_brick</value>
         </block-property>
         <block-property id="chemical_element" java-requires-adapter="true">
-            <int-rage to="118"/>
+            <int-range to="118"/>
         </block-property>
         <block-property id="in_wall" bedrock="in_wall_bit">
             <boolean/>
@@ -196,7 +196,7 @@
             <copy-values from="new_leaf_type"/>
         </block-property>
         <block-property id="leaves_distance" java="distance" bedrock-requires-adapter="true">
-            <int-rage from="1" to="7"/>
+            <int-range from="1" to="7"/>
         </block-property>
         <block-property id="persistent" bedrock="persistent_bit">
             <boolean/>
@@ -216,7 +216,7 @@
             <boolean/>
         </block-property>
         <block-property id="redstone_signal" java="power">
-            <int-rage to="15"/>
+            <int-range to="15"/>
         </block-property>
         <block-property id="sapling_type">
             <copy-values from="burnable_wood" />
@@ -422,7 +422,7 @@
             <value java="_missing_">broken</value>
         </block-property>
         <block-property id="melon_growth" bedrock="growth" java="age">
-            <int-rage to="7"/>
+            <int-range to="7"/>
         </block-property>
         <block-property id="bamboo_age" bedrock="age_bit" java="age">
             <boolean java-false="0" java-true="1"/>
@@ -431,13 +431,13 @@
             <boolean/>
         </block-property>
         <block-property id="honey_level">
-            <int-rage to="5"/>
+            <int-range to="5"/>
         </block-property>
         <block-property id="growth" java="age" bedrock="growth">
-            <int-rage to="7"/>
+            <int-range to="7"/>
         </block-property>
         <block-property id="age3" java="age" bedrock="age">
-            <int-rage to="3"/>
+            <int-range to="3"/>
         </block-property>
         <block-property id="toggle" java="powered" bedrock="toggle_bit">
             <boolean/>
