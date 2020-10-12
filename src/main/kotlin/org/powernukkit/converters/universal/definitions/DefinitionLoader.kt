@@ -19,6 +19,7 @@
 package org.powernukkit.converters.universal.definitions
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule
@@ -38,6 +39,7 @@ class DefinitionLoader {
         .addModule(JaxbAnnotationModule())
         .enable(SerializationFeature.INDENT_OUTPUT)
         .enable(SerializationFeature.WRAP_ROOT_VALUE)
+        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
         .defaultUseWrapper(false)
         .serializationInclusion(JsonInclude.Include.NON_DEFAULT)
         .build()

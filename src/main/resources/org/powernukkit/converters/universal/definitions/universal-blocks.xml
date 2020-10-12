@@ -1026,7 +1026,7 @@
         <block-type id="barrel">
             <uses-property named="facing_direction"/>
             <uses-property named="open"/>
-            <uses-entity id="barrel_content"/>
+            <uses-block-entity named="barrel_content"/>
         </block-type>
         
         <block-type id="barrier"/>
@@ -1036,7 +1036,7 @@
         </block-type>
         
         <block-type id="beacon">
-            <uses-entity id="beacon_state"/>
+            <uses-block-entity named="beacon_state"/>
         </block-type>
         
         <block-type id="bedrock">
@@ -1046,13 +1046,13 @@
         <block-type id="beehive">
             <uses-property named="facing_direction"/>
             <uses-property named="honey_level"/>
-            <uses-entity id="beehive_content"/>
+            <uses-block-entity named="beehive_content"/>
         </block-type>
         
         <block-type id="bee_nest">
             <uses-property named="facing_direction"/>
             <uses-property named="honey_level"/>
-            <uses-entity id="beehive_content"/>
+            <uses-block-entity named="beehive_content"/>
         </block-type>
         
         <block-type id="beetroot" java="beetroots" java-requires-adapter="true">
@@ -1069,7 +1069,7 @@
         <block-type id="standing_banner" java="white_banner" java-requires-adapter="true" bedrock-requires-adapter="true">
             <uses-property named="dye_color" on-bedrock="false" on-java="false"/>
             <uses-property named="compass_rose_direction" />
-            <uses-entity id="banner_data"/>
+            <uses-block-entity named="banner_data"/>
             
             <extra-block on="java" id="orange_banner"/>
             <extra-block on="java" id="magenta_banner"/>
@@ -1091,7 +1091,7 @@
         <block-type id="wall_banner" java="white_wall_banner" java-requires-adapter="true" bedrock-requires-adapter="true">
             <uses-property named="dye_color" on-bedrock="false" on-java="false"/>
             <uses-property named="horizontal_direction" />
-            <uses-entity id="banner_data"/>
+            <uses-block-entity named="banner_data"/>
 
             <extra-block on="java" id="orange_wall_banner"/>
             <extra-block on="java" id="magenta_wall_banner"/>

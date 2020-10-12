@@ -46,20 +46,20 @@ data class ModelBlockProperty(
     val bedrockRequiresAdapter: Boolean,
 
     @JsonProperty("int-range")
-    val intRangeValue: ModelBlockPropertyValueIntRange? = null,
+    val intRangeValue: ModelIntRange? = null,
 
     @JsonProperty("boolean")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    val booleanValue: ModelBlockPropertyValueBoolean? = null,
+    val booleanValue: ModelBoolean? = null,
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JsonProperty("value")
-    val values: List<ModelBlockPropertyValueRaw>? = null,
+    val values: List<ModelValue>? = null,
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JsonProperty("copy-values")
-    val copyValues: List<ModelBlockPropertyValueCopy>? = null
+    val copyValues: List<ModelCopyValues>? = null
 ) {
     init {
         var validation = 0

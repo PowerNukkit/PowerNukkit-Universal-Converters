@@ -20,11 +20,13 @@ package org.powernukkit.converters.universal.definitions.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import org.powernukkit.converters.internal.InitOnceDelegator
 import org.powernukkit.converters.universal.definitions.model.block.property.ModelBlockProperty
+import org.powernukkit.converters.universal.definitions.model.block.type.ModelBlockType
 
 /**
  * @author joserobjr
@@ -33,12 +35,17 @@ import org.powernukkit.converters.universal.definitions.model.block.property.Mod
 @JsonRootName("universal-blocks")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonPropertyOrder("blockProperties", "blockTypes")
 class ModelDefinitions {
     @set:JacksonXmlElementWrapper(useWrapping = true, localName = "block-properties")
     @set:JacksonXmlProperty(localName = "block-property")
     var blockProperties: List<ModelBlockProperty> by InitOnceDelegator(emptyList())
+
+    @set:JacksonXmlElementWrapper(useWrapping = true, localName = "block-types")
+    @set:JacksonXmlProperty(localName = "block-type")
+    var blockTypes: List<ModelBlockType> by InitOnceDelegator(emptyList())
     
     override fun toString(): String {
-        return "ModelUniversalBlocks(blockProperties=$blockProperties)"
+        return "ModelUniversalBlocks(blockProperties=$blockProperties, blockTypes=$blockTypes)"
     }
 }

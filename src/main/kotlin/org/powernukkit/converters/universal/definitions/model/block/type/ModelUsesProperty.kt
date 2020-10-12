@@ -16,21 +16,36 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.universal.definitions.model.block.property
+package org.powernukkit.converters.universal.definitions.model.block.type
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonRootName
+import org.powernukkit.converters.universal.definitions.TrueFalseOptional
 import javax.xml.bind.annotation.XmlAttribute
 import javax.xml.bind.annotation.XmlIDREF
-import javax.xml.bind.annotation.XmlRootElement
 
 /**
  * @author joserobjr
  * @since 2020-10-12
  */
-@XmlRootElement(name = "copy-values")
+@JsonRootName("uses-property")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-data class ModelBlockPropertyValueCopy(
+data class ModelUsesProperty (
+    @JsonProperty(required = true)
     @XmlAttribute
     @XmlIDREF
-    val from: String
+    val named: String,
+
+    @XmlAttribute(name = "on-java")
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    val onJava: Boolean = true,
+    
+    @XmlAttribute(name = "on-bedrock")
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    val onBedrock: Boolean = true,
+
+    @XmlAttribute(name = "on-universal")
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    val onUniversal: TrueFalseOptional = TrueFalseOptional.TRUE
 )

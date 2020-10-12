@@ -55,13 +55,12 @@
         on-java (true|false) "true"
         on-bedrock (true|false) "true">
 
-<!ELEMENT uses-entity EMPTY>
-<!ATTLIST uses-entity
-        id IDREF #REQUIRED
+<!ELEMENT uses-block-entity EMPTY>
+<!ATTLIST uses-block-entity
+        named IDREF #REQUIRED
+        on-universal (true|false|optional) "true"
         on-java (true|false) "true"
-        on-bedrock (true|false) "true"
-        java IDREF #IMPLIED
-        bedrock IDREF #IMPLIED>
+        on-bedrock (true|false) "true">
 
 <!ELEMENT extra-block (uses-property*)>
 <!ATTLIST extra-block
@@ -69,7 +68,7 @@
         id  NMTOKEN            #REQUIRED
         inherit-properties  (true|false)    "true">
 
-<!ELEMENT block-type (uses-property*,uses-entity?,extra-block*)>
+<!ELEMENT block-type (uses-property*,uses-block-entity?,extra-block*)>
 <!ATTLIST block-type
         id      ID          #REQUIRED
         java    NMTOKEN     #IMPLIED

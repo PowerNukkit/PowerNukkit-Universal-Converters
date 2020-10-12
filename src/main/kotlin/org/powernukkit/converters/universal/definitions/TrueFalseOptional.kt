@@ -16,22 +16,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.universal.definitions.model.block.property
+package org.powernukkit.converters.universal.definitions
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import javax.xml.bind.annotation.XmlAttribute
-import javax.xml.bind.annotation.XmlRootElement
+import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
  * @author joserobjr
  * @since 2020-10-12
  */
-@XmlRootElement(name = "int-range")
-@JsonPropertyOrder("from", "to")
-data class ModelBlockPropertyValueIntRange(
-    @XmlAttribute
-    val to: Int,
+enum class TrueFalseOptional {
+    @JsonProperty("true")
+    TRUE,
+    
+    @JsonProperty("false")
+    FALSE,
 
-    @XmlAttribute
-    val from: Int = 0
-): ModelBlockPropertyValue
+    @JsonProperty("optional")
+    OPTIONAL
+}

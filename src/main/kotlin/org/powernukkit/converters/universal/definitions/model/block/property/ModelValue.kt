@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlAttribute
  */
 @JsonRootName("value")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-class ModelBlockPropertyValueRaw (
+class ModelValue (
     @XmlAttribute
     val default: Boolean = false,
     
@@ -53,7 +53,7 @@ class ModelBlockPropertyValueRaw (
     @JvmSynthetic operator fun component4() = bedrock
     
     fun copy(value: String = this.value, default: Boolean = this.default, java: String = this.java, bedrock: String = this.bedrock)
-        = ModelBlockPropertyValueRaw(value, default, java, bedrock)
+        = ModelValue(value, default, java, bedrock)
     
     
     override fun toString(): String {
@@ -64,7 +64,7 @@ class ModelBlockPropertyValueRaw (
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ModelBlockPropertyValueRaw
+        other as ModelValue
 
         if (value != other.value) return false
         if (java != other.java) return false
