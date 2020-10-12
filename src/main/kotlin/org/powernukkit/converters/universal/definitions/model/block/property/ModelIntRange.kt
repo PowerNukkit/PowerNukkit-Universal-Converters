@@ -34,4 +34,6 @@ data class ModelIntRange(
 
     @XmlAttribute
     val from: Int = 0
-): ModelBlockPropertyValue
+): ModelBlockPropertyValue {
+    fun toRange() = from..to
+}

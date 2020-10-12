@@ -32,7 +32,6 @@
 
 <!ELEMENT boolean EMPTY>
 <!ATTLIST boolean
-        default       (true|false)  "false"
         java-false    NMTOKEN     'false'
         bedrock-false NMTOKEN     '0'
         java-true     NMTOKEN     'true'
