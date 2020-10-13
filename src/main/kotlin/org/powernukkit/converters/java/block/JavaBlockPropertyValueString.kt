@@ -16,20 +16,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.bedrock.block
+package org.powernukkit.converters.java.block
 
-import org.powernukkit.converters.api.block.PlatformBlockProperty
-import org.powernukkit.converters.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.bedrock.BedrockPlatform
-import org.powernukkit.converters.universal.block.UniversalBlockProperty
+import org.powernukkit.converters.java.JavaPlatform
+import org.powernukkit.converters.universal.block.UniversalBlockPropertyValue
 
 /**
  * @author joserobjr
- * @since 2020-10-11
+ * @since 2020-10-13
  */
-class BedrockBlockProperty(
-    platform: BedrockPlatform,
-    id: String,
-    override val values: List<PlatformBlockPropertyValue<BedrockPlatform>>,
-    override val universal: UniversalBlockProperty?
-): PlatformBlockProperty<BedrockPlatform>(platform, id)
+class JavaBlockPropertyValueString(
+    platform: JavaPlatform,
+    val value: String,
+    universalValue: UniversalBlockPropertyValue?
+) : JavaBlockPropertyValue(platform, universalValue) {
+    override val type get() = Type.STRING
+
+    override fun stringValue() = value
+}

@@ -30,18 +30,18 @@ import javax.xml.bind.annotation.XmlAttribute
  */
 @JsonRootName("block-entity")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-data class ModelBlockEntity (
+data class ModelBlockEntity(
     @JsonProperty(required = true)
     @XmlAttribute
     val id: String,
 
     @JsonProperty(required = true)
     @XmlAttribute
-    val java: String,
+    val java: String?,
 
     @JsonProperty(required = true)
     @XmlAttribute
-    val bedrock: String,
+    val bedrock: String?,
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JsonProperty("data")

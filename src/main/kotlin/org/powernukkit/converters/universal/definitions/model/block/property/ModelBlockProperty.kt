@@ -34,16 +34,16 @@ data class ModelBlockProperty(
     val id: String,
 
     @XmlAttribute
-    val java: String?,
+    val java: String? = null,
 
     @XmlAttribute
-    val bedrock: String?,
+    val bedrock: String? = null,
 
     @XmlAttribute(name = "java-requires-adapter")
-    val javaRequiresAdapter: Boolean,
+    val javaRequiresAdapter: Boolean = false,
 
     @XmlAttribute(name = "bedrock-requires-adapter")
-    val bedrockRequiresAdapter: Boolean,
+    val bedrockRequiresAdapter: Boolean = false,
 
     @JsonProperty("int-range")
     val intRangeValue: ModelIntRange? = null,

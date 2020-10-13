@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.api.block
 
+import org.powernukkit.converters.api.NamespacedId
 import org.powernukkit.converters.api.Platform
 import org.powernukkit.converters.api.PlatformObject
 import org.powernukkit.converters.universal.block.UniversalBlockType
@@ -28,11 +29,11 @@ import org.powernukkit.converters.universal.block.UniversalBlockType
  */
 abstract class PlatformBlockType<P: Platform<P>>(
     override val platform: P,
-    val id: String
+    val id: NamespacedId
 ): PlatformObject<P> {
     abstract val blockProperties: List<PlatformBlockProperty<P>>
     abstract val blockEntityType: PlatformBlockEntityType<P>?
-    var universalType: UniversalBlockType? = null
+    abstract val universalType: UniversalBlockType?
     
     override fun toString(): String {
         return "${platform.name}BlockType(id='$id', blockProperties=$blockProperties, blockEntityType=$blockEntityType)"

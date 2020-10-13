@@ -19,7 +19,10 @@
 package org.powernukkit.converters.universal
 
 import org.powernukkit.converters.api.MinecraftEdition
+import org.powernukkit.converters.api.NamespacedId
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.internal.toMapOfList
+import org.powernukkit.converters.universal.block.UniversalBlockEntityType
 import org.powernukkit.converters.universal.block.UniversalBlockProperty
 import org.powernukkit.converters.universal.block.UniversalBlockState
 import org.powernukkit.converters.universal.block.UniversalBlockType
@@ -31,20 +34,62 @@ import org.powernukkit.converters.universal.definitions.model.ModelDefinitions
  */
 class UniversalPlatform internal constructor(
     definitions: ModelDefinitions
-): Platform<UniversalPlatform>("Intermediary", MinecraftEdition.UNIVERSAL) {
-    private val blockPropertiesById = definitions.blockProperties
+) : Platform<UniversalPlatform>("Universal", MinecraftEdition.UNIVERSAL) {
+    val blockPropertiesById = definitions.blockProperties
         .map { UniversalBlockProperty(this, it) }
-        .associateByTo(mutableMapOf(), UniversalBlockProperty::id)
-    
-    private val blockTypesById = mutableMapOf<String, UniversalBlockType>()
-    
-    override val airBlockType: UniversalBlockType
-        get() = checkNotNull(blockTypesById["air"]) { "The minecraft:air block type is not registered" }
+        .associateBy(UniversalBlockProperty::id)
 
-    override val airBlockState: UniversalBlockState
-        get() = UniversalBlockState(airBlockType)
+    val blockPropertiesByEditionId = blockPropertiesById.values.asSequence()
+        .flatMap { property ->
+            MinecraftEdition.values().asSequence()
+                .map { it to (property.editionId.getOrDefault(it, property.id) to property) }
+        }
+        .groupBy { it.first }
+        .mapValues { (_, value) ->
+            value.map { it.second }.asSequence().toMapOfList()
+        }
+
+    val blockEntityTypesById = definitions.blockEntities
+        .map { UniversalBlockEntityType(this, it) }
+        .associateBy(UniversalBlockEntityType::id)
+
+    val blockEntityTypesByEditionId = blockEntityTypesById.createEditionIdMap(
+        UniversalBlockEntityType::id,
+        UniversalBlockEntityType::editionId
+    )
+
+    val blockTypesById = definitions.blockTypes
+        .map { UniversalBlockType(this, it) }
+        .associateBy(UniversalBlockType::id)
+
+    val blockTypesByEditionId = blockTypesById.createEditionIdMap(
+        UniversalBlockType::id,
+        UniversalBlockType::editionId,
+    )
+
+    override val airBlockType =
+        checkNotNull(blockTypesById[NamespacedId("air")]) { "The minecraft:air block type is not registered" }
+    override val airBlockState = UniversalBlockState(airBlockType)
+
+    fun getBlockPropertyByEditionId(edition: MinecraftEdition, propertyId: String): List<UniversalBlockProperty> {
+        return blockPropertiesByEditionId[edition]?.get(propertyId) ?: emptyList()
+    }
 
     override fun toString(): String {
         return "UniversalPlatform(name='$name', minecraftEdition=$minecraftEdition, blockPropertiesById=$blockPropertiesById, blockTypesById=$blockTypesById)"
     }
+
+    private fun <K : Any, T> Map<K, T>.createEditionIdMap(
+        getId: T.() -> K,
+        getEditionIds: T.() -> Map<MinecraftEdition, K>
+    ): Map<MinecraftEdition, Map<K, T>> =
+        values.asSequence()
+            .flatMap { obj ->
+                MinecraftEdition.values().asSequence()
+                    .map { it to (obj.getEditionIds().getOrElse(it) { obj.getId() } to obj) }
+            }
+            .groupBy { it.first }
+            .mapValues { (_, value) ->
+                value.map { it.second }.toMap()
+            }
 }

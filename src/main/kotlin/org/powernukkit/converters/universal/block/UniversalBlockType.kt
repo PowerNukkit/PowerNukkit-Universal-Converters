@@ -18,8 +18,16 @@
 
 package org.powernukkit.converters.universal.block
 
+import org.powernukkit.converters.api.MinecraftEdition
+import org.powernukkit.converters.api.NamespacedId
 import org.powernukkit.converters.api.block.PlatformBlockType
+import org.powernukkit.converters.internal.enumMapOfNonNullsOrEmpty
+import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.universal.UniversalPlatform
+import org.powernukkit.converters.universal.definitions.TrueFalseOptional
+import org.powernukkit.converters.universal.definitions.model.block.type.ModelBlockType
+import org.powernukkit.converters.universal.definitions.model.block.type.ModelExtraBlock
+import org.powernukkit.converters.universal.definitions.model.block.type.ModelUsesProperty
 
 /**
  * @author joserobjr
@@ -27,11 +35,77 @@ import org.powernukkit.converters.universal.UniversalPlatform
  */
 class UniversalBlockType(
     platform: UniversalPlatform,
-    id: String,
+    id: NamespacedId,
     override val blockProperties: List<UniversalBlockProperty>,
-    override val blockEntityType: UniversalBlockEntityType?
-): PlatformBlockType<UniversalPlatform>(platform, id) {
-    init {
-        universalType = this
-    }
+    override val blockEntityType: UniversalBlockEntityType?,
+    val optionalBlockProperties: Set<String>,
+
+    val editionId: Map<MinecraftEdition, NamespacedId>,
+    val editionBlockProperties: Map<MinecraftEdition, List<UniversalBlockProperty>>,
+    val editionBlockEntityType: Map<MinecraftEdition, UniversalBlockEntityType?>,
+
+    val extraBlocks: Map<MinecraftEdition, List<ModelExtraBlock>>
+) : PlatformBlockType<UniversalPlatform>(platform, id) {
+    override val universalType get() = this
+
+    constructor(platform: UniversalPlatform, model: ModelBlockType) : this(platform, NamespacedId(model.id),
+        blockProperties = model.usesProperties.asSequence()
+            .filter { it.onUniversal != TrueFalseOptional.FALSE }
+            .map { (name) ->
+                requireNotNull(platform.blockPropertiesById[name]) {
+                    "The block property $name was not found in the Universal platform while loading $model"
+                }
+            }.toList(),
+
+
+        blockEntityType = model.usesBlockEntity?.let { (name) ->
+            requireNotNull(platform.blockEntityTypesById[name]) {
+                "The block entity type $name was not found in the Universal platform while loading $model"
+            }
+        },
+
+
+        optionalBlockProperties = model.usesProperties.asSequence()
+            .filter { it.onUniversal == TrueFalseOptional.OPTIONAL }
+            .map(ModelUsesProperty::named)
+            .toSet(),
+
+
+        editionId = enumMapOfNonNullsOrEmpty(
+            model.bedrock?.let { MinecraftEdition.BEDROCK to NamespacedId(it) },
+            model.java?.let { MinecraftEdition.JAVA to NamespacedId(it) }
+        ),
+
+
+        editionBlockProperties = model.usesProperties.asSequence()
+            .filter { it.onBedrock || it.onJava }
+            .flatMap { usesProperty ->
+                val universal = requireNotNull(platform.blockPropertiesById[usesProperty.named]) {
+                    "The block property ${usesProperty.named} was not found in the Universal platform while loading $model"
+                }
+                sequenceOf(
+                    if (usesProperty.onJava) MinecraftEdition.JAVA to universal else null,
+                    if (usesProperty.onBedrock) MinecraftEdition.BEDROCK to universal else null
+                ).filterNotNull()
+            }.toMapOfList(),
+
+
+        editionBlockEntityType = model.usesBlockEntity?.let { uses ->
+            if (uses.onJava || uses.onBedrock) {
+                val universal = checkNotNull(platform.blockEntityTypesById[uses.named])
+                enumMapOfNonNullsOrEmpty(
+                    if (uses.onJava) MinecraftEdition.JAVA to universal else null,
+                    if (uses.onBedrock) MinecraftEdition.BEDROCK to universal else null,
+                )
+            } else null
+        } ?: emptyMap(),
+
+
+        extraBlocks = model.extraBlocks.asSequence()
+            .flatMap { extraBlock ->
+                sequenceOf(MinecraftEdition.JAVA, MinecraftEdition.BEDROCK)
+                    .filter { it in extraBlock.on.minecraftEditions }
+                    .map { it to extraBlock }
+            }.toMapOfList()
+    )
 }

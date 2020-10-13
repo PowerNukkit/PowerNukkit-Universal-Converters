@@ -106,8 +106,8 @@
             <value bedrock="2">west</value>
             <value bedrock="3">north</value>
         </block-property>
-        <block-property id="upper_block" bedrock="upper_block_bit" java="half">
-            <boolean java-false="lower" java-true="upper" />
+        <block-property id="tall_block_half" bedrock="upper_block_bit" java="half">
+            <boolean java-false="lower" java-true="upper"/>
         </block-property>
         <block-property id="door_hinge" bedrock="door_hinge_bit" java="hinge">
             <value bedrock="0">left</value>
@@ -332,7 +332,7 @@
             <value>polished_blackstone</value>
             <value>polished_blackstone_brick</value>
         </block-property>
-        <block-property id="block_half" java="half" bedrock="upside_down_bit">
+        <block-property id="short_block_half" java="half" bedrock="upside_down_bit">
             <boolean java-false="bottom" java-true="top"/>
         </block-property>
         <block-property id="stairs_shape" java="shape" bedrock-requires-adapter="true">
@@ -530,7 +530,7 @@
             
             <uses-property named="door_direction"/>
             <uses-property named="door_hinge"/>
-            <uses-property named="upper_block"/>
+            <uses-property named="tall_block_half"/>
             <uses-property named="open"/>
             <uses-property named="powered"  on-bedrock="false" on-universal="optional" />
 
@@ -820,15 +820,16 @@
             <extra-block on="both" id="dark_prismarine_slab"/>
             <extra-block on="both" id="petrified_oak_slab"/>
         </block-type>
-        
-        <block-type id="stairs" java="oak_stairs" bedrock="oak_stairs" java-requires-adapter="true" bedrock-requires-adapter="true">
+
+        <block-type id="stairs" java="oak_stairs" bedrock="oak_stairs" java-requires-adapter="true"
+                    bedrock-requires-adapter="true">
             <uses-property named="stairs_type" on-java="false" on-bedrock="false"/>
-            
-            <uses-property named="block_half"/>
-            <uses-property named="stairs_direction" />
+
+            <uses-property named="short_block_half"/>
+            <uses-property named="stairs_direction"/>
             <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
             <uses-property named="stairs_shape" on-bedrock="false" on-universal="optional"/>
-            
+
             <extra-block on="both" id="oak_stairs"/>
             <extra-block on="both" id="spruce_stairs"/>
             <extra-block on="both" id="birch_stairs"/>
@@ -874,16 +875,17 @@
             <extra-block on="bedrock" id="prismarine_bricks_stairs"/>
             <extra-block on="java" id="prismarine_brick_stairs"/>
         </block-type>
-        
-        <block-type id="trapdoor" bedrock="oak_trapdoor" java="oak_trapdoor" bedrock-requires-adapter="true" java-requires-adapter="true">
+
+        <block-type id="trapdoor" bedrock="oak_trapdoor" java="oak_trapdoor" bedrock-requires-adapter="true"
+                    java-requires-adapter="true">
             <uses-property named="door_type" on-bedrock="false" on-java="false"/>
-            
-            <uses-property named="block_half"/>
+
+            <uses-property named="short_block_half"/>
             <uses-property named="open"/>
             <uses-property named="trapdoor_direction"/>
             <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
             <uses-property named="powered" on-bedrock="false" on-universal="optional"/>
-            
+
             <extra-block on="both" id="warped_trapdoor"/>
             <extra-block on="both" id="crimson_trapdoor"/>
             <extra-block on="both" id="dark_oak_trapdoor"/>

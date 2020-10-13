@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlAttribute
  */
 @JsonRootName("block-type")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-data class ModelBlockType (
+data class ModelBlockType(
     @XmlAttribute
     val id: String,
 
@@ -50,9 +50,8 @@ data class ModelBlockType (
     @JsonProperty("uses-property")
     val usesProperties: List<ModelUsesProperty> = emptyList(),
 
-    @JacksonXmlElementWrapper(useWrapping = false)
     @JsonProperty("uses-block-entity")
-    val usesBlockEntities: List<ModelUsesBlockEntity> = emptyList(),
+    val usesBlockEntity: ModelUsesBlockEntity?,
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JsonProperty("extra-block")

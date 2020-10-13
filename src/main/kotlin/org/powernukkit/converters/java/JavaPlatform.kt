@@ -19,29 +19,61 @@
 package org.powernukkit.converters.java
 
 import org.powernukkit.converters.api.MinecraftEdition
+import org.powernukkit.converters.api.NamespacedId
 import org.powernukkit.converters.api.Platform
-import org.powernukkit.converters.java.block.JavaBlock
+import org.powernukkit.converters.java.block.JavaBlockEntityType
+import org.powernukkit.converters.java.block.JavaBlockProperty
 import org.powernukkit.converters.java.block.JavaBlockState
 import org.powernukkit.converters.java.block.JavaBlockType
-import org.powernukkit.converters.java.block.JavaStructure
-import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.universal.block.UniversalStructure
+import org.powernukkit.converters.universal.UniversalPlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaPlatform(name: String): Platform<JavaPlatform>(name, MinecraftEdition.JAVA) {
-    override val airBlockType = JavaBlockType(this, "minecraft:air", emptyList())
-    override val airBlockState = JavaBlockState(airBlockType)
-    
-    fun toUniversal(
-        javaStructure: JavaStructure,
-        universalStructure: UniversalStructure,
-        block: JavaBlock,
-        pos: BlockPos,
-        adapted: MutableSet<BlockPos>
-    ) {
-        TODO("Not yet implemented")
+class JavaPlatform(
+    val universal: UniversalPlatform,
+    name: String
+) : Platform<JavaPlatform>(name, MinecraftEdition.JAVA) {
+    //val blockPropertiesByUniversalId =
+    //    checkNotNull(universal.blockPropertiesByEditionId[minecraftEdition]) { "The universal platform is missing block properties definitions for $minecraftEdition" }
+    //        .entries.associate { (id, universalProperty) -> 
+    //            universalProperty.id to JavaBlockProperty(this, id, universalProperty) 
+    //        }
+
+    val blockPropertiesByUniversalId = universal.blockPropertiesById
+        .mapValues { (_, universalProperty) ->
+            JavaBlockProperty(this, universalProperty.getEditionId(minecraftEdition), universalProperty)
+        }
+
+    val blockEntityTypesById =
+        checkNotNull(universal.blockEntityTypesByEditionId[minecraftEdition]) { "The universal platform is missing block entity types definitions for $minecraftEdition" }
+            .mapValues { (id, universalEntityType) ->
+                JavaBlockEntityType(this, id, universalEntityType)
+            }
+
+    val blockTypesById =
+        checkNotNull(universal.blockTypesByEditionId[minecraftEdition]) { "The universal platform is missing block types definitions for $minecraftEdition" }
+            .let { universalTypes ->
+                val mainTypes = universalTypes.mapValues { (id, universalBlockType) ->
+                    JavaBlockType(this, id, universalBlockType)
+                }
+
+                val extraTypes = universalTypes.values.asSequence()
+                    .flatMap { universalType ->
+                        universalType.extraBlocks[minecraftEdition]?.asSequence()
+                            ?.map {
+                                val id = NamespacedId(it.id)
+                                id to JavaBlockType(this, id, universalType, it)
+                            } ?: emptySequence()
+                    }.toMap()
+
+                mainTypes + extraTypes
+            }
+
+    override val airBlockType = checkNotNull(blockTypesById[NamespacedId("air")]) {
+        "The minecraft:air block type is not registered"
     }
+
+    override val airBlockState = JavaBlockState(airBlockType)
 }

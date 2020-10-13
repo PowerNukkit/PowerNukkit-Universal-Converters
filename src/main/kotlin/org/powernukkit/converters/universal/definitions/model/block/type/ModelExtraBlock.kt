@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import org.powernukkit.converters.api.MinecraftEdition
 import javax.xml.bind.annotation.XmlAttribute
 
 /**
@@ -30,27 +31,27 @@ import javax.xml.bind.annotation.XmlAttribute
  */
 @JsonRootName("extra-block")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-data class ModelExtraBlock (
+data class ModelExtraBlock(
     @JsonProperty(required = true)
     @XmlAttribute
     val on: On,
-    
+
     @JsonProperty(required = true)
     @XmlAttribute
     val id: String,
 
     @XmlAttribute(name = "inherit-properties")
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    val inheritProperties: Boolean,
+    val inheritProperties: Boolean = true,
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JsonProperty("uses-property")
     val usesProperties: List<ModelUsesProperty> = emptyList(),
 ) {
-    enum class On {
-        JAVA,
-        BEDROCK,
-        BOTH;
+    enum class On(vararg val minecraftEditions: MinecraftEdition) {
+        JAVA(MinecraftEdition.JAVA),
+        BEDROCK(MinecraftEdition.BEDROCK),
+        BOTH(MinecraftEdition.JAVA, MinecraftEdition.BEDROCK);
 
         override fun toString(): String {
             return name.toLowerCase()

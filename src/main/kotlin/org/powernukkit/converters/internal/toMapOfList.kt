@@ -16,20 +16,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.bedrock.block
-
-import org.powernukkit.converters.api.block.PlatformBlockProperty
-import org.powernukkit.converters.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.bedrock.BedrockPlatform
-import org.powernukkit.converters.universal.block.UniversalBlockProperty
+package org.powernukkit.converters.internal
 
 /**
  * @author joserobjr
- * @since 2020-10-11
+ * @since 2020-10-13
  */
-class BedrockBlockProperty(
-    platform: BedrockPlatform,
-    id: String,
-    override val values: List<PlatformBlockPropertyValue<BedrockPlatform>>,
-    override val universal: UniversalBlockProperty?
-): PlatformBlockProperty<BedrockPlatform>(platform, id)
+fun <K, V> Sequence<Pair<K, V>>.toMapOfList(): Map<K, List<V>> = this
+    .groupBy { it.first }
+    .mapValues { (_, value) ->
+        value.map { it.second }
+    }

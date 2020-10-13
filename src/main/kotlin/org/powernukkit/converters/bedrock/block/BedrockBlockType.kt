@@ -18,8 +18,10 @@
 
 package org.powernukkit.converters.bedrock.block
 
+import org.powernukkit.converters.api.NamespacedId
 import org.powernukkit.converters.api.block.PlatformBlockType
 import org.powernukkit.converters.bedrock.BedrockPlatform
+import org.powernukkit.converters.universal.block.UniversalBlockType
 
 /**
  * @author joserobjr
@@ -27,7 +29,8 @@ import org.powernukkit.converters.bedrock.BedrockPlatform
  */
 class BedrockBlockType(
     platform: BedrockPlatform,
-    id: String,
+    id: NamespacedId,
     override val blockProperties: List<BedrockBlockProperty>,
-    override val blockEntityType: BedrockBlockEntityType? = null
+    override val blockEntityType: BedrockBlockEntityType? = null,
+    override val universalType: UniversalBlockType?
 ) : PlatformBlockType<BedrockPlatform>(platform, id)

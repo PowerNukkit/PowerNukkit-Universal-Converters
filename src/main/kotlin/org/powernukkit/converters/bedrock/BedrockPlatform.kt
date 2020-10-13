@@ -19,6 +19,7 @@
 package org.powernukkit.converters.bedrock
 
 import org.powernukkit.converters.api.MinecraftEdition
+import org.powernukkit.converters.api.NamespacedId
 import org.powernukkit.converters.api.Platform
 import org.powernukkit.converters.bedrock.block.BedrockBlockState
 import org.powernukkit.converters.bedrock.block.BedrockBlockType
@@ -28,6 +29,6 @@ import org.powernukkit.converters.bedrock.block.BedrockBlockType
  * @since 2020-10-11
  */
 class BedrockPlatform(name: String): Platform<BedrockPlatform>(name, MinecraftEdition.BEDROCK) {
-    override val airBlockType = BedrockBlockType(this, "minecraft:air", emptyList())
+    override val airBlockType = BedrockBlockType(this, NamespacedId("air"), emptyList(), null, null)
     override val airBlockState = BedrockBlockState(airBlockType)
 }

@@ -18,8 +18,11 @@
 
 package org.powernukkit.converters.java.block
 
+import org.powernukkit.converters.api.NamespacedId
 import org.powernukkit.converters.api.block.PlatformBlockType
 import org.powernukkit.converters.java.JavaPlatform
+import org.powernukkit.converters.universal.block.UniversalBlockType
+import org.powernukkit.converters.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
  * @author joserobjr
@@ -27,7 +30,44 @@ import org.powernukkit.converters.java.JavaPlatform
  */
 class JavaBlockType(
     platform: JavaPlatform,
-    id: String,
+    id: NamespacedId,
     override val blockProperties: List<JavaBlockProperty>,
-    override val blockEntityType: JavaBlockEntityType? = null
-): PlatformBlockType<JavaPlatform>(platform, id)
+    override val blockEntityType: JavaBlockEntityType? = null,
+    override val universalType: UniversalBlockType?
+) : PlatformBlockType<JavaPlatform>(platform, id) {
+    constructor(
+        platform: JavaPlatform,
+        id: NamespacedId,
+        universalType: UniversalBlockType,
+        extraBlock: ModelExtraBlock? = null
+    ) : this(
+        platform = platform,
+        id = id,
+        universalType = universalType,
+
+        blockProperties = universalType.editionBlockProperties.getOrDefault(platform.minecraftEdition, emptyList())
+            .takeUnless { extraBlock?.inheritProperties == false }
+            .let { inheritance ->
+                val universalProperties = extraBlock?.usesProperties?.map { (name) ->
+                    requireNotNull(platform.universal.blockPropertiesById[name]) {
+                        "Could not find the universal block property $name for the block type $id in $platform"
+                    }
+                } ?: emptyList()
+
+                (inheritance ?: emptyList()) + universalProperties
+            }
+            .map {
+                requireNotNull(platform.blockPropertiesByUniversalId[it.id]) {
+                    val editionId = it.getEditionId(platform.minecraftEdition)
+                    "Could not find the block property $editionId (universal:${it.id}) in the platform ${platform.name}/${platform.minecraftEdition} "
+                }
+            },
+
+        blockEntityType = universalType.editionBlockEntityType[platform.minecraftEdition]?.let {
+            val editionId = it.getEditionId(platform.minecraftEdition)
+            requireNotNull(platform.blockEntityTypesById[editionId]) {
+                "Could not find the block entity type $editionId (universal:${it.id}) in the platform ${platform.name}/${platform.minecraftEdition} "
+            }
+        },
+    )
+}

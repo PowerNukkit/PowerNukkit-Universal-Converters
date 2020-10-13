@@ -26,13 +26,13 @@ import org.powernukkit.converters.universal.block.UniversalBlockProperty
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockProperty<P: Platform<P>>(
+abstract class PlatformBlockProperty<P : Platform<P>>(
     override val platform: P,
-    val id: String
-): PlatformObject<P> {
-    var universal: UniversalBlockProperty? = null
+    val id: String,
+) : PlatformObject<P> {
+    abstract val universal: UniversalBlockProperty?
     abstract val values: List<PlatformBlockPropertyValue<P>>
-    
+
     override fun toString(): String {
         return "${platform.name}BlockProperty(id='$id', values=$values)"
     }

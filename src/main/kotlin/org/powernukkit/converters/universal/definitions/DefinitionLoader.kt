@@ -150,12 +150,4 @@ class DefinitionLoader {
         
         return mutableBlockProperties
     }
-    
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val universalPlatform = DefinitionLoader().loadBuiltin()
-            println(universalPlatform)
-        }
-    }
 }
