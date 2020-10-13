@@ -20,7 +20,7 @@ package org.powernukkit.converters.universal.block
 
 import org.powernukkit.converters.api.MinecraftEdition
 import org.powernukkit.converters.api.block.PlatformBlockEntityType
-import org.powernukkit.converters.internal.enumMapOfNonNullsOrEmpty
+import org.powernukkit.converters.internal.enumMapOf
 import org.powernukkit.converters.universal.UniversalPlatform
 import org.powernukkit.converters.universal.definitions.model.block.entity.ModelBlockEntity
 
@@ -37,9 +37,9 @@ class UniversalBlockEntityType(
 
     constructor(platform: UniversalPlatform, model: ModelBlockEntity) : this(
         platform, model.id,
-        enumMapOfNonNullsOrEmpty(
-            model.bedrock?.let { MinecraftEdition.BEDROCK to it },
-            model.java?.let { MinecraftEdition.JAVA to it }
+        enumMapOf(
+            MinecraftEdition.BEDROCK to model.bedrock,
+            MinecraftEdition.JAVA to model.java
         ),
     )
 

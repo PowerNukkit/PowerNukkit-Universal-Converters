@@ -37,11 +37,11 @@ data class ModelBlockEntity(
 
     @JsonProperty(required = true)
     @XmlAttribute
-    val java: String?,
+    val java: String,
 
     @JsonProperty(required = true)
     @XmlAttribute
-    val bedrock: String?,
+    val bedrock: String,
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JsonProperty("data")
