@@ -27,8 +27,12 @@ import org.powernukkit.converters.math.BlockPos
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaBlock(platform: JavaPlatform, pos: BlockPos) : PlatformBlock<JavaPlatform>(platform, pos) {
-    override val blockLayers = mutableListOf<JavaBlockState>()
-    override val blockEntity: JavaBlockEntity? = null
-    override val entities = mutableListOf<JavaEntity>()
+class JavaBlock(
+    platform: JavaPlatform,
+    pos: BlockPos,
+    val blockState: JavaBlockState,
+    override val blockEntity: JavaBlockEntity? = null,
+    override val entities: List<JavaEntity> = emptyList(),
+) : PlatformBlock<JavaPlatform>(platform, pos) {
+    override val blockLayers get() = listOf(blockState)
 }

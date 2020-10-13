@@ -27,8 +27,13 @@ import org.powernukkit.converters.math.BlockPos
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockBlock(platform: BedrockPlatform, pos: BlockPos) : PlatformBlock<BedrockPlatform>(platform, pos) {
-    override val blockLayers = mutableListOf<BedrockBlockState>()
-    override val blockEntity: BedrockBlockEntity? = null
-    override val entities = mutableListOf<BedrockEntity>()
+class BedrockBlock(
+    platform: BedrockPlatform,
+    pos: BlockPos,
+    mainState: BedrockBlockState,
+    secondaryState: BedrockBlockState = platform.airBlockState,
+    override val blockEntity: BedrockBlockEntity? = null,
+    override val entities: MutableList<BedrockEntity> = mutableListOf(),
+) : PlatformBlock<BedrockPlatform>(platform, pos) {
+    override val blockLayers = listOf(mainState, secondaryState)
 }

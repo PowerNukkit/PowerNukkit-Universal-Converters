@@ -27,7 +27,7 @@ import org.powernukkit.converters.math.BlockPos
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlock<P: Platform>(
+abstract class PlatformBlock<P: Platform<P>>(
     override val platform: P,
     val pos: BlockPos
 ): PlatformObject<P> {

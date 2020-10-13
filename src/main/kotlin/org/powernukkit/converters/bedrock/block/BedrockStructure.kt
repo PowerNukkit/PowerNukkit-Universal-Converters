@@ -20,9 +20,14 @@ package org.powernukkit.converters.bedrock.block
 
 import org.powernukkit.converters.api.block.PlatformStructure
 import org.powernukkit.converters.bedrock.BedrockPlatform
+import org.powernukkit.converters.universal.block.UniversalStructure
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockStructure(platform: BedrockPlatform) : PlatformStructure<BedrockPlatform, BedrockBlock>(platform)
+class BedrockStructure(platform: BedrockPlatform) : PlatformStructure<BedrockPlatform, BedrockBlock>(platform) {
+    override fun toUniversal(): UniversalStructure {
+        TODO("Not yet implemented")
+    }
+}

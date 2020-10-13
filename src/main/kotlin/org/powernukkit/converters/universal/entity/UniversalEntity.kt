@@ -26,4 +26,6 @@ import org.powernukkit.converters.universal.UniversalPlatform
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalEntity(pos: EntityPos): PlatformEntity<UniversalPlatform>(UniversalPlatform, pos)
+class UniversalEntity(
+    pos: EntityPos
+): PlatformEntity<UniversalPlatform>(UniversalPlatform, pos)

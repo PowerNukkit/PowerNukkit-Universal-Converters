@@ -20,9 +20,14 @@ package org.powernukkit.converters.bedrock
 
 import org.powernukkit.converters.api.MinecraftEdition
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.bedrock.block.BedrockBlockState
+import org.powernukkit.converters.bedrock.block.BedrockBlockType
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockPlatform(name: String): Platform(name, MinecraftEdition.BEDROCK)
+class BedrockPlatform(name: String): Platform<BedrockPlatform>(name, MinecraftEdition.BEDROCK) {
+    override val airBlockType = BedrockBlockType(this, "minecraft:air", emptyList())
+    override val airBlockState = BedrockBlockState(airBlockType)
+}

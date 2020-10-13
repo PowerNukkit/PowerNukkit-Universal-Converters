@@ -30,4 +30,7 @@ class UniversalBlockType(
     override val blockProperties: List<UniversalBlockProperty>,
     override val blockEntityType: UniversalBlockEntityType?
 ): PlatformBlockType<UniversalPlatform>(UniversalPlatform, id) {
+    init {
+        universalType = this
+    }
 }

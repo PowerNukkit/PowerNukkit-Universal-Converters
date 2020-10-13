@@ -18,7 +18,13 @@
 
 package org.powernukkit.converters.api
 
-abstract class Platform (
+import org.powernukkit.converters.api.block.PlatformBlockState
+import org.powernukkit.converters.api.block.PlatformBlockType
+
+abstract class Platform<P: Platform<P>> (
     val name: String,
     val minecraftEdition: MinecraftEdition
-)
+) {
+    abstract val airBlockType: PlatformBlockType<P>
+    abstract val airBlockState: PlatformBlockState<P>
+}

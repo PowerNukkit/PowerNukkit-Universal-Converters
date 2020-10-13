@@ -20,12 +20,15 @@ package org.powernukkit.converters.api.block
 
 import org.powernukkit.converters.api.Platform
 import org.powernukkit.converters.api.PlatformObject
+import org.powernukkit.converters.universal.block.UniversalBlockEntityType
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockEntityType<P: Platform>(
+abstract class PlatformBlockEntityType<P: Platform<P>>(
     override val platform: P,
     val id: String
-): PlatformObject<P>
+): PlatformObject<P> {
+    var universalType: UniversalBlockEntityType? = null
+}

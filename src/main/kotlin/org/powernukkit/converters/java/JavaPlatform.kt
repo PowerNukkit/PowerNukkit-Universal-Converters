@@ -20,9 +20,28 @@ package org.powernukkit.converters.java
 
 import org.powernukkit.converters.api.MinecraftEdition
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.java.block.JavaBlock
+import org.powernukkit.converters.java.block.JavaBlockState
+import org.powernukkit.converters.java.block.JavaBlockType
+import org.powernukkit.converters.java.block.JavaStructure
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.universal.block.UniversalStructure
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaPlatform(name: String): Platform(name, MinecraftEdition.JAVA)
+class JavaPlatform(name: String): Platform<JavaPlatform>(name, MinecraftEdition.JAVA) {
+    override val airBlockType = JavaBlockType(this, "minecraft:air", emptyList())
+    override val airBlockState = JavaBlockState(airBlockType)
+    
+    fun toUniversal(
+        javaStructure: JavaStructure,
+        universalStructure: UniversalStructure,
+        block: JavaBlock,
+        pos: BlockPos,
+        adapted: MutableSet<BlockPos>
+    ) {
+        TODO("Not yet implemented")
+    }
+}

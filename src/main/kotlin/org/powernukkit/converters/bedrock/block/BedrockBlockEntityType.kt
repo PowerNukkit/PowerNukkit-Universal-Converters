@@ -25,5 +25,7 @@ import org.powernukkit.converters.bedrock.BedrockPlatform
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockBlockEntityType(platform: BedrockPlatform, id: String)
-    : PlatformBlockEntityType<BedrockPlatform>(platform, id)
+class BedrockBlockEntityType(
+    platform: BedrockPlatform,
+    id: String
+): PlatformBlockEntityType<BedrockPlatform>(platform, id)

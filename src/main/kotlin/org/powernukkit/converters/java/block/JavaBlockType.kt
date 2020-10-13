@@ -29,5 +29,5 @@ class JavaBlockType(
     platform: JavaPlatform,
     id: String,
     override val blockProperties: List<JavaBlockProperty>,
-    override val blockEntityType: JavaBlockEntityType?,
+    override val blockEntityType: JavaBlockEntityType? = null
 ): PlatformBlockType<JavaPlatform>(platform, id)

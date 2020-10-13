@@ -25,4 +25,6 @@ import org.powernukkit.converters.universal.UniversalPlatform
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockState(override val type: UniversalBlockType): PlatformBlockState<UniversalPlatform>()
+class UniversalBlockState(
+    override val type: UniversalBlockType
+): PlatformBlockState<UniversalPlatform>()

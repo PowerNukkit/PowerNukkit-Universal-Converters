@@ -25,4 +25,6 @@ import org.powernukkit.converters.bedrock.BedrockPlatform
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockBlockState(override val type: BedrockBlockType): PlatformBlockState<BedrockPlatform>()
+class BedrockBlockState(
+    override val type: BedrockBlockType
+): PlatformBlockState<BedrockPlatform>()

@@ -20,12 +20,15 @@ package org.powernukkit.converters.api.block
 
 import org.powernukkit.converters.api.Platform
 import org.powernukkit.converters.api.PlatformObject
+import org.powernukkit.converters.universal.block.UniversalBlockProperty
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockProperty<P: Platform>(
+abstract class PlatformBlockProperty<P: Platform<P>>(
     override val platform: P,
     val id: String
-): PlatformObject<P>
+): PlatformObject<P> {
+    var universal: UniversalBlockProperty? = null
+}

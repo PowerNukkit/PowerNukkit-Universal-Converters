@@ -22,6 +22,6 @@ package org.powernukkit.converters.api
  * @author joserobjr
  * @since 2020-10-11
  */
-interface PlatformObject<P: Platform> {
+interface PlatformObject<P: Platform<P>> {
     val platform: P
 }

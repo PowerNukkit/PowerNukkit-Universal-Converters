@@ -25,5 +25,7 @@ import org.powernukkit.converters.bedrock.BedrockPlatform
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockBlockProperty(platform: BedrockPlatform, id: String) :
-    PlatformBlockProperty<BedrockPlatform>(platform, id)
+class BedrockBlockProperty(
+    platform: BedrockPlatform,
+    id: String
+): PlatformBlockProperty<BedrockPlatform>(platform, id)

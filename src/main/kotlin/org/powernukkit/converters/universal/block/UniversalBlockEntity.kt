@@ -19,10 +19,14 @@
 package org.powernukkit.converters.universal.block
 
 import org.powernukkit.converters.api.block.PlatformBlockEntity
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.universal.UniversalPlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockEntity(override val type: UniversalBlockEntityType): PlatformBlockEntity<UniversalPlatform>()
+class UniversalBlockEntity(
+    override val type: UniversalBlockEntityType,
+    pos: BlockPos
+): PlatformBlockEntity<UniversalPlatform>(pos)

@@ -26,4 +26,7 @@ import org.powernukkit.converters.math.EntityPos
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaEntity(platform: JavaPlatform, pos: EntityPos) : PlatformEntity<JavaPlatform>(platform, pos)
+class JavaEntity(
+    platform: JavaPlatform,
+    pos: EntityPos
+) : PlatformEntity<JavaPlatform>(platform, pos)

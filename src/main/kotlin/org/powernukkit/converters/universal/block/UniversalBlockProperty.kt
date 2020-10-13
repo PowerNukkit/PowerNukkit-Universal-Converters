@@ -25,5 +25,11 @@ import org.powernukkit.converters.universal.UniversalPlatform
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlockProperty(id: String): PlatformBlockProperty<UniversalPlatform>(UniversalPlatform, id)
+class UniversalBlockProperty(
+    id: String
+): PlatformBlockProperty<UniversalPlatform>(UniversalPlatform, id) {
+    init {
+        universal = this
+    }
+}
 

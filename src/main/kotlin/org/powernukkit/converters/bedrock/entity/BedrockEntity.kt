@@ -26,4 +26,7 @@ import org.powernukkit.converters.math.EntityPos
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockEntity(platform: BedrockPlatform, pos: EntityPos) : PlatformEntity<BedrockPlatform>(platform, pos)
+class BedrockEntity(
+    platform: BedrockPlatform,
+    pos: EntityPos
+) : PlatformEntity<BedrockPlatform>(platform, pos)

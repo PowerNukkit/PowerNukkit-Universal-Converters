@@ -27,8 +27,9 @@ import org.powernukkit.converters.universal.entity.UniversalEntity
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalBlock(pos: BlockPos): PlatformBlock<UniversalPlatform>(UniversalPlatform, pos) {
-    override val blockLayers = mutableListOf<UniversalBlockState>()
-    override var blockEntity: UniversalBlockEntity? = null
-    override val entities = mutableListOf<UniversalEntity>()
-}
+class UniversalBlock(
+    pos: BlockPos,
+    override val blockLayers: List<UniversalBlockState>, 
+    override var blockEntity: UniversalBlockEntity? = null,
+    override val entities: List<UniversalEntity> = emptyList()
+): PlatformBlock<UniversalPlatform>(UniversalPlatform, pos)

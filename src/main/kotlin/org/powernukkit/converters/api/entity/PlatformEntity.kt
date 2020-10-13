@@ -26,7 +26,7 @@ import org.powernukkit.converters.math.EntityPos
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformEntity<P: Platform>(
+abstract class PlatformEntity<P: Platform<P>>(
     override val platform: P,
     val pos: EntityPos
 ): PlatformObject<P>

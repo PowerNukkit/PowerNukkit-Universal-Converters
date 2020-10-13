@@ -25,4 +25,7 @@ import org.powernukkit.converters.java.JavaPlatform
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaBlockEntityType(platform: JavaPlatform, id: String) : PlatformBlockEntityType<JavaPlatform>(platform, id)
+class JavaBlockEntityType(
+    platform: JavaPlatform,
+    id: String
+) : PlatformBlockEntityType<JavaPlatform>(platform, id)

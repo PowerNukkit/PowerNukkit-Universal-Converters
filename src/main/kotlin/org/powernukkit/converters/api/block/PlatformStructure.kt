@@ -21,9 +21,12 @@ package org.powernukkit.converters.api.block
 import org.powernukkit.converters.api.Platform
 import org.powernukkit.converters.api.PlatformObject
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.universal.block.UniversalStructure
 
-abstract class PlatformStructure<P: Platform, B: PlatformBlock<P>>(
+abstract class PlatformStructure<P: Platform<P>, B: PlatformBlock<P>>(
     override val platform: P
 ): PlatformObject<P> {
     val blocks = mutableMapOf<BlockPos, B>()
+    
+    abstract fun toUniversal(): UniversalStructure
 }

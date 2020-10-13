@@ -25,4 +25,7 @@ import org.powernukkit.converters.java.JavaPlatform
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaBlockProperty(platform: JavaPlatform, id: String): PlatformBlockProperty<JavaPlatform>(platform, id)
+class JavaBlockProperty(
+    platform: JavaPlatform,
+    id: String
+): PlatformBlockProperty<JavaPlatform>(platform, id)

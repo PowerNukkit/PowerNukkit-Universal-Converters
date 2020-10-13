@@ -20,11 +20,19 @@ package org.powernukkit.converters.universal
 
 import org.powernukkit.converters.api.MinecraftEdition
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.universal.block.UniversalBlockState
+import org.powernukkit.converters.universal.block.UniversalBlockType
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-object UniversalPlatform: Platform("Intermediary (Universal)", MinecraftEdition.UNIVERSAL) {
+object UniversalPlatform: Platform<UniversalPlatform>("Intermediary (Universal)", MinecraftEdition.UNIVERSAL) {
+    private val blockTypesById = mutableMapOf<String, UniversalBlockType>()
     
+    override val airBlockType: UniversalBlockType
+        get() = checkNotNull(blockTypesById["air"]) { "The minecraft:air block type is not registered" }
+
+    override val airBlockState: UniversalBlockState
+        get() = UniversalBlockState(airBlockType)
 }

@@ -25,4 +25,6 @@ import org.powernukkit.converters.java.JavaPlatform
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaBlockState(override val type: JavaBlockType): PlatformBlockState<JavaPlatform>()
+class JavaBlockState(
+    override val type: JavaBlockType
+): PlatformBlockState<JavaPlatform>()

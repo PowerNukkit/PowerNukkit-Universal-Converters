@@ -20,9 +20,13 @@ package org.powernukkit.converters.bedrock.block
 
 import org.powernukkit.converters.api.block.PlatformBlockEntity
 import org.powernukkit.converters.bedrock.BedrockPlatform
+import org.powernukkit.converters.math.BlockPos
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockBlockEntity(override val type: BedrockBlockEntityType): PlatformBlockEntity<BedrockPlatform>()
+class BedrockBlockEntity(
+    override val type: BedrockBlockEntityType,
+    pos: BlockPos
+): PlatformBlockEntity<BedrockPlatform>(pos)

@@ -20,12 +20,15 @@ package org.powernukkit.converters.api.block
 
 import org.powernukkit.converters.api.Platform
 import org.powernukkit.converters.api.PlatformObject
+import org.powernukkit.converters.math.BlockPos
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockEntity<P: Platform>: PlatformObject<P> {
+abstract class PlatformBlockEntity<P: Platform<P>>(
+    val pos: BlockPos
+): PlatformObject<P> {
     abstract val type: PlatformBlockEntityType<P>
     override val platform get() = type.platform
 }
