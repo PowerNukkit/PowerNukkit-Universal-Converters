@@ -31,4 +31,9 @@ abstract class PlatformBlockProperty<P: Platform<P>>(
     val id: String
 ): PlatformObject<P> {
     var universal: UniversalBlockProperty? = null
+    abstract val values: List<PlatformBlockPropertyValue<P>>
+    
+    override fun toString(): String {
+        return "${platform.name}BlockProperty(id='$id', values=$values)"
+    }
 }

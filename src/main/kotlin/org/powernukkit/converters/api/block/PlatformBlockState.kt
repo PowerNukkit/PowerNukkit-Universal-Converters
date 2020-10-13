@@ -28,4 +28,8 @@ import org.powernukkit.converters.api.PlatformObject
 abstract class PlatformBlockState<P: Platform<P>>: PlatformObject<P> {
     abstract val type: PlatformBlockType<P>
     override val platform: P get() = type.platform
+    
+    override fun toString(): String {
+        return "${platform.name}BlockState(type=$type)"
+    }
 }

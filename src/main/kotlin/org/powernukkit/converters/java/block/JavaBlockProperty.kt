@@ -19,6 +19,7 @@
 package org.powernukkit.converters.java.block
 
 import org.powernukkit.converters.api.block.PlatformBlockProperty
+import org.powernukkit.converters.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.java.JavaPlatform
 
 /**
@@ -27,5 +28,6 @@ import org.powernukkit.converters.java.JavaPlatform
  */
 class JavaBlockProperty(
     platform: JavaPlatform,
-    id: String
+    id: String,
+    override val values: List<PlatformBlockPropertyValue<JavaPlatform>>
 ): PlatformBlockProperty<JavaPlatform>(platform, id)

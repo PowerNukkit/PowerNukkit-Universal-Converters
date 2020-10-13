@@ -31,4 +31,8 @@ abstract class PlatformBlockEntityType<P: Platform<P>>(
     val id: String
 ): PlatformObject<P> {
     var universalType: UniversalBlockEntityType? = null
+    
+    override fun toString(): String {
+        return "${platform.name}BlockEntityType(id='$id')"
+    }
 }

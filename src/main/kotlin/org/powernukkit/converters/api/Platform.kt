@@ -27,4 +27,8 @@ abstract class Platform<P: Platform<P>> (
 ) {
     abstract val airBlockType: PlatformBlockType<P>
     abstract val airBlockState: PlatformBlockState<P>
+    
+    override fun toString(): String {
+        return "Platform(name='$name', minecraftEdition=$minecraftEdition)"
+    }
 }

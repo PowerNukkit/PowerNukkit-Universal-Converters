@@ -31,4 +31,7 @@ abstract class PlatformBlockEntity<P: Platform<P>>(
 ): PlatformObject<P> {
     abstract val type: PlatformBlockEntityType<P>
     override val platform get() = type.platform
+    override fun toString(): String {
+        return "${platform.name}BlockEntity(pos=$pos, type=$type)"
+    }
 }

@@ -50,6 +50,16 @@ class ModelDefinitions {
     @set:JacksonXmlProperty(localName = "block-type")
     var blockTypes: List<ModelBlockType> by InitOnceDelegator(emptyList())
     
+    fun copy(
+        blockProperties: List<ModelBlockProperty> = this.blockProperties, 
+        blockEntities: List<ModelBlockEntity> = this.blockEntities,
+        blockTypes: List<ModelBlockType> = this.blockTypes
+    ) = ModelDefinitions().also { 
+        it.blockProperties = blockProperties
+        it.blockEntities = blockEntities
+        it.blockTypes = blockTypes
+    }
+    
     override fun toString(): String {
         return "ModelUniversalBlocks(blockProperties=$blockProperties, blockEntities=$blockEntities, blockTypes=)"
     }

@@ -26,10 +26,11 @@ import org.powernukkit.converters.universal.UniversalPlatform
  * @since 2020-10-09
  */
 class UniversalBlockType(
+    platform: UniversalPlatform,
     id: String,
     override val blockProperties: List<UniversalBlockProperty>,
     override val blockEntityType: UniversalBlockEntityType?
-): PlatformBlockType<UniversalPlatform>(UniversalPlatform, id) {
+): PlatformBlockType<UniversalPlatform>(platform, id) {
     init {
         universalType = this
     }

@@ -18,18 +18,42 @@
 
 package org.powernukkit.converters.universal.block
 
+import org.powernukkit.converters.api.MinecraftEdition
 import org.powernukkit.converters.api.block.PlatformBlockProperty
+import org.powernukkit.converters.internal.enumMapOfNonNullsOrEmpty
+import org.powernukkit.converters.internal.enumSetOfNonNullsOrEmpty
 import org.powernukkit.converters.universal.UniversalPlatform
+import org.powernukkit.converters.universal.definitions.model.block.property.ModelBlockProperty
 
 /**
  * @author joserobjr
  * @since 2020-10-10
  */
 class UniversalBlockProperty(
-    id: String
-): PlatformBlockProperty<UniversalPlatform>(UniversalPlatform, id) {
+    platform: UniversalPlatform,
+    id: String,
+    val editionId: Map<MinecraftEdition, String> = emptyMap(),
+    val editionRequiresAdapter: Set<MinecraftEdition> = emptySet(),
+    override val values: List<UniversalBlockPropertyValue>
+) : PlatformBlockProperty<UniversalPlatform>(platform, id) {
+    constructor(platform: UniversalPlatform, model: ModelBlockProperty) : this(platform, model.id,
+        enumMapOfNonNullsOrEmpty(
+            model.bedrock?.let { MinecraftEdition.BEDROCK to it },
+            model.java?.let { MinecraftEdition.JAVA to it }
+        ),
+        enumSetOfNonNullsOrEmpty(
+            if(model.javaRequiresAdapter) MinecraftEdition.JAVA else null, 
+            if(model.bedrockRequiresAdapter) MinecraftEdition.BEDROCK else null 
+        ),
+        when {
+            model.booleanValue != null -> UniversalBlockPropertyValue.createList(platform, model.booleanValue)
+            model.intRangeValue != null -> UniversalBlockPropertyValue.createList(platform, model.intRangeValue)
+            model.values != null -> UniversalBlockPropertyValue.createList(platform, model.values)
+            else -> error("The model don't have values: $model")
+        }
+    )
+
     init {
         universal = this
     }
 }
-

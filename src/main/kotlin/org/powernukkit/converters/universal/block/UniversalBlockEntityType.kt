@@ -26,8 +26,9 @@ import org.powernukkit.converters.universal.UniversalPlatform
  * @since 2020-10-10
  */
 class UniversalBlockEntityType(
+    platform: UniversalPlatform,
     id: String
-): PlatformBlockEntityType<UniversalPlatform>(UniversalPlatform, id) {
+): PlatformBlockEntityType<UniversalPlatform>(platform, id) {
     init {
         universalType = this
     }

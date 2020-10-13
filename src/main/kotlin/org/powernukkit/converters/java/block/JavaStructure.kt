@@ -28,16 +28,4 @@ import org.powernukkit.converters.universal.block.UniversalStructure
  * @since 2020-10-11
  */
 class JavaStructure(platform: JavaPlatform) : PlatformStructure<JavaPlatform, JavaBlock>(platform) {
-    override fun toUniversal(): UniversalStructure {
-        val adapted = mutableSetOf<BlockPos>()
-        val universal = UniversalStructure()
-        
-        blocks.forEach { (pos, block) ->
-            if (pos !in adapted) {
-                platform.toUniversal(this, universal, block, pos, adapted)
-            }
-        }
-        
-        return universal
-    }
 }

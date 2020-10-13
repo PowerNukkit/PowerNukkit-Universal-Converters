@@ -33,4 +33,8 @@ abstract class PlatformBlockType<P: Platform<P>>(
     abstract val blockProperties: List<PlatformBlockProperty<P>>
     abstract val blockEntityType: PlatformBlockEntityType<P>?
     var universalType: UniversalBlockType? = null
+    
+    override fun toString(): String {
+        return "${platform.name}BlockType(id='$id', blockProperties=$blockProperties, blockEntityType=$blockEntityType)"
+    }
 }

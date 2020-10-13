@@ -34,4 +34,7 @@ abstract class PlatformBlock<P: Platform<P>>(
     protected abstract val blockLayers: List<PlatformBlockState<P>>
     protected abstract val blockEntity: PlatformBlockEntity<P>?
     protected abstract val entities: List<PlatformEntity<P>>
+    override fun toString(): String {
+        return "${platform.name}Block(pos=$pos, blockLayers=$blockLayers, blockEntity=$blockEntity, entities=$entities)"
+    }
 }

@@ -25,11 +25,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.powernukkit.converters.universal.UniversalPlatform
 import org.powernukkit.converters.universal.definitions.model.ModelDefinitions
-import org.powernukkit.converters.universal.definitions.model.block.entity.ModelBlockEntity
 import org.powernukkit.converters.universal.definitions.model.block.property.ModelBlockProperty
 import org.powernukkit.converters.universal.definitions.model.block.property.ModelValue
-import org.powernukkit.converters.universal.definitions.model.block.type.ModelBlockType
 import java.io.IOException
 import java.io.InputStream
 
@@ -38,10 +37,6 @@ import java.io.InputStream
  * @since 2020-10-11
  */
 class DefinitionLoader {
-    private var blockPropertiesById = mapOf<String, ModelBlockProperty>()
-    private var blockEntitiesById = mapOf<String, ModelBlockEntity>()
-    private var blockTypesById = mapOf<String, ModelBlockType>()
-    
     private fun createMapper() = XmlMapper.builder()
         .addModule(KotlinModule())
         .addModule(JaxbAnnotationModule())
@@ -63,21 +58,15 @@ class DefinitionLoader {
 
     fun loadBuiltin() = load(DefinitionLoader::class.java.getResourceAsStream("universal-blocks.xml").use(this::parseXml))
     
-    fun loadDefinitions(model: ModelDefinitions) {
-        blockPropertiesById = model.blockProperties.associateBy(ModelBlockProperty::id)
-        blockEntitiesById = model.blockEntities.associateBy(ModelBlockEntity::id)
-        blockTypesById = model.blockTypes.associateBy(ModelBlockType::id)
-    }
+    fun load(model: ModelDefinitions) = UniversalPlatform(process(model))
     
-    fun load(model: ModelDefinitions) {
-        loadDefinitions(model)
-        processCopyValues()
-    }
-     
-    fun processCopyValues() {
+    private fun process(model: ModelDefinitions) = model.copy(
+        blockProperties = processCopyValues(model).values.toList()
+    )
+    
+    private fun processCopyValues(model: ModelDefinitions): MutableMap<String, ModelBlockProperty> {
         val loopBreaker = mutableMapOf<String, Int>()
-
-        val mutableBlockProperties = blockPropertiesById.toMutableMap()
+        val mutableBlockProperties = model.blockProperties.associateByTo(mutableMapOf(), ModelBlockProperty::id)
         val copyValuesQueue = mutableBlockProperties.values.filterNotTo(ArrayDeque()) { it.copyValues.isNullOrEmpty() }
         
         queue@
@@ -159,13 +148,14 @@ class DefinitionLoader {
             mutableBlockProperties[blockProperty.id] = blockProperty.copy(copyValues = emptyList(), values = valuesMap.values.toList())
         }
         
-        blockPropertiesById = mutableBlockProperties
+        return mutableBlockProperties
     }
     
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            DefinitionLoader().loadBuiltin()
+            val universalPlatform = DefinitionLoader().loadBuiltin()
+            println(universalPlatform)
         }
     }
 }

@@ -25,6 +25,6 @@ import org.powernukkit.converters.universal.UniversalPlatform
  * @author joserobjr
  * @since 2020-10-10
  */
-class UniversalStructure: PlatformStructure<UniversalPlatform, UniversalBlock>(UniversalPlatform) {
-    override fun toUniversal() = this
-}
+class UniversalStructure(
+    platform: UniversalPlatform
+): PlatformStructure<UniversalPlatform, UniversalBlock>(platform)

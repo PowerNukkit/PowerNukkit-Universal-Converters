@@ -20,14 +20,22 @@ package org.powernukkit.converters.universal
 
 import org.powernukkit.converters.api.MinecraftEdition
 import org.powernukkit.converters.api.Platform
+import org.powernukkit.converters.universal.block.UniversalBlockProperty
 import org.powernukkit.converters.universal.block.UniversalBlockState
 import org.powernukkit.converters.universal.block.UniversalBlockType
+import org.powernukkit.converters.universal.definitions.model.ModelDefinitions
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-object UniversalPlatform: Platform<UniversalPlatform>("Intermediary (Universal)", MinecraftEdition.UNIVERSAL) {
+class UniversalPlatform internal constructor(
+    definitions: ModelDefinitions
+): Platform<UniversalPlatform>("Intermediary", MinecraftEdition.UNIVERSAL) {
+    private val blockPropertiesById = definitions.blockProperties
+        .map { UniversalBlockProperty(this, it) }
+        .associateByTo(mutableMapOf(), UniversalBlockProperty::id)
+    
     private val blockTypesById = mutableMapOf<String, UniversalBlockType>()
     
     override val airBlockType: UniversalBlockType
@@ -35,4 +43,8 @@ object UniversalPlatform: Platform<UniversalPlatform>("Intermediary (Universal)"
 
     override val airBlockState: UniversalBlockState
         get() = UniversalBlockState(airBlockType)
+
+    override fun toString(): String {
+        return "UniversalPlatform(name='$name', minecraftEdition=$minecraftEdition, blockPropertiesById=$blockPropertiesById, blockTypesById=$blockTypesById)"
+    }
 }

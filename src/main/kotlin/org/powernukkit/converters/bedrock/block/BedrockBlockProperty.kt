@@ -19,6 +19,7 @@
 package org.powernukkit.converters.bedrock.block
 
 import org.powernukkit.converters.api.block.PlatformBlockProperty
+import org.powernukkit.converters.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.bedrock.BedrockPlatform
 
 /**
@@ -27,5 +28,6 @@ import org.powernukkit.converters.bedrock.BedrockPlatform
  */
 class BedrockBlockProperty(
     platform: BedrockPlatform,
-    id: String
+    id: String,
+    override val values: List<PlatformBlockPropertyValue<BedrockPlatform>>
 ): PlatformBlockProperty<BedrockPlatform>(platform, id)
