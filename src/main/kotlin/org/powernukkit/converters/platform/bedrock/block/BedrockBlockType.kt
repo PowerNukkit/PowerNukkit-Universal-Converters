@@ -34,7 +34,7 @@ class BedrockBlockType : BaseBlockType<
     constructor(
         platform: BedrockPlatform,
         id: NamespacedId,
-        blockProperties: List<BedrockBlockProperty>,
+        blockProperties: Map<String, BedrockBlockProperty>,
         blockEntityType: BedrockBlockEntityType? = null,
         universalType: UniversalBlockType?
     ) : super(

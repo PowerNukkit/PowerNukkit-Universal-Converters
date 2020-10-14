@@ -29,8 +29,35 @@ abstract class PlatformBlockState<P: Platform<P>>: PlatformObject<P> {
     abstract val type: PlatformBlockType<P>
     override val platform: P get() = type.platform
     abstract val values: Map<String, PlatformBlockPropertyValue<P>>
-    
-    override fun toString(): String {
+
+    open fun getPropertyMap(): Map<out PlatformBlockProperty<P>, PlatformBlockPropertyValue<P>> {
+        val properties = type.blockProperties
+        val values = values
+        check(properties.size == values.size) {
+            "The state property size mismatches the defined block type properties. $this"
+        }
+        return values.mapKeys { (id) -> checkNotNull(properties[id]) { "The state has an unknown property '$id'. $this" } }
+    }
+
+    final override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PlatformBlockState<*>
+
+        if (type != other.type) return false
+        if (values != other.values) return false
+
+        return true
+    }
+
+    final override fun hashCode(): Int {
+        var result = type.hashCode()
+        result = 31 * result + values.hashCode()
+        return result
+    }
+
+    final override fun toString(): String {
         return "${platform.name}BlockState(type=$type, values=$values)"
     }
 }

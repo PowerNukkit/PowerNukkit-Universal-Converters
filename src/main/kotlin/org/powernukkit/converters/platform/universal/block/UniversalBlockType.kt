@@ -36,7 +36,7 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
 class UniversalBlockType(
     platform: UniversalPlatform,
     id: NamespacedId,
-    override val blockProperties: List<UniversalBlockProperty>,
+    override val blockProperties: Map<String, UniversalBlockProperty>,
     override val blockEntityType: UniversalBlockEntityType?,
     val optionalBlockProperties: Set<String>,
 
@@ -47,7 +47,7 @@ class UniversalBlockType(
     val extraBlocks: Map<MinecraftEdition, List<ModelExtraBlock>>
 ) : PlatformBlockType<UniversalPlatform>(platform, id) {
     override fun defaultPropertyValues(): Map<String, UniversalBlockPropertyValue> {
-        return blockProperties.associate { property ->
+        return blockProperties.values.associate { property ->
             val value = property.values.firstOrNull { it.default } ?: (
                     if (property.id in optionalBlockProperties)
                         platform.optionalBlockPropertyValue
@@ -67,7 +67,7 @@ class UniversalBlockType(
                 requireNotNull(platform.blockPropertiesById[name]) {
                     "The block property $name was not found in the Universal platform while loading $model"
                 }
-            }.toList(),
+            }.associateBy(UniversalBlockProperty::id),
 
 
         blockEntityType = model.usesBlockEntity?.let { (name) ->

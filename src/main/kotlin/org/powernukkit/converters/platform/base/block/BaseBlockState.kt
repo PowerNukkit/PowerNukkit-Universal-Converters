@@ -34,4 +34,9 @@ abstract class BaseBlockState<
         >(
     final override val type: BlockType,
     final override val values: Map<String, BlockPropertyValue>
-): PlatformBlockState<P>()
+) : PlatformBlockState<P>() {
+    override fun getPropertyMap(): Map<BlockProperty, BlockPropertyValue> {
+        @Suppress("UNCHECKED_CAST")
+        return super.getPropertyMap() as Map<BlockProperty, BlockPropertyValue>
+    }
+}

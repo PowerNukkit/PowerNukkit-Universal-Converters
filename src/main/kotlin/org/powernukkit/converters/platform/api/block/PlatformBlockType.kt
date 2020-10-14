@@ -27,17 +27,41 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockType
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockType<P: Platform<P>>(
-    override val platform: P,
+abstract class PlatformBlockType<P : Platform<P>>(
+    final override val platform: P,
     val id: NamespacedId
 ): PlatformObject<P> {
-    abstract val blockProperties: List<PlatformBlockProperty<P>>
+    abstract val blockProperties: Map<String, PlatformBlockProperty<P>>
     abstract val blockEntityType: PlatformBlockEntityType<P>?
     abstract val universalType: UniversalBlockType?
 
     abstract fun defaultPropertyValues(): Map<String, PlatformBlockPropertyValue<P>>
 
-    override fun toString(): String {
+    final override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PlatformBlockType<*>
+
+        if (platform != other.platform) return false
+        if (id != other.id) return false
+        if (blockProperties != other.blockProperties) return false
+        if (blockEntityType != other.blockEntityType) return false
+        if (universalType != other.universalType) return false
+
+        return true
+    }
+
+    final override fun hashCode(): Int {
+        var result = platform.hashCode()
+        result = 31 * result + id.hashCode()
+        result = 31 * result + blockProperties.hashCode()
+        result = 31 * result + (blockEntityType?.hashCode() ?: 0)
+        result = 31 * result + (universalType?.hashCode() ?: 0)
+        return result
+    }
+
+    final override fun toString(): String {
         return "${platform.name}BlockType(id='$id', blockProperties=$blockProperties, blockEntityType=$blockEntityType)"
     }
 }

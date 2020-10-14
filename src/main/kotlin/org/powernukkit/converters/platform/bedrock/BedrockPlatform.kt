@@ -46,9 +46,7 @@ class BedrockPlatform(
         id: String,
         universal: UniversalBlockEntityType,
         values: Map<String, BedrockBlockEntityDataType>
-    ): BedrockBlockEntityType {
-        return BedrockBlockEntityType(this, id, universal, values)
-    }
+    ) = BedrockBlockEntityType(this, id, universal, values)
 
     override fun createBlockEntityDataType(universal: UniversalBlockEntityDataType) =
         BedrockBlockEntityDataType(this, universal)
@@ -66,13 +64,11 @@ class BedrockPlatform(
         string: String,
         universalValue: UniversalBlockPropertyValue,
         default: Boolean
-    ) =
-        BedrockBlockPropertyValueString(this, string, universalValue, default)
+    ) = BedrockBlockPropertyValueString(this, string, universalValue, default)
 
     override fun createBlockPropertyValue(
         boolean: Boolean,
         universalValue: UniversalBlockPropertyValue,
         default: Boolean
-    ) =
-        BedrockBlockPropertyValueBoolean(this, boolean, universalValue, default)
+    ) = BedrockBlockPropertyValueBoolean(this, boolean, universalValue, default)
 }

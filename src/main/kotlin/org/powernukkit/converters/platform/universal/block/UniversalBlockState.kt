@@ -28,4 +28,9 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
 class UniversalBlockState(
     override val type: UniversalBlockType,
     override val values: Map<String, UniversalBlockPropertyValue> = type.defaultPropertyValues()
-): PlatformBlockState<UniversalPlatform>()
+) : PlatformBlockState<UniversalPlatform>() {
+    override fun getPropertyMap(): Map<UniversalBlockProperty, UniversalBlockPropertyValue> {
+        @Suppress("UNCHECKED_CAST")
+        return super.getPropertyMap() as Map<UniversalBlockProperty, UniversalBlockPropertyValue>
+    }
+}

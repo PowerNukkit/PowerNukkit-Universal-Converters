@@ -34,7 +34,7 @@ class JavaBlockType : BaseBlockType<
     constructor(
         platform: JavaPlatform,
         id: NamespacedId,
-        blockProperties: List<JavaBlockProperty>,
+        blockProperties: Map<String, JavaBlockProperty>,
         blockEntityType: JavaBlockEntityType? = null,
         universalType: UniversalBlockType?
     ) : super(

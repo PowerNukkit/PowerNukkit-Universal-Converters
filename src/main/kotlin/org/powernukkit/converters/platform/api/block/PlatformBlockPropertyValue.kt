@@ -28,7 +28,23 @@ abstract class PlatformBlockPropertyValue<P : Platform<P>>(
     val platform: P,
     val default: Boolean
 ) : IPlatformBlockPropertyValue {
-    override fun toString(): String {
+    final override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PlatformBlockPropertyValue<*>) return false
+
+        if (platform != other.platform) return false
+        if (stringValue() != other.stringValue()) return false
+
+        return true
+    }
+
+    final override fun hashCode(): Int {
+        var result = platform.hashCode()
+        result = 31 * result + stringValue().hashCode()
+        return result
+    }
+
+    final override fun toString(): String {
         return "${platform.name}BlockPropertyValue(value=${stringValue()})"
     }
 }

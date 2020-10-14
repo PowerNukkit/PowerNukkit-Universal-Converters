@@ -46,8 +46,7 @@ class JavaPlatform(
         id: String,
         universal: UniversalBlockEntityType,
         values: Map<String, JavaBlockEntityDataType>
-    ) =
-        JavaBlockEntityType(this, id, universal, values)
+    ) = JavaBlockEntityType(this, id, universal, values)
 
     override fun createBlockEntityDataType(universal: UniversalBlockEntityDataType) =
         JavaBlockEntityDataType(this, universal)
@@ -65,13 +64,11 @@ class JavaPlatform(
         string: String,
         universalValue: UniversalBlockPropertyValue,
         default: Boolean
-    ) =
-        JavaBlockPropertyValueString(this, string, universalValue, default)
+    ) = JavaBlockPropertyValueString(this, string, universalValue, default)
 
     override fun createBlockPropertyValue(
         boolean: Boolean,
         universalValue: UniversalBlockPropertyValue,
         default: Boolean
-    ) =
-        JavaBlockPropertyValueBoolean(this, boolean, universalValue, default)
+    ) = JavaBlockPropertyValueBoolean(this, boolean, universalValue, default)
 }

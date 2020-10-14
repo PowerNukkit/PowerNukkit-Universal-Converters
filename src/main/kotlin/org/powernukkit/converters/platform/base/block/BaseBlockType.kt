@@ -38,7 +38,7 @@ abstract class BaseBlockType<
         >(
     platform: P,
     id: NamespacedId,
-    final override val blockProperties: List<BlockProperty>,
+    final override val blockProperties: Map<String, BlockProperty>,
     final override val blockEntityType: BlockEntityType? = null,
     final override val universalType: UniversalBlockType?
 ) : PlatformBlockType<P>(platform, id) {
@@ -68,6 +68,9 @@ abstract class BaseBlockType<
                     val editionId = it.getEditionId(platform.minecraftEdition)
                     "Could not find the block property $editionId (universal:${it.id}) in the platform ${platform.name}/${platform.minecraftEdition} "
                 }
+            }
+            .let { list ->
+                list.associateBy { it.id }
             },
 
         blockEntityType = universalType.editionBlockEntityType[platform.minecraftEdition]?.let {
@@ -79,7 +82,7 @@ abstract class BaseBlockType<
     )
 
     override fun defaultPropertyValues(): Map<String, BlockPropertyValue> {
-        return blockProperties.associate { property ->
+        return blockProperties.values.associate { property ->
             val value = property.values.firstOrNull { it.default }
                 ?: property.values.first()
             property.id to value
