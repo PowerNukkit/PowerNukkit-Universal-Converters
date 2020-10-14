@@ -18,20 +18,20 @@
 
 package org.powernukkit.converters.platform.universal.block
 
+import org.powernukkit.converters.platform.api.MinecraftEdition
+import org.powernukkit.converters.platform.api.TechnicalValues
 import org.powernukkit.converters.platform.api.block.IPlatformBlockPropertyValue
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-12
+ * @since 2020-10-14
  */
-class UniversalBlockPropertyValueInt(
-    platform: UniversalPlatform,
-    private val value: Int,
-) : UniversalBlockPropertyValue(platform, emptyMap(), false) {
-    override val type get() = IPlatformBlockPropertyValue.Type.INT
-
-    override fun stringValue() = value.toString()
-    override fun intValue() = value
-    override fun booleanValue() = value == 0
+class UniversalBlockPropertyValueEmptyOpt(
+    platform: UniversalPlatform
+) : UniversalBlockPropertyValue(platform, MinecraftEdition.values().associate { it to TechnicalValues.EMPTY }, false) {
+    override val type = IPlatformBlockPropertyValue.Type.EMPTY_OPTIONAL
+    override fun stringValue() = TechnicalValues.EMPTY
+    override fun intValue() = error("Empty value")
+    override fun booleanValue() = error("Empty value")
 }

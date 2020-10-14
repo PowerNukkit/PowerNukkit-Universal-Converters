@@ -1,28 +1,28 @@
 /*
  * PowerNukkit Universal Worlds & Converters for Minecraft
- *  Copyright (C) 2020  José Roberto de Araújo Júnior
- *  
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Affero General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *  
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Affero General Public License for more details.
- *  
- *  You should have received a copy of the GNU Affero General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2020  José Roberto de Araújo Júnior
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.powernukkit.converters.platform.universal.block
 
+import org.powernukkit.converters.internal.enumMapOfNonNullsOrEmpty
+import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
-import org.powernukkit.converters.internal.enumMapOfNonNullsOrEmpty
-import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.platform.universal.definitions.TrueFalseOptional
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelBlockType
@@ -46,6 +46,18 @@ class UniversalBlockType(
 
     val extraBlocks: Map<MinecraftEdition, List<ModelExtraBlock>>
 ) : PlatformBlockType<UniversalPlatform>(platform, id) {
+    override fun defaultPropertyValues(): Map<String, UniversalBlockPropertyValue> {
+        return blockProperties.associate { property ->
+            val value = property.values.firstOrNull { it.default } ?: (
+                    if (property.id in optionalBlockProperties)
+                        platform.optionalBlockPropertyValue
+                    else
+                        property.values.first()
+                    )
+            property.id to value
+        }
+    }
+
     override val universalType get() = this
 
     constructor(platform: UniversalPlatform, model: ModelBlockType) : this(platform, NamespacedId(model.id),

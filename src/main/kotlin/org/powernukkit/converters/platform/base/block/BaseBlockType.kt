@@ -1,17 +1,17 @@
 /*
  * PowerNukkit Universal Worlds & Converters for Minecraft
  * Copyright (C) 2020  José Roberto de Araújo Júnior
- *   
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *   
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -20,7 +20,7 @@ package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
-import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
+import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
@@ -31,9 +31,10 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @since 2020-10-13
  */
 abstract class BaseBlockType<
-        P : BasePlatform<P, BlockProperty, BlockEntityType, *, *, *, *>,
-        BlockProperty : PlatformBlockProperty<P>,
-        BlockEntityType : PlatformBlockEntityType<P>
+        P : BasePlatform<P, BlockProperty, BlockEntityType, *, *, BlockPropertyValue, *>,
+        BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
+        BlockEntityType : PlatformBlockEntityType<P>,
+        BlockPropertyValue : PlatformBlockPropertyValue<P>
         >(
     platform: P,
     id: NamespacedId,
@@ -76,4 +77,12 @@ abstract class BaseBlockType<
             }
         },
     )
+
+    override fun defaultPropertyValues(): Map<String, BlockPropertyValue> {
+        return blockProperties.associate { property ->
+            val value = property.values.firstOrNull { it.default }
+                ?: property.values.first()
+            property.id to value
+        }
+    }
 }

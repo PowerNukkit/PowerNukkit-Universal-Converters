@@ -1,17 +1,17 @@
 /*
  * PowerNukkit Universal Worlds & Converters for Minecraft
  * Copyright (C) 2020  José Roberto de Araújo Júnior
- *   
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *   
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,8 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockPropertyValue<P: Platform<P>>(
+abstract class BaseBlockPropertyValue<P : Platform<P>>(
     platform: P,
-    val universalValue: UniversalBlockPropertyValue?
-) : PlatformBlockPropertyValue<P>(platform)
+    val universalValue: UniversalBlockPropertyValue?,
+    default: Boolean,
+) : PlatformBlockPropertyValue<P>(platform, default)

@@ -1,17 +1,17 @@
 /*
  * PowerNukkit Universal Worlds & Converters for Minecraft
  * Copyright (C) 2020  José Roberto de Araújo Júnior
- *   
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *   
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -21,7 +21,13 @@ package org.powernukkit.converters.platform.base
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.*
+import org.powernukkit.converters.platform.api.TechnicalValues
+import org.powernukkit.converters.platform.api.block.PlatformBlockEntityDataType
+import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
+import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.base.block.BaseBlockProperty
+import org.powernukkit.converters.platform.base.block.BaseBlockType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
@@ -31,10 +37,10 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @since 2020-10-13
  */
 abstract class BasePlatform<
-        P : Platform<P>,
-        BlockProperty : PlatformBlockProperty<P>,
+        P : BasePlatform<P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue, BlockEntityDataType>,
+        BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
         BlockEntityType : PlatformBlockEntityType<P>,
-        BlockType : PlatformBlockType<P>,
+        BlockType : BaseBlockType<P, BlockProperty, BlockEntityType, BlockPropertyValue>,
         BlockState : PlatformBlockState<P>,
         BlockPropertyValue : PlatformBlockPropertyValue<P>,
         BlockEntityDataType : PlatformBlockEntityDataType<P>,
@@ -54,7 +60,7 @@ abstract class BasePlatform<
             .mapValues { (id, universalEntityType) ->
                 val values = universalEntityType.data.values.asSequence()
                     .map { it.getEditionId(minecraftEdition) to it }
-                    .filterNot { (id) -> id == "_missing_" }
+                    .filterNot { (id) -> id == TechnicalValues.MISSING }
                     .associate { (id, universal) -> id to createBlockEntityDataType(universal) }
 
                 createBlockEntityType(id, universalEntityType, values)
@@ -94,39 +100,47 @@ abstract class BasePlatform<
     ): BlockEntityType
 
     protected abstract fun createBlockEntityDataType(universal: UniversalBlockEntityDataType): BlockEntityDataType
+
     protected abstract fun createBlockType(
         id: NamespacedId,
         universal: UniversalBlockType,
         extra: ModelExtraBlock? = null
     ): BlockType
 
-    protected abstract fun createBlockState(blockType: BlockType): BlockState
+    protected open fun createBlockState(blockType: BlockType): BlockState {
+        return createBlockState(blockType, blockType.defaultPropertyValues())
+    }
+
+    protected abstract fun createBlockState(blockType: BlockType, values: Map<String, BlockPropertyValue>): BlockState
 
     protected abstract fun createBlockPropertyValue(
         int: Int,
-        universalValue: UniversalBlockPropertyValue
+        universalValue: UniversalBlockPropertyValue,
+        default: Boolean,
     ): BlockPropertyValue
 
     protected abstract fun createBlockPropertyValue(
         string: String,
-        universalValue: UniversalBlockPropertyValue
+        universalValue: UniversalBlockPropertyValue,
+        default: Boolean,
     ): BlockPropertyValue
 
     protected abstract fun createBlockPropertyValue(
         boolean: Boolean,
-        universalValue: UniversalBlockPropertyValue
+        universalValue: UniversalBlockPropertyValue,
+        default: Boolean,
     ): BlockPropertyValue
 
     protected open fun createBlockPropertyValue(universalValue: UniversalBlockPropertyValue): BlockPropertyValue {
         val value = universalValue.getEditionValue(minecraftEdition)
         val int = value.toIntOrNull()
         if (int != null) {
-            return createBlockPropertyValue(int, universalValue)
+            return createBlockPropertyValue(int, universalValue, universalValue.default)
         }
         if (value == "true" || value == "false") {
-            return createBlockPropertyValue(value.toBoolean(), universalValue)
+            return createBlockPropertyValue(value.toBoolean(), universalValue, universalValue.default)
         }
-        return createBlockPropertyValue(value, universalValue)
+        return createBlockPropertyValue(value, universalValue, universalValue.default)
     }
     
     internal fun createBlockPropertyValueList(universal: UniversalBlockProperty): List<BlockPropertyValue> {
