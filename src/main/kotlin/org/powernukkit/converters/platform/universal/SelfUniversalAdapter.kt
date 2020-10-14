@@ -16,28 +16,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters
+package org.powernukkit.converters.platform.universal
 
-import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.java.JavaPlatform
-import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
+import org.powernukkit.converters.platform.api.PlatformObject
+import org.powernukkit.converters.platform.api.UniversalAdapter
 
 /**
- * Executes the world conversion from the system's command line.
- *
  * @author joserobjr
- * @since 2020-10-09
+ * @since 2020-10-11
  */
-object WorldConverterCLI {
-    /**
-     * The entry point of the command line interface.
-     * @param args The arguments that was given in the command line.
-     */
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val universalPlatform = DefinitionLoader().loadBuiltin()
-        val javaPlatform = JavaPlatform(universalPlatform, "Java")
-        println(javaPlatform.blockTypesById[NamespacedId("jungle_door")])
-        println(universalPlatform.blockTypesById[NamespacedId("door")])
+object SelfUniversalAdapter: UniversalAdapter<PlatformObject<UniversalPlatform>, PlatformObject<UniversalPlatform>> {
+    
+    fun <O: PlatformObject<UniversalPlatform>> get(): UniversalAdapter<O, O> {
+        @Suppress("UNCHECKED_CAST")
+        return this as UniversalAdapter<O, O>
+    }
+    
+    override fun toUniversal(platformObject: PlatformObject<UniversalPlatform>): PlatformObject<UniversalPlatform> {
+        return platformObject
+    }
+
+    override fun toPlatform(universalObject: PlatformObject<UniversalPlatform>): PlatformObject<UniversalPlatform> {
+        return universalObject
     }
 }

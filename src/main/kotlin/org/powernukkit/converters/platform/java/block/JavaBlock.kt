@@ -16,28 +16,23 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters
+package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.java.JavaPlatform
-import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
+import org.powernukkit.converters.platform.java.entity.JavaEntity
+import org.powernukkit.converters.math.BlockPos
 
 /**
- * Executes the world conversion from the system's command line.
- *
  * @author joserobjr
- * @since 2020-10-09
+ * @since 2020-10-11
  */
-object WorldConverterCLI {
-    /**
-     * The entry point of the command line interface.
-     * @param args The arguments that was given in the command line.
-     */
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val universalPlatform = DefinitionLoader().loadBuiltin()
-        val javaPlatform = JavaPlatform(universalPlatform, "Java")
-        println(javaPlatform.blockTypesById[NamespacedId("jungle_door")])
-        println(universalPlatform.blockTypesById[NamespacedId("door")])
-    }
+class JavaBlock(
+    platform: JavaPlatform,
+    pos: BlockPos,
+    val blockState: JavaBlockState,
+    override val blockEntity: JavaBlockEntity? = null,
+    override val entities: List<JavaEntity> = emptyList(),
+) : PlatformBlock<JavaPlatform>(platform, pos) {
+    override val blockLayers get() = listOf(blockState)
 }

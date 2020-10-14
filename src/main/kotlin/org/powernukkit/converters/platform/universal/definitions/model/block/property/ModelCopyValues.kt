@@ -16,28 +16,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters
+package org.powernukkit.converters.platform.universal.definitions.model.block.property
 
-import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.java.JavaPlatform
-import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
+import com.fasterxml.jackson.annotation.JsonInclude
+import javax.xml.bind.annotation.XmlAttribute
+import javax.xml.bind.annotation.XmlIDREF
+import javax.xml.bind.annotation.XmlRootElement
 
 /**
- * Executes the world conversion from the system's command line.
- *
  * @author joserobjr
- * @since 2020-10-09
+ * @since 2020-10-12
  */
-object WorldConverterCLI {
-    /**
-     * The entry point of the command line interface.
-     * @param args The arguments that was given in the command line.
-     */
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val universalPlatform = DefinitionLoader().loadBuiltin()
-        val javaPlatform = JavaPlatform(universalPlatform, "Java")
-        println(javaPlatform.blockTypesById[NamespacedId("jungle_door")])
-        println(universalPlatform.blockTypesById[NamespacedId("door")])
-    }
-}
+@XmlRootElement(name = "copy-values")
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+data class ModelCopyValues(
+    @XmlAttribute
+    @XmlIDREF
+    val from: String
+)

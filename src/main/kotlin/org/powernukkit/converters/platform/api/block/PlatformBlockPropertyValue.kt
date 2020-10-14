@@ -16,28 +16,38 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters
+package org.powernukkit.converters.platform.api.block
 
-import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.java.JavaPlatform
-import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
+import org.powernukkit.converters.platform.api.Platform
 
 /**
- * Executes the world conversion from the system's command line.
- *
  * @author joserobjr
- * @since 2020-10-09
+ * @since 2020-10-12
  */
-object WorldConverterCLI {
+abstract class PlatformBlockPropertyValue<P: Platform<P>>(
+    val platform: P
+) {
+    abstract val type: Type
+
+    abstract fun stringValue(): String
+    open fun intValue() = stringValue().toInt()
+    open fun booleanValue() = when (val value = stringValue()) {
+        "0" -> false
+        "1" -> true
+        else -> value.equals("true", true)
+    }
+
+    override fun toString(): String {
+        return "${platform.name}BlockPropertyValue(value=${stringValue()})"
+    }
+
     /**
-     * The entry point of the command line interface.
-     * @param args The arguments that was given in the command line.
+     * @author joserobjr
+     * @since 2020-10-13
      */
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val universalPlatform = DefinitionLoader().loadBuiltin()
-        val javaPlatform = JavaPlatform(universalPlatform, "Java")
-        println(javaPlatform.blockTypesById[NamespacedId("jungle_door")])
-        println(universalPlatform.blockTypesById[NamespacedId("door")])
+    enum class Type {
+        STRING,
+        INT,
+        BOOLEAN
     }
 }
