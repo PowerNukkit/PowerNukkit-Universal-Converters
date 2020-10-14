@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.java.block
 
+import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValueString
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
@@ -27,10 +28,6 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  */
 class JavaBlockPropertyValueString(
     platform: JavaPlatform,
-    val value: String,
+    override val value: String,
     universalValue: UniversalBlockPropertyValue?
-) : JavaBlockPropertyValue(platform, universalValue) {
-    override val type get() = Type.STRING
-
-    override fun stringValue() = value
-}
+) : JavaBlockPropertyValue(platform, universalValue), BaseBlockPropertyValueString

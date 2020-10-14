@@ -18,12 +18,13 @@
 
 package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.base.block.BaseStructure
 import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaStructure(platform: JavaPlatform) : PlatformStructure<JavaPlatform, JavaBlock>(platform) {
-}
+class JavaStructure(
+    platform: JavaPlatform
+) : BaseStructure<JavaPlatform, JavaBlock>(platform)

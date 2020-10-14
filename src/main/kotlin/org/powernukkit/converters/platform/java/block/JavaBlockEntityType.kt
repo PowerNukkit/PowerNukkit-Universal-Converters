@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
 
@@ -29,5 +29,5 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityT
 class JavaBlockEntityType(
     platform: JavaPlatform,
     id: String,
-    override val universalType: UniversalBlockEntityType?
-) : PlatformBlockEntityType<JavaPlatform>(platform, id)
+    universalType: UniversalBlockEntityType?
+) : BaseBlockEntityType<JavaPlatform>(platform, id, universalType)

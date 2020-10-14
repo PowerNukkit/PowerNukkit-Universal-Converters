@@ -18,9 +18,8 @@
 
 package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValue
 import org.powernukkit.converters.platform.java.JavaPlatform
-import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
 /**
@@ -29,25 +28,5 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  */
 abstract class JavaBlockPropertyValue(
     platform: JavaPlatform,
-    val universalValue: UniversalBlockPropertyValue?
-) : PlatformBlockPropertyValue<JavaPlatform>(platform) {
-    companion object {
-        fun createList(platform: JavaPlatform, universal: UniversalBlockProperty): List<JavaBlockPropertyValue> {
-            return universal.values.map { value ->
-                createValue(platform, value)
-            }
-        }
-
-        fun createValue(platform: JavaPlatform, universalValue: UniversalBlockPropertyValue): JavaBlockPropertyValue {
-            val value = universalValue.getEditionValue(platform.minecraftEdition)
-            val int = value.toIntOrNull()
-            if (int != null) {
-                return JavaBlockPropertyValueInt(platform, int, universalValue)
-            }
-            if (value == "true" || value == "false") {
-                return JavaBlockPropertyValueBoolean(platform, value.toBoolean(), universalValue)
-            }
-            return JavaBlockPropertyValueString(platform, value, universalValue)
-        }
-    }
-}
+    universalValue: UniversalBlockPropertyValue?
+) : BaseBlockPropertyValue<JavaPlatform>(platform, universalValue)

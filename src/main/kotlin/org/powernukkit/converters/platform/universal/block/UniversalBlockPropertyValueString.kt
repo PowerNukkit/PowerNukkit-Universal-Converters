@@ -18,8 +18,9 @@
 
 package org.powernukkit.converters.platform.universal.block
 
-import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.internal.enumMapOfNonNullsOrEmpty
+import org.powernukkit.converters.platform.api.MinecraftEdition
+import org.powernukkit.converters.platform.api.block.IPlatformBlockPropertyValue
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.platform.universal.definitions.model.block.property.ModelValue
 
@@ -32,7 +33,7 @@ class UniversalBlockPropertyValueString(
     private val value: String, 
     editionValue: Map<MinecraftEdition, String>
 ) : UniversalBlockPropertyValue(platform, editionValue) {
-    override val type get() = Type.STRING
+    override val type get() = IPlatformBlockPropertyValue.Type.STRING
     
     constructor(platform: UniversalPlatform, model: ModelValue): this(platform, model.value,
         enumMapOfNonNullsOrEmpty(

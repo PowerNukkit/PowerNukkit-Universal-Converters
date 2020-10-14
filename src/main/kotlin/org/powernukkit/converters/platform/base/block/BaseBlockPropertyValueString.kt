@@ -16,18 +16,17 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.api.block
+package org.powernukkit.converters.platform.base.block
 
-import org.powernukkit.converters.platform.api.Platform
+import org.powernukkit.converters.platform.api.block.IPlatformBlockPropertyValue
 
 /**
  * @author joserobjr
- * @since 2020-10-12
+ * @since 2020-10-13
  */
-abstract class PlatformBlockPropertyValue<P: Platform<P>>(
-    val platform: P
-) : IPlatformBlockPropertyValue {
-    override fun toString(): String {
-        return "${platform.name}BlockPropertyValue(value=${stringValue()})"
-    }
+interface BaseBlockPropertyValueString : IPlatformBlockPropertyValue {
+    val value: String
+    override val type get() = IPlatformBlockPropertyValue.Type.STRING
+    
+    override fun stringValue() = value
 }

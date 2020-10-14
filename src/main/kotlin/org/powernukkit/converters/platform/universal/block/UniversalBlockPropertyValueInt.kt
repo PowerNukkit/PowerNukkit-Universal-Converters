@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.universal.block
 
+import org.powernukkit.converters.platform.api.block.IPlatformBlockPropertyValue
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 /**
@@ -28,7 +29,7 @@ class UniversalBlockPropertyValueInt(
     platform: UniversalPlatform,
     private val value: Int,
 ) : UniversalBlockPropertyValue(platform, emptyMap()) {
-    override val type get() = Type.INT
+    override val type get() = IPlatformBlockPropertyValue.Type.INT
     
     override fun stringValue() = value.toString()
     override fun intValue() = value

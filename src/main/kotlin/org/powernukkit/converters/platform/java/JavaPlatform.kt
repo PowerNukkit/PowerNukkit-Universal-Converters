@@ -20,55 +20,46 @@ package org.powernukkit.converters.platform.java
 
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.java.block.JavaBlockEntityType
-import org.powernukkit.converters.platform.java.block.JavaBlockProperty
-import org.powernukkit.converters.platform.java.block.JavaBlockState
-import org.powernukkit.converters.platform.java.block.JavaBlockType
+import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.java.block.*
 import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
+import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
+import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
+import org.powernukkit.converters.platform.universal.block.UniversalBlockType
+import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
 class JavaPlatform(
-    val universal: UniversalPlatform,
+    universal: UniversalPlatform,
     name: String
-) : Platform<JavaPlatform>(name, MinecraftEdition.JAVA) {
+) : BasePlatform<
+        JavaPlatform, JavaBlockProperty, JavaBlockEntityType, JavaBlockType, JavaBlockState,
+        JavaBlockPropertyValue
+        >(
+    universal, name, MinecraftEdition.JAVA
+) {
+    override fun createBlockProperty(id: String, universal: UniversalBlockProperty) =
+        JavaBlockProperty(this, id, universal)
 
-    val blockPropertiesByUniversalId = universal.blockPropertiesById
-        .mapValues { (_, universalProperty) ->
-            JavaBlockProperty(this, universalProperty.getEditionId(minecraftEdition), universalProperty)
-        }
+    override fun createBlockEntityType(id: String, universal: UniversalBlockEntityType) =
+        JavaBlockEntityType(this, id, universal)
 
-    val blockEntityTypesById =
-        checkNotNull(universal.blockEntityTypesByEditionId[minecraftEdition]) { "The universal platform is missing block entity types definitions for $minecraftEdition" }
-            .mapValues { (id, universalEntityType) ->
-                JavaBlockEntityType(this, id, universalEntityType)
-            }
+    override fun createBlockType(id: NamespacedId, universal: UniversalBlockType, extra: ModelExtraBlock?) =
+        JavaBlockType(this, id, universal, extra)
 
-    val blockTypesById =
-        checkNotNull(universal.blockTypesByEditionId[minecraftEdition]) { "The universal platform is missing block types definitions for $minecraftEdition" }
-            .let { universalTypes ->
-                val mainTypes = universalTypes.mapValues { (id, universalBlockType) ->
-                    JavaBlockType(this, id, universalBlockType)
-                }
+    override fun createBlockState(blockType: JavaBlockType) = 
+        JavaBlockState(blockType)
+    
+    override fun createBlockPropertyValue(int: Int, universalValue: UniversalBlockPropertyValue) =
+        JavaBlockPropertyValueInt(this, int, universalValue)
 
-                val extraTypes = universalTypes.values.asSequence()
-                    .flatMap { universalType ->
-                        universalType.extraBlocks[minecraftEdition]?.asSequence()
-                            ?.map {
-                                val id = NamespacedId(it.id)
-                                id to JavaBlockType(this, id, universalType, it)
-                            } ?: emptySequence()
-                    }.toMap()
+    override fun createBlockPropertyValue(string: String, universalValue: UniversalBlockPropertyValue) =
+        JavaBlockPropertyValueString(this, string, universalValue)
 
-                mainTypes + extraTypes
-            }
-
-    override val airBlockType = checkNotNull(blockTypesById[NamespacedId("air")]) {
-        "The minecraft:air block type is not registered"
-    }
-
-    override val airBlockState = JavaBlockState(airBlockType)
+    override fun createBlockPropertyValue(boolean: Boolean, universalValue: UniversalBlockPropertyValue) =
+        JavaBlockPropertyValueBoolean(this, boolean, universalValue)
 }

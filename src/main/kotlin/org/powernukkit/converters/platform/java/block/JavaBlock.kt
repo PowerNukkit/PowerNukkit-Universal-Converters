@@ -18,10 +18,10 @@
 
 package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.base.block.BaseBlock
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.java.entity.JavaEntity
-import org.powernukkit.converters.math.BlockPos
 
 /**
  * @author joserobjr
@@ -31,8 +31,10 @@ class JavaBlock(
     platform: JavaPlatform,
     pos: BlockPos,
     val blockState: JavaBlockState,
-    override val blockEntity: JavaBlockEntity? = null,
-    override val entities: List<JavaEntity> = emptyList(),
-) : PlatformBlock<JavaPlatform>(platform, pos) {
+    blockEntity: JavaBlockEntity? = null,
+    entities: List<JavaEntity> = emptyList(),
+) : BaseBlock<JavaPlatform, JavaBlockState, JavaBlockEntity, JavaEntity>(
+    platform, pos, blockEntity, entities
+) {
     override val blockLayers get() = listOf(blockState)
 }

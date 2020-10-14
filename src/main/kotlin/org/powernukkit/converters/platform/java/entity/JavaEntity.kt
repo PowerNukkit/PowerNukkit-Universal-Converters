@@ -18,9 +18,9 @@
 
 package org.powernukkit.converters.platform.java.entity
 
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.math.EntityPos
+import org.powernukkit.converters.platform.base.entity.BaseEntity
+import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
  * @author joserobjr
@@ -29,4 +29,4 @@ import org.powernukkit.converters.math.EntityPos
 class JavaEntity(
     platform: JavaPlatform,
     pos: EntityPos
-) : PlatformEntity<JavaPlatform>(platform, pos)
+) : BaseEntity<JavaPlatform>(platform, pos)

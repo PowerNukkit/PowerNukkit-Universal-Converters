@@ -18,15 +18,15 @@
 
 package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.base.block.BaseBlockEntity
+import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
 class JavaBlockEntity(
-    override val type: JavaBlockEntityType,
+    type: JavaBlockEntityType,
     pos: BlockPos
-): PlatformBlockEntity<JavaPlatform>(pos)
+): BaseBlockEntity<JavaPlatform, JavaBlockEntityType>(type, pos)

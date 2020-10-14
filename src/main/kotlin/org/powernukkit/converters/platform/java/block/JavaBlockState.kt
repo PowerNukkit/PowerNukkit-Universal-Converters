@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.base.block.BaseBlockState
 import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
@@ -26,5 +26,7 @@ import org.powernukkit.converters.platform.java.JavaPlatform
  * @since 2020-10-11
  */
 class JavaBlockState(
-    override val type: JavaBlockType
-): PlatformBlockState<JavaPlatform>()
+    type: JavaBlockType
+): BaseBlockState<JavaPlatform, JavaBlockType, JavaBlockProperty, JavaBlockPropertyValue>(
+    type
+)

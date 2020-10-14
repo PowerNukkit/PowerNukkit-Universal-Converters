@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.java.block
 
+import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValueBoolean
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
@@ -27,12 +28,6 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  */
 class JavaBlockPropertyValueBoolean(
     platform: JavaPlatform,
-    val value: Boolean,
+    override val value: Boolean,
     universalValue: UniversalBlockPropertyValue?
-) : JavaBlockPropertyValue(platform, universalValue) {
-    override val type get() = Type.BOOLEAN
-
-    override fun stringValue() = value.toString()
-    override fun intValue() = if (value) 1 else 0
-    override fun booleanValue() = value
-}
+) : JavaBlockPropertyValue(platform, universalValue), BaseBlockPropertyValueBoolean
