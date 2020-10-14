@@ -31,9 +31,9 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @since 2020-10-13
  */
 abstract class BaseBlockType<
-        P: BasePlatform<P, BlockProperty, BlockEntityType, *, *, *>,
-        BlockProperty: PlatformBlockProperty<P>,
-        BlockEntityType: PlatformBlockEntityType<P>
+        P : BasePlatform<P, BlockProperty, BlockEntityType, *, *, *, *>,
+        BlockProperty : PlatformBlockProperty<P>,
+        BlockEntityType : PlatformBlockEntityType<P>
         >(
     platform: P,
     id: NamespacedId,

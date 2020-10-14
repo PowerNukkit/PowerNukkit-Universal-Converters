@@ -16,23 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.platform.api.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.block.PlatformBlockType
-import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.api.Platform
+import org.powernukkit.converters.platform.universal.definitions.model.block.entity.ModelData
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockState<
-        P : BasePlatform<P, BlockProperty, *, BlockType, *, BlockPropertyValue, *>,
-        BlockType : PlatformBlockType<P>,
-        BlockProperty : PlatformBlockProperty<P>,
-        BlockPropertyValue : PlatformBlockPropertyValue<P>
-        >(
-    final override val type: BlockType
-): PlatformBlockState<P>()
+abstract class PlatformBlockEntityDataType<P : Platform<P>>(
+    val platform: P,
+    val name: String,
+    val type: ModelData.Type,
+    val optional: Boolean,
+    val default: String?,
+) {
+    override fun toString(): String {
+        return "${platform.name}BlockEntityDataType(name='$name', type=$type, optional=$optional, default=$default)"
+    }
+}

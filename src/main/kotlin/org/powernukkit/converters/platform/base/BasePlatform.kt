@@ -23,10 +23,7 @@ import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.*
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
-import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
-import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
-import org.powernukkit.converters.platform.universal.block.UniversalBlockType
+import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
@@ -39,13 +36,14 @@ abstract class BasePlatform<
         BlockEntityType : PlatformBlockEntityType<P>,
         BlockType : PlatformBlockType<P>,
         BlockState : PlatformBlockState<P>,
-        BlockPropertyValue : PlatformBlockPropertyValue<P>
+        BlockPropertyValue : PlatformBlockPropertyValue<P>,
+        BlockEntityDataType : PlatformBlockEntityDataType<P>,
         >(
     val universal: UniversalPlatform,
     name: String,
     minecraftEdition: MinecraftEdition,
-    
-) : Platform<P>(name, minecraftEdition) {
+
+    ) : Platform<P>(name, minecraftEdition) {
     val blockPropertiesByUniversalId = universal.blockPropertiesById
         .mapValues { (_, universalProperty) ->
             createBlockProperty(universalProperty.getEditionId(minecraftEdition), universalProperty)
@@ -54,7 +52,12 @@ abstract class BasePlatform<
     val blockEntityTypesById =
         checkNotNull(universal.blockEntityTypesByEditionId[minecraftEdition]) { "The universal platform is missing block entity types definitions for $minecraftEdition" }
             .mapValues { (id, universalEntityType) ->
-                createBlockEntityType(id, universalEntityType)
+                val values = universalEntityType.data.values.asSequence()
+                    .map { it.getEditionId(minecraftEdition) to it }
+                    .filterNot { (id) -> id == "_missing_" }
+                    .associate { (id, universal) -> id to createBlockEntityDataType(universal) }
+
+                createBlockEntityType(id, universalEntityType, values)
             }
 
     val blockTypesById =
@@ -84,14 +87,36 @@ abstract class BasePlatform<
     final override val airBlockState = createBlockState(airBlockType)
 
     protected abstract fun createBlockProperty(id: String, universal: UniversalBlockProperty): BlockProperty
-    protected abstract fun createBlockEntityType(id: String, universal: UniversalBlockEntityType): BlockEntityType
-    protected abstract fun createBlockType(id: NamespacedId, universal: UniversalBlockType, extra: ModelExtraBlock? = null): BlockType
+    protected abstract fun createBlockEntityType(
+        id: String,
+        universal: UniversalBlockEntityType,
+        values: Map<String, BlockEntityDataType>
+    ): BlockEntityType
+
+    protected abstract fun createBlockEntityDataType(universal: UniversalBlockEntityDataType): BlockEntityDataType
+    protected abstract fun createBlockType(
+        id: NamespacedId,
+        universal: UniversalBlockType,
+        extra: ModelExtraBlock? = null
+    ): BlockType
+
     protected abstract fun createBlockState(blockType: BlockType): BlockState
-    
-    protected abstract fun createBlockPropertyValue(int: Int, universalValue: UniversalBlockPropertyValue) : BlockPropertyValue
-    protected abstract fun createBlockPropertyValue(string: String, universalValue: UniversalBlockPropertyValue) : BlockPropertyValue
-    protected abstract fun createBlockPropertyValue(boolean: Boolean, universalValue: UniversalBlockPropertyValue) : BlockPropertyValue
-    
+
+    protected abstract fun createBlockPropertyValue(
+        int: Int,
+        universalValue: UniversalBlockPropertyValue
+    ): BlockPropertyValue
+
+    protected abstract fun createBlockPropertyValue(
+        string: String,
+        universalValue: UniversalBlockPropertyValue
+    ): BlockPropertyValue
+
+    protected abstract fun createBlockPropertyValue(
+        boolean: Boolean,
+        universalValue: UniversalBlockPropertyValue
+    ): BlockPropertyValue
+
     protected open fun createBlockPropertyValue(universalValue: UniversalBlockPropertyValue): BlockPropertyValue {
         val value = universalValue.getEditionValue(minecraftEdition)
         val int = value.toIntOrNull()

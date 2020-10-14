@@ -18,17 +18,26 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
-import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityDataType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
-import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
+import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityDataType
+import org.powernukkit.converters.platform.universal.definitions.model.block.entity.ModelData
 
 /**
  * @author joserobjr
- * @since 2020-10-11
+ * @since 2020-10-13
  */
-class BedrockBlockEntityType(
-    platform: BedrockPlatform,
-    id: String,
-    universalType: UniversalBlockEntityType?,
-    data: Map<String, BedrockBlockEntityDataType>,
-) : BaseBlockEntityType<BedrockPlatform, BedrockBlockEntityDataType>(platform, id, universalType, data)
+class BedrockBlockEntityDataType : BaseBlockEntityDataType<BedrockPlatform> {
+    constructor(
+        platform: BedrockPlatform,
+        name: String,
+        type: ModelData.Type,
+        optional: Boolean,
+        default: String?,
+        universal: UniversalBlockEntityDataType?
+    ) : super(
+        platform, name, type, optional, default, universal
+    )
+
+    constructor(platform: BedrockPlatform, universal: UniversalBlockEntityDataType) : super(platform, universal)
+}

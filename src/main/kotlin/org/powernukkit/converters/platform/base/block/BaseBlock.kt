@@ -30,10 +30,10 @@ import org.powernukkit.converters.platform.base.BasePlatform
  * @since 2020-10-13
  */
 abstract class BaseBlock<
-        P: BasePlatform<P, *, *, *, BlockState, *>,
-        BlockState: PlatformBlockState<P>,
-        BlockEntity: PlatformBlockEntity<P>,
-        Entity: PlatformEntity<P>
+        P : BasePlatform<P, *, *, *, BlockState, *, *>,
+        BlockState : PlatformBlockState<P>,
+        BlockEntity : PlatformBlockEntity<P>,
+        Entity : PlatformEntity<P>
         >(
     platform: P,
     pos: BlockPos,

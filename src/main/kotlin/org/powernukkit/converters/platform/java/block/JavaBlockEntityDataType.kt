@@ -16,23 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.block.PlatformBlockType
-import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityDataType
+import org.powernukkit.converters.platform.java.JavaPlatform
+import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityDataType
+import org.powernukkit.converters.platform.universal.definitions.model.block.entity.ModelData
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockState<
-        P : BasePlatform<P, BlockProperty, *, BlockType, *, BlockPropertyValue, *>,
-        BlockType : PlatformBlockType<P>,
-        BlockProperty : PlatformBlockProperty<P>,
-        BlockPropertyValue : PlatformBlockPropertyValue<P>
-        >(
-    final override val type: BlockType
-): PlatformBlockState<P>()
+class JavaBlockEntityDataType : BaseBlockEntityDataType<JavaPlatform> {
+    constructor(
+        platform: JavaPlatform,
+        name: String,
+        type: ModelData.Type,
+        optional: Boolean,
+        default: String?,
+        universal: UniversalBlockEntityDataType?
+    ) : super(
+        platform, name, type, optional, default, universal
+    )
+
+    constructor(platform: JavaPlatform, universal: UniversalBlockEntityDataType) : super(platform, universal)
+}

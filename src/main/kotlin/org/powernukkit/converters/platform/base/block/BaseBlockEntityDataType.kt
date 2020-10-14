@@ -18,21 +18,29 @@
 
 package org.powernukkit.converters.platform.base.block
 
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntityDataType
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
-import org.powernukkit.converters.platform.base.BasePlatform
-import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
+import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityDataType
+import org.powernukkit.converters.platform.universal.definitions.model.block.entity.ModelData
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockEntityType<
-        P : BasePlatform<P, *, *, *, *, *, BlockEntityDataType>,
-        BlockEntityDataType : PlatformBlockEntityDataType<P>
-        >(
+abstract class BaseBlockEntityDataType<P : Platform<P>>(
     platform: P,
-    id: String,
-    final override val universalType: UniversalBlockEntityType?,
-    final override val data: Map<String, BlockEntityDataType>
-) : PlatformBlockEntityType<P>(platform, id)
+    name: String,
+    type: ModelData.Type,
+    optional: Boolean,
+    default: String?,
+    val universal: UniversalBlockEntityDataType?
+) : PlatformBlockEntityDataType<P>(platform, name, type, optional, default) {
+    constructor(platform: P, universal: UniversalBlockEntityDataType) : this(
+        platform = platform,
+        universal = universal,
+        name = universal.getEditionId(platform.minecraftEdition),
+        type = universal.getEditionType(platform.minecraftEdition),
+        optional = universal.isOptionalInEdition(platform.minecraftEdition),
+        default = universal.getEditionDefault(platform.minecraftEdition),
+    )
+}

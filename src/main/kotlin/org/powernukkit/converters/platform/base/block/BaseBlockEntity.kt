@@ -28,8 +28,8 @@ import org.powernukkit.converters.platform.base.BasePlatform
  * @since 2020-10-13
  */
 abstract class BaseBlockEntity<
-        P: BasePlatform<P, *, BlockEntityType, *, *, *>,
-        BlockEntityType: PlatformBlockEntityType<P>
+        P : BasePlatform<P, *, BlockEntityType, *, *, *, *>,
+        BlockEntityType : PlatformBlockEntityType<P>
         >(
     final override val type: BlockEntityType,
     pos: BlockPos
