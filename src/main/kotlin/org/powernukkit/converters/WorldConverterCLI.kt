@@ -19,6 +19,7 @@
 package org.powernukkit.converters
 
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
 
@@ -37,7 +38,11 @@ object WorldConverterCLI {
     fun main(args: Array<String>) {
         val universalPlatform = DefinitionLoader().loadBuiltin()
         val javaPlatform = JavaPlatform(universalPlatform, "Java")
+        val bedrockPlatform = BedrockPlatform(universalPlatform, "Bedrock")
         println(javaPlatform.blockTypesById[NamespacedId("jungle_door")])
         println(universalPlatform.blockTypesById[NamespacedId("door")])
+        println(bedrockPlatform.blockTypesById[NamespacedId("element_13")])
+        println(javaPlatform.blockTypesById[NamespacedId("element_13")])
+        println(universalPlatform.blockTypesById[NamespacedId("element_13")])
     }
 }

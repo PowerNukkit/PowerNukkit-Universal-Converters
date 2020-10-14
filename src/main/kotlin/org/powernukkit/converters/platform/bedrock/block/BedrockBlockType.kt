@@ -19,18 +19,30 @@
 package org.powernukkit.converters.platform.bedrock.block
 
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.api.block.PlatformBlockType
+import org.powernukkit.converters.platform.base.block.BaseBlockType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
+import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockBlockType(
-    platform: BedrockPlatform,
-    id: NamespacedId,
-    override val blockProperties: List<BedrockBlockProperty>,
-    override val blockEntityType: BedrockBlockEntityType? = null,
-    override val universalType: UniversalBlockType?
-) : PlatformBlockType<BedrockPlatform>(platform, id)
+class BedrockBlockType : BaseBlockType<BedrockPlatform, BedrockBlockProperty, BedrockBlockEntityType> {
+    constructor(
+        platform: BedrockPlatform,
+        id: NamespacedId,
+        blockProperties: List<BedrockBlockProperty>,
+        blockEntityType: BedrockBlockEntityType? = null,
+        universalType: UniversalBlockType?
+    ) : super(
+        platform, id, blockProperties, blockEntityType, universalType
+    )
+
+    constructor(
+        platform: BedrockPlatform,
+        id: NamespacedId,
+        universalType: UniversalBlockType,
+        extraBlock: ModelExtraBlock? = null
+    ) : super(platform, id, universalType, extraBlock)
+}

@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
 
@@ -29,5 +29,5 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityT
 class BedrockBlockEntityType(
     platform: BedrockPlatform,
     id: String,
-    override val universalType: UniversalBlockEntityType?
-): PlatformBlockEntityType<BedrockPlatform>(platform, id)
+    universalType: UniversalBlockEntityType?
+) : BaseBlockEntityType<BedrockPlatform>(platform, id, universalType)

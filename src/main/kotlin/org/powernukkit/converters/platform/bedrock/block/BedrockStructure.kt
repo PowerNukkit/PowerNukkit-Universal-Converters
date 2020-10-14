@@ -18,12 +18,13 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.base.block.BaseStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockStructure(platform: BedrockPlatform) : PlatformStructure<BedrockPlatform, BedrockBlock>(platform) {
-}
+class BedrockStructure(
+    platform: BedrockPlatform
+) : BaseStructure<BedrockPlatform, BedrockBlock>(platform)

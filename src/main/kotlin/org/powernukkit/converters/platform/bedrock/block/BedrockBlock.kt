@@ -18,10 +18,10 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.base.block.BaseBlock
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.bedrock.entity.BedrockEntity
-import org.powernukkit.converters.math.BlockPos
 
 /**
  * @author joserobjr
@@ -32,8 +32,10 @@ class BedrockBlock(
     pos: BlockPos,
     mainState: BedrockBlockState,
     secondaryState: BedrockBlockState = platform.airBlockState,
-    override val blockEntity: BedrockBlockEntity? = null,
-    override val entities: MutableList<BedrockEntity> = mutableListOf(),
-) : PlatformBlock<BedrockPlatform>(platform, pos) {
+    blockEntity: BedrockBlockEntity? = null,
+    entities: MutableList<BedrockEntity> = mutableListOf(),
+) : BaseBlock<BedrockPlatform, BedrockBlockState, BedrockBlockEntity, BedrockEntity>(
+    platform, pos
+) {
     override val blockLayers = listOf(mainState, secondaryState)
 }

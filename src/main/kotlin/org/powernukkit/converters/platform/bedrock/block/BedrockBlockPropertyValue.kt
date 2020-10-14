@@ -16,23 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.platform.bedrock.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.block.PlatformBlockType
-import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValue
+import org.powernukkit.converters.platform.bedrock.BedrockPlatform
+import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockState<
-        P: BasePlatform<P, BlockProperty, *, BlockType, *, BlockPropertyValue>,
-        BlockType: PlatformBlockType<P>,
-        BlockProperty: PlatformBlockProperty<P>,
-        BlockPropertyValue: PlatformBlockPropertyValue<P>
-        >(
-    final override val type: BlockType
-): PlatformBlockState<P>()
+abstract class BedrockBlockPropertyValue(
+    platform: BedrockPlatform,
+    universalValue: UniversalBlockPropertyValue?
+) : BaseBlockPropertyValue<BedrockPlatform>(platform, universalValue)

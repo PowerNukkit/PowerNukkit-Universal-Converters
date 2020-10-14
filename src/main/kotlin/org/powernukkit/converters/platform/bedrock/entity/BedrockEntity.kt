@@ -18,9 +18,9 @@
 
 package org.powernukkit.converters.platform.bedrock.entity
 
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.math.EntityPos
+import org.powernukkit.converters.platform.base.entity.BaseEntity
+import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**
  * @author joserobjr
@@ -29,4 +29,4 @@ import org.powernukkit.converters.math.EntityPos
 class BedrockEntity(
     platform: BedrockPlatform,
     pos: EntityPos
-) : PlatformEntity<BedrockPlatform>(platform, pos)
+) : BaseEntity<BedrockPlatform>(platform, pos)

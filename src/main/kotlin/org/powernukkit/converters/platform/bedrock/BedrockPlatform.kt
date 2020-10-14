@@ -20,15 +20,46 @@ package org.powernukkit.converters.platform.bedrock
 
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.bedrock.block.BedrockBlockState
-import org.powernukkit.converters.platform.bedrock.block.BedrockBlockType
+import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.bedrock.block.*
+import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
+import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
+import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
+import org.powernukkit.converters.platform.universal.block.UniversalBlockType
+import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockPlatform(name: String): Platform<BedrockPlatform>(name, MinecraftEdition.BEDROCK) {
-    override val airBlockType = BedrockBlockType(this, NamespacedId("air"), emptyList(), null, null)
-    override val airBlockState = BedrockBlockState(airBlockType)
+class BedrockPlatform(
+    universal: UniversalPlatform,
+    name: String
+) : BasePlatform<
+        BedrockPlatform, BedrockBlockProperty, BedrockBlockEntityType, BedrockBlockType, BedrockBlockState,
+        BedrockBlockPropertyValue
+        >(
+    universal, name, MinecraftEdition.BEDROCK
+) {
+    override fun createBlockProperty(id: String, universal: UniversalBlockProperty) =
+        BedrockBlockProperty(this, id, universal)
+
+    override fun createBlockEntityType(id: String, universal: UniversalBlockEntityType) =
+        BedrockBlockEntityType(this, id, universal)
+
+    override fun createBlockType(id: NamespacedId, universal: UniversalBlockType, extra: ModelExtraBlock?) =
+        BedrockBlockType(this, id, universal, extra)
+
+    override fun createBlockState(blockType: BedrockBlockType) =
+        BedrockBlockState(blockType)
+
+    override fun createBlockPropertyValue(int: Int, universalValue: UniversalBlockPropertyValue) =
+        BedrockBlockPropertyValueInt(this, int, universalValue)
+
+    override fun createBlockPropertyValue(string: String, universalValue: UniversalBlockPropertyValue) =
+        BedrockBlockPropertyValueString(this, string, universalValue)
+
+    override fun createBlockPropertyValue(boolean: Boolean, universalValue: UniversalBlockPropertyValue) =
+        BedrockBlockPropertyValueBoolean(this, boolean, universalValue)
 }

@@ -1168,7 +1168,7 @@
         <block-type id="cartography_table"/>
         <block-type id="carved_pumpkin"/>
         <block-type id="cauldron"/>
-        <block-type id="cave_air" bedrock="_missing_"/>
+        <block-type id="cave_air" bedrock="_missing_" bedrock-requires-adapter="true"/>
         <block-type id="chain_command_block"/>
         <block-type id="chest"/>
         <block-type id="chipped_anvil"/>
@@ -1571,7 +1571,7 @@
         <block-type id="twisting_vines"/>
         <block-type id="twisting_vines_plant"/>
         <block-type id="vine"/>
-        <block-type id="void_air" bedrock="_missing_"/>
+        <block-type id="void_air" bedrock="_missing_" bedrock-requires-adapter="true"/>
         <block-type id="wall_torch"/>
         <block-type id="warped_fungus"/>
         <block-type id="warped_nylium"/>
@@ -1684,8 +1684,127 @@
         <block-type id="hard_glass" />
         <block-type id="hard_stained_glass" />
         <block-type id="reserved6" />
-        <block-type id="element">
-            <uses-property named="chemical_element"/>
+        <block-type id="element" bedrock="element_0" java="_missing_" java-requires-adapter="true">
+            <uses-property named="chemical_element"  />
+            <extra-block on="bedrock" id="element_0" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_1" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_2" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_3" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_4" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_5" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_6" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_7" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_8" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_9" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_10" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_11" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_12" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_13" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_14" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_15" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_16" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_17" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_18" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_19" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_20" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_21" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_22" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_23" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_24" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_25" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_26" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_27" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_28" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_29" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_30" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_31" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_32" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_33" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_34" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_35" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_36" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_37" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_38" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_39" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_40" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_41" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_42" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_43" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_44" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_45" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_46" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_47" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_48" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_49" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_50" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_51" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_52" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_53" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_54" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_55" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_56" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_57" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_58" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_59" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_60" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_61" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_62" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_63" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_64" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_65" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_66" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_67" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_68" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_69" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_70" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_71" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_72" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_73" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_74" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_75" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_76" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_77" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_78" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_79" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_80" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_81" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_82" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_83" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_84" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_85" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_86" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_87" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_88" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_89" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_90" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_91" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_92" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_93" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_94" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_95" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_96" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_97" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_98" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_99" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_100" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_101" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_102" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_103" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_104" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_105" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_106" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_107" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_108" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_109" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_110" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_111" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_112" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_113" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_114" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_115" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_116" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_117" inherit-properties="false" />
+            <extra-block on="bedrock" id="element_118" inherit-properties="false" />
         </block-type>
         <block-type id="coral" />
         <block-type id="coral_block" />

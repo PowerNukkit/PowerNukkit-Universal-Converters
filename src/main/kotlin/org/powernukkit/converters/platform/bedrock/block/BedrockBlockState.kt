@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.base.block.BaseBlockState
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**
@@ -26,5 +26,7 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
  * @since 2020-10-11
  */
 class BedrockBlockState(
-    override val type: BedrockBlockType
-): PlatformBlockState<BedrockPlatform>()
+    type: BedrockBlockType
+): BaseBlockState<BedrockPlatform, BedrockBlockType, BedrockBlockProperty, BedrockBlockPropertyValue>(
+    type
+)

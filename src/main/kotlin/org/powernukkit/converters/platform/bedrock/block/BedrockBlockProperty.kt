@@ -18,8 +18,7 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.base.block.BaseBlockProperty
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
 
@@ -27,9 +26,17 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @author joserobjr
  * @since 2020-10-11
  */
-class BedrockBlockProperty(
-    platform: BedrockPlatform,
-    id: String,
-    override val values: List<PlatformBlockPropertyValue<BedrockPlatform>>,
-    override val universal: UniversalBlockProperty?
-): PlatformBlockProperty<BedrockPlatform>(platform, id)
+class BedrockBlockProperty : BaseBlockProperty<BedrockPlatform, BedrockBlockPropertyValue> {
+    constructor(
+        platform: BedrockPlatform,
+        id: String,
+        universal: UniversalBlockProperty?,
+        values: List<BedrockBlockPropertyValue>
+    ) : super(platform, id, universal, values)
+
+    constructor(
+        platform: BedrockPlatform,
+        id: String,
+        universal: UniversalBlockProperty
+    ) : super(platform, id, universal)
+}
