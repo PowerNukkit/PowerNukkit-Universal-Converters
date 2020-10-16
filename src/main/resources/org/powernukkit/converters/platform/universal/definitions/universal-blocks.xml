@@ -114,7 +114,7 @@
             <value bedrock="1">right</value>
         </block-property>
         <block-property id="cauldron_liquid" java-requires-adapter="true">
-            <value default="true">water</value>
+            <value>water</value>
             <value>lava</value>
         </block-property>
         <block-property id="open" bedrock="open_bit">
@@ -469,8 +469,8 @@
         <block-property id="signal_fire">
             <boolean/>
         </block-property>
-        <block-property id="fill_level" java="level" bedrock-requires-adapter="true">
-            <int-range to="3" bedrock-to="6"/>
+        <block-property id="fill_level" java="level" java-requires-adapter="true">
+            <int-range to="6"/>
         </block-property>
         <block-property id="age5">
             <int-range to="5"/>
@@ -546,6 +546,12 @@
             <data name="Items" type="item_list" bedrock-requires-adapter="true"/>
             <data name="CookingTimes" bedrock-name="ItemTime" type="int_list" bedrock-requires-adapter="true" />
             <data name="CookingTotalTimes" type="none" bedrock-type="none" java-type="int_list"/>
+        </block-entity>
+        <block-entity id="cauldron_data" java="_missing_" bedrock="Cauldron">
+            <data name="Items" type="item_list"/>
+            <data name="PotionId" type="int" bedrock-type="short"/>
+            <data name="PotionType" type="int" bedrock-type="short"/>
+            <data name="CustomColor" type="int" optional="true"/>
         </block-entity>
     </block-entities>
     <block-types>
@@ -1218,6 +1224,8 @@
         <block-type id="cauldron">
             <uses-property named="cauldron_liquid" on-java="false"/>
             <uses-property named="fill_level"/>
+
+            <uses-block-entity named="cauldron_data" on-java="false"/>
             
             <extra-block on="bedrock" id="lava_cauldron"/>
         </block-type>

@@ -19,11 +19,7 @@
 <!ELEMENT int-range EMPTY>
 <!ATTLIST int-range
         from         CDATA   "0"
-        to           CDATA   #REQUIRED
-        java-from    CDATA   #IMPLIED
-        java-to      CDATA   #IMPLIED
-        bedrock-from CDATA   #IMPLIED
-        bedrock-to   CDATA   #IMPLIED>
+        to           CDATA   #REQUIRED>
 
 <!ELEMENT value (#PCDATA)>
 <!ATTLIST value
