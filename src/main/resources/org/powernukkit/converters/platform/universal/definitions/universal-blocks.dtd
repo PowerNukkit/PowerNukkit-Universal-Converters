@@ -18,8 +18,12 @@
 
 <!ELEMENT int-range EMPTY>
 <!ATTLIST int-range
-        from    CDATA   "0"
-        to      CDATA   #REQUIRED>
+        from         CDATA   "0"
+        to           CDATA   #REQUIRED
+        java-from    CDATA   #IMPLIED
+        java-to      CDATA   #IMPLIED
+        bedrock-from CDATA   #IMPLIED
+        bedrock-to   CDATA   #IMPLIED>
 
 <!ELEMENT value (#PCDATA)>
 <!ATTLIST value
@@ -32,6 +36,7 @@
 
 <!ELEMENT boolean EMPTY>
 <!ATTLIST boolean
+        default    (true|false)   #IMPLIED
         java-false    NMTOKEN     'false'
         bedrock-false NMTOKEN     '0'
         java-true     NMTOKEN     'true'
@@ -80,7 +85,7 @@
 <!ELEMENT data EMPTY>
 <!ATTLIST data
         name    NMTOKEN     #REQUIRED
-        type    (int|long|string|text|boolean|block_id|status_effect_id|item_stack|dye_color|item_list|loot_table|findable|int_coordinate|beehive_occupants|banner_patterns|none)  #REQUIRED
+        type    (int|long|string|text|boolean|block_id|status_effect_id|item_stack|dye_color|item_list|loot_table|findable|int_coordinate|beehive_occupants|banner_patterns|int_list|none)  #REQUIRED
         optional    (true|false)    "false"
         default     CDATA       #IMPLIED
         java-name    NMTOKEN     #IMPLIED
@@ -88,7 +93,7 @@
         java-optional    (true|false)    #IMPLIED
         bedrock-optional    (true|false)    #IMPLIED
         
-        java-type (none|byte|short|int|long|boolean|float|double|string|item_stack|json_text) #IMPLIED
+        java-type (none|byte|short|int|long|boolean|float|double|string|item_stack|json_text|int_list) #IMPLIED
         bedrock-type (none|byte|short|int|long|boolean|float|double|string|item_stack|i18n_text) #IMPLIED
         java-requires-adapter       (true|false) "false"
         bedrock-requires-adapter    (true|false) "false">

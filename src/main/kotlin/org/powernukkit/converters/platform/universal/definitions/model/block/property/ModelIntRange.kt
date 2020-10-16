@@ -33,7 +33,20 @@ data class ModelIntRange(
     val to: Int,
 
     @XmlAttribute
-    val from: Int = 0
+    val from: Int = 0,
+
+    @XmlAttribute(name = "java-from")
+    val javaFrom: Int?,
+
+    @XmlAttribute(name = "java-to")
+    val javaTo: Int?,
+
+    @XmlAttribute(name = "bedrock-from")
+    val bedrockFrom: Int?,
+
+    @XmlAttribute(name = "bedrock-to")
+    val bedrockTo: Int?
+
 ): ModelBlockPropertyValue {
     fun toRange() = from..to
 }
