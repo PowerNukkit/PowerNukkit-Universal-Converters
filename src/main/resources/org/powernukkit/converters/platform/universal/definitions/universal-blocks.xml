@@ -442,10 +442,10 @@
         <block-property id="toggle" java="powered" bedrock="toggle_bit">
             <boolean/>
         </block-property>
-        <block-property id="dye_color">
+        <block-property id="dye_color" bedrock="color">
             <value>black</value>
             <value>red</value>
-            <value>greeen</value>
+            <value>green</value>
             <value>brown</value>
             <value>blue</value>
             <value>purple</value>
@@ -459,9 +459,6 @@
             <value>magenta</value>
             <value>orange</value>
             <value default="true">white</value>
-        </block-property>
-        <block-property id="color">
-            <copy-values from="dye_color"/>
         </block-property>
     </block-properties>
     <block-entities>
@@ -1589,8 +1586,8 @@
         <block-type id="tallgrass" />
         <block-type id="deadbush" />
         <block-type id="pistonarmcollision" />
-        <block-type id="wool" java="white_wool" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <uses-property named="color" on-java="false"/>
+        <block-type id="wool" java="white_wool" java-requires-adapter="true">
+            <uses-property named="dye_color" on-java="false"/>
 
             <extra-block on="java" id="orange_wool"/>
             <extra-block on="java" id="magenta_wool"/>
@@ -1639,8 +1636,8 @@
         <block-type id="slime" />
         <block-type id="glow_stick" />
         <block-type id="sealantern" />
-        <block-type id="carpet" java="white_carpet" java-requires-adapter="true" bedrock-requires-adapter="true">
-            <uses-property named="dye_color" on-bedrock="false" on-java="false"/>
+        <block-type id="carpet" java="white_carpet" java-requires-adapter="true">
+            <uses-property named="dye_color" on-java="false"/>
 
             <extra-block on="java" id="orange_carpet"/>
             <extra-block on="java" id="magenta_carpet"/>
