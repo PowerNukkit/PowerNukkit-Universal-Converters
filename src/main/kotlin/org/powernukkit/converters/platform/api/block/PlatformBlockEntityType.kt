@@ -26,10 +26,10 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityT
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockEntityType<P : Platform<P>>(
+abstract class PlatformBlockEntityType<P : Platform<P, *>>(
     final override val platform: P,
     val id: String
-): PlatformObject<P> {
+) : PlatformObject<P> {
     abstract val universalType: UniversalBlockEntityType?
     abstract val data: Map<String, PlatformBlockEntityDataType<P>>
 

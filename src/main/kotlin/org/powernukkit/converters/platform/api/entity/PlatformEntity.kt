@@ -26,7 +26,7 @@ import org.powernukkit.converters.platform.api.PlatformObject
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformEntity<P : Platform<P>>(
+abstract class PlatformEntity<P : Platform<P, *>>(
     override val platform: P,
     val pos: EntityPos
 ) : PlatformObject<P> {

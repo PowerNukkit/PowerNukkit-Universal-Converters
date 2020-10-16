@@ -16,27 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.converter
 
-import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.base.BasePlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-10-15
  */
-abstract class BaseBlock<
-        P : BasePlatform<P, *, *, *, BlockState, *, *, *, *>,
-        BlockState : PlatformBlockState<P>,
-        BlockEntity : PlatformBlockEntity<P>,
-        Entity : PlatformEntity<P>
-        >(
-    platform: P,
-    pos: BlockPos,
-    final override val blockEntity: BlockEntity? = null,
-    final override val entities: List<Entity> = emptyList(),
-) : PlatformBlock<P>(platform, pos)
+interface BlockAdapter<
+        FromPlatform : Platform<FromPlatform, FromBlock>,
+        FromBlock : PlatformBlock<FromPlatform>,
+        ToPlatform : Platform<ToPlatform, ToBlock>,
+        ToBlock : PlatformBlock<ToPlatform>,
+        > : Adapter<FromPlatform, List<FromBlock>, ToPlatform, List<ToBlock>> {
+
+    override fun adapt(fromPlatform: FromPlatform, toPlatform: ToPlatform, from: List<FromBlock>): List<ToBlock> {
+        TODO("Not yet implemented")
+    }
+}

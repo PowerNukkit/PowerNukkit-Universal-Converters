@@ -16,18 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.converter
 
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-10-15
  */
-abstract class BaseBlockPropertyValue<P : Platform<P, *>>(
-    platform: P,
-    val universalValue: UniversalBlockPropertyValue?,
-    default: Boolean,
-) : PlatformBlockPropertyValue<P>(platform, default)
+interface Adapter<
+        FromPlatform : Platform<FromPlatform, *>,
+        From : Any?,
+        ToPlatform : Platform<ToPlatform, *>,
+        To : Any?,
+        > {
+    fun adapt(fromPlatform: FromPlatform, toPlatform: ToPlatform, from: From): To
+}

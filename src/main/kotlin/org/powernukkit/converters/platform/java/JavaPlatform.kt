@@ -35,7 +35,7 @@ class JavaPlatform(
     name: String
 ) : BasePlatform<
         JavaPlatform, JavaBlockProperty, JavaBlockEntityType, JavaBlockType, JavaBlockState,
-        JavaBlockPropertyValue, JavaBlockEntityDataType
+        JavaBlockPropertyValue, JavaBlockEntityDataType, JavaBlock, JavaStructure
         >(
     universal, name, MinecraftEdition.JAVA
 ) {
@@ -71,4 +71,6 @@ class JavaPlatform(
         universalValue: UniversalBlockPropertyValue,
         default: Boolean
     ) = JavaBlockPropertyValueBoolean(this, boolean, universalValue, default)
+
+    override fun createStructure(size: Int) = JavaStructure(this)
 }

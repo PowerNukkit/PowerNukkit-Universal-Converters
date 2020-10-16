@@ -35,7 +35,7 @@ class BedrockPlatform(
     name: String
 ) : BasePlatform<
         BedrockPlatform, BedrockBlockProperty, BedrockBlockEntityType, BedrockBlockType, BedrockBlockState,
-        BedrockBlockPropertyValue, BedrockBlockEntityDataType
+        BedrockBlockPropertyValue, BedrockBlockEntityDataType, BedrockBlock, BedrockStructure
         >(
     universal, name, MinecraftEdition.BEDROCK
 ) {
@@ -71,4 +71,6 @@ class BedrockPlatform(
         universalValue: UniversalBlockPropertyValue,
         default: Boolean
     ) = BedrockBlockPropertyValueBoolean(this, boolean, universalValue, default)
+
+    override fun createStructure(size: Int) = BedrockStructure(this)
 }

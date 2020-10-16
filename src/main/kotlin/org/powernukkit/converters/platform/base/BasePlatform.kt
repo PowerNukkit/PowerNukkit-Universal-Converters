@@ -22,10 +22,7 @@ import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.TechnicalValues
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityDataType
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.api.block.*
 import org.powernukkit.converters.platform.base.block.BaseBlockProperty
 import org.powernukkit.converters.platform.base.block.BaseBlockType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
@@ -37,19 +34,21 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @since 2020-10-13
  */
 abstract class BasePlatform<
-        P : BasePlatform<P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue, BlockEntityDataType>,
+        P : BasePlatform<P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue, BlockEntityDataType, Block, Structure>,
         BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
         BlockEntityType : PlatformBlockEntityType<P>,
         BlockType : BaseBlockType<P, BlockProperty, BlockEntityType, BlockPropertyValue>,
         BlockState : PlatformBlockState<P>,
         BlockPropertyValue : PlatformBlockPropertyValue<P>,
         BlockEntityDataType : PlatformBlockEntityDataType<P>,
+        Block : PlatformBlock<P>,
+        Structure : PlatformStructure<P, Block>,
         >(
     val universal: UniversalPlatform,
     name: String,
     minecraftEdition: MinecraftEdition,
 
-    ) : Platform<P>(name, minecraftEdition) {
+    ) : Platform<P, Block>(name, minecraftEdition) {
     val blockPropertiesByUniversalId = universal.blockPropertiesById
         .mapValues { (_, universalProperty) ->
             createBlockProperty(universalProperty.getEditionId(minecraftEdition), universalProperty)
@@ -142,8 +141,10 @@ abstract class BasePlatform<
         }
         return createBlockPropertyValue(value, universalValue, universalValue.default)
     }
-    
+
     internal fun createBlockPropertyValueList(universal: UniversalBlockProperty): List<BlockPropertyValue> {
         return universal.values.map(this::createBlockPropertyValue)
     }
+
+    abstract override fun createStructure(size: Int): Structure
 }

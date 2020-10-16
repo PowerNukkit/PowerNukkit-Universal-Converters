@@ -31,7 +31,7 @@ import org.powernukkit.converters.platform.universal.definitions.model.ModelDefi
  */
 class UniversalPlatform internal constructor(
     definitions: ModelDefinitions
-) : Platform<UniversalPlatform>("Universal", MinecraftEdition.UNIVERSAL) {
+) : Platform<UniversalPlatform, UniversalBlock>("Universal", MinecraftEdition.UNIVERSAL) {
     val optionalBlockPropertyValue = UniversalBlockPropertyValueEmptyOpt(this)
 
     val blockPropertiesById = definitions.blockProperties
@@ -91,4 +91,6 @@ class UniversalPlatform internal constructor(
             .mapValues { (_, value) ->
                 value.map { it.second }.toMap()
             }
+
+    override fun createStructure(size: Int) = UniversalStructure(this)
 }

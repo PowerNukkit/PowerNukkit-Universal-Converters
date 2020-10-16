@@ -26,7 +26,7 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockProperty<P : Platform<P>>(
+abstract class PlatformBlockProperty<P : Platform<P, *>>(
     final override val platform: P,
     val id: String,
 ) : PlatformObject<P> {

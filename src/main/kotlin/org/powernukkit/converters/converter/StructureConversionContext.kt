@@ -16,19 +16,46 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.converter
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformStructure
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-10-15
  */
-abstract class BaseStructure<
-        P : Platform<P, Block>,
-        Block : PlatformBlock<P>
+class StructureConversionContext<
+        FromPlatform : Platform<FromPlatform, FromBlock>,
+        FromBlock : PlatformBlock<FromPlatform>,
+        FromStructure : PlatformStructure<FromPlatform, FromBlock>,
+        ToPlatform : Platform<ToPlatform, ToBlock>,
+        ToBlock : PlatformBlock<ToPlatform>,
+        ToStructure : PlatformStructure<ToPlatform, ToBlock>,
         >(
-    platform: P
-) : PlatformStructure<P, Block>(platform)
+    val fromPlatform: FromPlatform,
+    val fromStructure: FromStructure,
+    val toPlatform: ToPlatform,
+    val toStructure: ToStructure,
+) {
+    val convertedBlocks: MutableSet<BlockPos> = mutableSetOf()
+    var stage = Stage.BLOCK; private set
+
+    fun convert() {
+        fromStructure.blocks.forEach { (pos, block) ->
+            if (pos !in convertedBlocks) {
+                adaptBlock(block)
+            }
+        }
+    }
+
+    fun adaptBlock(fromBlock: FromBlock) {
+        TODO()
+    }
+
+    enum class Stage {
+        BLOCK
+    }
+}

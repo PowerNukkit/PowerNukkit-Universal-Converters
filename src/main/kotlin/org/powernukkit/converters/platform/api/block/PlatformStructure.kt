@@ -22,9 +22,9 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 
-abstract class PlatformStructure<P: Platform<P>, B: PlatformBlock<P>>(
-    final override val platform: P
-): PlatformObject<P> {
+abstract class PlatformStructure<P : Platform<P, *>, B : PlatformBlock<P>>(
+    final override val platform: P,
+) : PlatformObject<P> {
     val blocks = mutableMapOf<BlockPos, B>()
 
     final override fun equals(other: Any?): Boolean {

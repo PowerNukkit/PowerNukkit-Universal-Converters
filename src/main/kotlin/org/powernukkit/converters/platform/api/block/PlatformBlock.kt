@@ -27,13 +27,13 @@ import org.powernukkit.converters.platform.api.entity.PlatformEntity
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlock<P : Platform<P>>(
+abstract class PlatformBlock<P : Platform<P, *>>(
     final override val platform: P,
     val pos: BlockPos
-): PlatformObject<P> {
-    protected abstract val blockLayers: List<PlatformBlockState<P>>
-    protected abstract val blockEntity: PlatformBlockEntity<P>?
-    protected abstract val entities: List<PlatformEntity<P>>
+) : PlatformObject<P> {
+    abstract val blockLayers: List<PlatformBlockState<P>>
+    abstract val blockEntity: PlatformBlockEntity<P>?
+    abstract val entities: List<PlatformEntity<P>>
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
