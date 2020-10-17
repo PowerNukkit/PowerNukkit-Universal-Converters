@@ -19,10 +19,11 @@
 package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
@@ -31,12 +32,23 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @since 2020-10-13
  */
 abstract class BaseBlockType<
-        P : BasePlatform<P, BlockProperty, BlockEntityType, *, *, BlockPropertyValue, *, *, *, *, *>,
+        P : BasePlatform<
+                P, BlockProperty, BlockEntityType, BlockType, BlockState,
+                BlockPropertyValue, BlockEntityDataType, Block, Structure, BlockEntity, Entity
+                >,
         BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
-        BlockEntityType : PlatformBlockEntityType<P>,
-        BlockPropertyValue : PlatformBlockPropertyValue<P>
+        BlockEntityType : BaseBlockEntityType<P, BlockEntityDataType>,
+        BlockType : BaseBlockType<P, BlockProperty, BlockEntityType, BlockPropertyValue>,
+        BlockState : BaseBlockState<P, BlockType, BlockProperty, BlockPropertyValue>,
+        BlockPropertyValue : BaseBlockPropertyValue<P>,
+        BlockEntityDataType : BaseBlockEntityDataType<P>,
+        Block : BaseBlock<P, BlockState, BlockEntity, Entity>,
+        Structure : BaseStructure<P, Block>,
+        BlockEntity : BaseBlockEntity<P, BlockEntityType>,
+        Entity : BaseEntity<P>
         >(
     platform: P,
+    private val baseConstructors: BaseConstructors,
     id: NamespacedId,
     final override val blockProperties: Map<String, BlockProperty>,
     final override val blockEntityType: BlockEntityType? = null,
@@ -44,12 +56,12 @@ abstract class BaseBlockType<
 ) : PlatformBlockType<P>(platform, id) {
     constructor(
         platform: P,
+        baseConstructors: BaseConstructors,
         id: NamespacedId,
         universalType: UniversalBlockType,
         extraBlock: ModelExtraBlock? = null
     ) : this(
-        platform = platform,
-        id = id,
+        platform, baseConstructors, id,
         universalType = universalType,
 
         blockProperties = universalType.editionBlockProperties.getOrDefault(platform.minecraftEdition, emptyList())
@@ -87,5 +99,17 @@ abstract class BaseBlockType<
                 ?: property.values.first()
             property.id to value
         }
+    }
+
+    override fun withState(values: Map<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P> {
+        val adjustedValues = blockProperties.mapValues { (propertyName, blockProperty) ->
+            requireNotNull(values[propertyName], { "Missing the required property: $propertyName" })
+                .let { propertyValue ->
+                    @Suppress("UNCHECKED_CAST")
+                    blockProperty.getPlatformValue(propertyValue) as BlockPropertyValue
+                }
+        }
+
+        return baseConstructors.createBlockState(this, adjustedValues)
     }
 }

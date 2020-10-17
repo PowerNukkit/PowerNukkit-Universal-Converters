@@ -31,4 +31,6 @@ class JavaBlockPropertyValueInt(
     override val value: Int,
     universalValue: UniversalBlockPropertyValue?,
     default: Boolean,
-) : JavaBlockPropertyValue(platform, universalValue, default), BaseBlockPropertyValueInt
+) : JavaBlockPropertyValue(platform, universalValue, default), BaseBlockPropertyValueInt {
+    override val stringValue = value.toString()
+}

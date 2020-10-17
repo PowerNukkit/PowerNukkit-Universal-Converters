@@ -22,12 +22,13 @@ import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.api.block.PlatformBlockType
 
 /**
  * @author joserobjr
  * @since 2020-10-17
  */
-open class BlockStateConverter<
+open class BlockTypeConverter<
         FromPlatform : Platform<FromPlatform, FromBlock>,
         FromBlock : PlatformBlock<FromPlatform>,
         ToPlatform : Platform<ToPlatform, ToBlock>,
@@ -35,34 +36,16 @@ open class BlockStateConverter<
         >(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
-
-    val blockTypeConverter: BlockTypeConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
-            > = BlockTypeConverter(fromPlatform, toPlatform),
-
-    val blockPropertyValuesConverter: BlockPropertyValuesConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
-            > = BlockPropertyValuesConverter(fromPlatform, toPlatform)
 ) {
-    open fun convert(
+    fun convert(
+        fromType: PlatformBlockType<FromPlatform>,
         fromState: PlatformBlockState<FromPlatform>,
         fromLayer: Int,
         fromLayers: List<PlatformBlockState<FromPlatform>>,
         fromBlock: FromBlock,
         fromContainer: BlockContainer<FromPlatform, FromBlock>
-    ): List<PlatformBlockState<ToPlatform>> {
-        val type =
-            blockTypeConverter.convert(
-                fromState.type,
-                fromState, fromLayer, fromLayers, fromBlock, fromContainer
-            )
-
-        val values = blockPropertyValuesConverter.convert(
-            fromState.values,
-            type, fromState, fromLayer, fromLayers, fromBlock, fromContainer
-        )
-
-        val mainState = type.withState(values)
-        return listOf(mainState)
+    ): PlatformBlockType<ToPlatform> {
+        TODO("Not yet implemented")
     }
+
 }

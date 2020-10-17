@@ -31,4 +31,6 @@ class BedrockBlockPropertyValueInt(
     override val value: Int,
     universalValue: UniversalBlockPropertyValue?,
     default: Boolean,
-) : BedrockBlockPropertyValue(platform, universalValue, default), BaseBlockPropertyValueInt
+) : BedrockBlockPropertyValue(platform, universalValue, default), BaseBlockPropertyValueInt {
+    override val stringValue = value.toString()
+}

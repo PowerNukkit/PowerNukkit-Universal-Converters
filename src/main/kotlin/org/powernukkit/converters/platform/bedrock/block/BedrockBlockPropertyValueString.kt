@@ -28,7 +28,7 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  */
 class BedrockBlockPropertyValueString(
     platform: BedrockPlatform,
-    override val value: String,
+    override val stringValue: String,
     universalValue: UniversalBlockPropertyValue?,
     default: Boolean,
 ) : BedrockBlockPropertyValue(platform, universalValue, default), BaseBlockPropertyValueString

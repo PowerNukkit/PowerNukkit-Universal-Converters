@@ -27,7 +27,8 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockType
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockType<P : Platform<P, *>>(
+abstract class PlatformBlockType<
+        P : Platform<P, *>>(
     final override val platform: P,
     val id: NamespacedId
 ) : PlatformObject<P> {
@@ -36,6 +37,8 @@ abstract class PlatformBlockType<P : Platform<P, *>>(
     abstract val universalType: UniversalBlockType?
 
     abstract fun defaultPropertyValues(): Map<String, PlatformBlockPropertyValue<P>>
+
+    abstract fun withState(values: Map<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P>
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -36,7 +36,7 @@ import org.powernukkit.converters.platform.universal.entity.UniversalEntity
 class UniversalPlatform internal constructor(
     definitions: ModelDefinitions
 ) : Platform<UniversalPlatform, UniversalBlock>("Universal", MinecraftEdition.UNIVERSAL) {
-    val optionalBlockPropertyValue = UniversalBlockPropertyValueEmptyOpt(this)
+    val emptyOptionalBlockPropertyValue = UniversalBlockPropertyValueEmptyOpt(this)
 
     val blockPropertiesById = definitions.blockProperties
         .map { UniversalBlockProperty(this, it) }

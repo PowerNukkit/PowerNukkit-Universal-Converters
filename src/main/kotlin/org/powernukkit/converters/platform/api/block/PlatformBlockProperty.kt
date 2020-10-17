@@ -20,6 +20,7 @@ package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
+import org.powernukkit.converters.platform.api.block.IPlatformBlockPropertyValue.Type
 import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
 
 /**
@@ -32,6 +33,14 @@ abstract class PlatformBlockProperty<P : Platform<P, *>>(
 ) : PlatformObject<P> {
     abstract val universal: UniversalBlockProperty?
     abstract val values: List<PlatformBlockPropertyValue<P>>
+
+    fun getPlatformValue(value: String) = values.first { it.stringValue == value }
+    fun getPlatformValue(value: Int) = values.first { it.type == Type.INT && it.intValue() == value }
+    fun getPlatformValue(value: Boolean) = values.first { it.type == Type.BOOLEAN && it.booleanValue() == value }
+
+    fun getPlatformValue(propertyValue: PlatformBlockPropertyValue<P>): PlatformBlockPropertyValue<P> {
+        return values.firstOrNull { it === propertyValue } ?: getPlatformValue(propertyValue.stringValue)
+    }
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
