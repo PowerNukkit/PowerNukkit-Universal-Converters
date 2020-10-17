@@ -20,16 +20,27 @@ package org.powernukkit.converters.math
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-17
  */
-data class BlockPos(val xPos: Int, val yPos: Int, val zPos: Int) {
-    operator fun plus(pos: BlockPos) = BlockPos(
-        xPos + pos.xPos,
-        yPos + pos.yPos,
-        zPos + pos.zPos,
-    )
+class DoubleRangeExclusive(start: Double, val endExclusive: Double) : ClosedFloatingPointRange<Double> {
+    private val _start = start
 
-    companion object {
-        val ZERO = BlockPos(0, 0, 0)
+    override val start: Double get() = _start
+    override val endInclusive get() = Double.NaN
+
+    override operator fun contains(value: Double) = value >= _start && value < endExclusive
+    override fun isEmpty() = _start >= endExclusive
+
+    override fun lessThanOrEquals(a: Double, b: Double) = a <= b
+
+    override fun equals(other: Any?): Boolean {
+        return other is DoubleRangeExclusive &&
+                (isEmpty() && other.isEmpty() || _start == other._start && endExclusive == other.endExclusive)
     }
+
+    override fun hashCode(): Int {
+        return if (isEmpty()) -1 else 31 * _start.hashCode() + endExclusive.hashCode()
+    }
+
+    override fun toString(): String = "$_start until $endExclusive"
 }

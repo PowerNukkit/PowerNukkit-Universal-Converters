@@ -31,4 +31,8 @@ class UniversalBlock(
     override val blockLayers: List<UniversalBlockState>,
     override var blockEntity: UniversalBlockEntity? = null,
     override val entities: List<UniversalEntity> = emptyList()
-) : PlatformBlock<UniversalPlatform>(platform)
+) : PlatformBlock<UniversalPlatform>(platform) {
+    init {
+        validateEntities()
+    }
+}

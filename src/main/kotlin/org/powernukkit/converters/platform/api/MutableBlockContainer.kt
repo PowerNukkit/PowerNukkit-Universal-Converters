@@ -16,20 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.math
+package org.powernukkit.converters.platform.api
+
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.platform.api.block.PositionedBlock
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-17
  */
-data class BlockPos(val xPos: Int, val yPos: Int, val zPos: Int) {
-    operator fun plus(pos: BlockPos) = BlockPos(
-        xPos + pos.xPos,
-        yPos + pos.yPos,
-        zPos + pos.zPos,
-    )
+interface MutableBlockContainer<
+        P : Platform<P, Block>,
+        Block : PlatformBlock<P>
+        > : MutableContainer<BlockPos, PositionedBlock<P, Block>>, BlockContainer<P, Block> {
 
-    companion object {
-        val ZERO = BlockPos(0, 0, 0)
+    operator fun set(pos: BlockPos, block: Block)
+    override fun set(key: BlockPos, value: PositionedBlock<P, Block>) {
+        this[key] = value.block
     }
 }

@@ -18,33 +18,71 @@
 
 package org.powernukkit.converters.converter
 
+import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.platform.api.Container
+import org.powernukkit.converters.math.BoundingBox
+import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.platform.api.MutableBlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformStructure
-import org.powernukkit.converters.platform.api.block.PositionedBlock
+import org.powernukkit.converters.platform.api.block.plus
 
 /**
  * @author joserobjr
  * @since 2020-10-16
  */
-class BlockConverter<
+open class BlockConverter<
         FromPlatform : Platform<FromPlatform, FromBlock>,
         FromBlock : PlatformBlock<FromPlatform>,
         ToPlatform : Platform<ToPlatform, ToBlock>,
         ToBlock : PlatformBlock<ToPlatform>,
-        ToStructure : PlatformStructure<ToPlatform, ToBlock>,
         >(
     val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform
+    val toPlatform: ToPlatform,
+
+    val blockLayersConverter: BlockLayersConverter<
+            FromPlatform, FromBlock, ToPlatform, ToBlock
+            > = BlockLayersConverter(fromPlatform, toPlatform),
+
+    val blockEntityConverter: BlockEntityConverter<
+            FromPlatform, FromBlock, ToPlatform, ToBlock
+            > = BlockEntityConverter(fromPlatform, toPlatform),
+
+    val entityConverter: EntityConverter<
+            FromPlatform, FromBlock, ToPlatform, ToBlock
+            > = EntityConverter(fromPlatform, toPlatform),
 ) {
-    fun convert(
-        container: Container<BlockPos, PositionedBlock<FromPlatform, FromBlock>>,
+    open fun convert(
+        fromContainer: BlockContainer<FromPlatform, FromBlock>,
         pos: BlockPos,
         fromBlock: FromBlock,
-        toStructure: ToStructure
-    ): ToBlock {
-        TODO()
+
+        toContainer: MutableBlockContainer<ToPlatform, ToBlock>
+    ) {
+        val layers = blockLayersConverter.convert(fromBlock.blockLayers, fromBlock, fromContainer)
+        val blockEntity = blockEntityConverter.convert(fromBlock.blockEntity, fromBlock, fromContainer, layers)
+        val entities = entityConverter.convert(fromBlock, fromContainer, layers, blockEntity)
+
+        if (entities.all { it.pos in BoundingBox.SIMPLE_BOX }) {
+            toContainer[pos] = toPlatform.createPlatformBlock(layers, blockEntity, entities)
+        } else {
+            val sameBlock = entities.filter { it.pos in BoundingBox.SIMPLE_BOX }
+            toContainer[pos] = toPlatform.createPlatformBlock(layers, blockEntity, sameBlock)
+
+            val otherBlocks = entities.asSequence()
+                .filter { it.pos !in BoundingBox.SIMPLE_BOX }
+                .map {
+                    val blockPos = it.pos.toBlockPos()
+                    blockPos to it.withPos(it.pos - blockPos)
+                }
+                .toMapOfList()
+
+            otherBlocks.forEach { (blockPos, blockEntities) ->
+                val currentBlock = toContainer.getBlock(blockPos) ?: toPlatform.airBlock
+                val blockWithEntities =
+                    toPlatform.createPlatformBlock(toPlatform.airBlockState, entities = blockEntities)
+                toContainer[blockPos] = currentBlock + blockWithEntities
+            }
+        }
     }
 }

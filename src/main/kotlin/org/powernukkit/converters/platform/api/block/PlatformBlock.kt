@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.api.block
 
+import org.powernukkit.converters.math.BoundingBox
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
@@ -37,6 +38,10 @@ abstract class PlatformBlock<P : Platform<P, *>>(
         get() = platform.airBlockState.let { air ->
             blockLayers.all { it == air }
         }
+
+    protected fun validateEntities() {
+        require(entities.all { it.pos in BoundingBox.SIMPLE_BOX })
+    }
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true

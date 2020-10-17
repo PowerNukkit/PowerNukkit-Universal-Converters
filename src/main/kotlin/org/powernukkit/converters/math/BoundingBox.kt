@@ -20,16 +20,22 @@ package org.powernukkit.converters.math
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-17
  */
-data class BlockPos(val xPos: Int, val yPos: Int, val zPos: Int) {
-    operator fun plus(pos: BlockPos) = BlockPos(
-        xPos + pos.xPos,
-        yPos + pos.yPos,
-        zPos + pos.zPos,
-    )
+data class BoundingBox(
+    val min: EntityPos,
+    val max: EntityPos
+) {
+    val xRange = min.xPos until max.xPos
+    val yRange = min.yPos until max.yPos
+    val zRange = min.zPos until max.zPos
+
+    operator fun contains(pos: EntityPos) =
+        pos.xPos in xRange &&
+                pos.yPos in yRange &&
+                pos.zPos in zRange
 
     companion object {
-        val ZERO = BlockPos(0, 0, 0)
+        val SIMPLE_BOX = BoundingBox(EntityPos.ZERO, EntityPos.ONE)
     }
 }

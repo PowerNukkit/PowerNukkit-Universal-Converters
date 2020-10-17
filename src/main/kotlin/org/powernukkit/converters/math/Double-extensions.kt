@@ -16,19 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.converter
-
-import org.powernukkit.converters.platform.api.Platform
+package org.powernukkit.converters.math
 
 /**
  * @author joserobjr
- * @since 2020-10-15
+ * @since 2020-10-17
  */
-interface Adapter<
-        FromPlatform : Platform<FromPlatform, *>,
-        From : Any?,
-        ToPlatform : Platform<ToPlatform, *>,
-        To : Any?,
-        > {
-    fun adapt(fromPlatform: FromPlatform, toPlatform: ToPlatform, from: From): To
-}
+infix fun Double.until(other: Double) = DoubleRangeExclusive(this, other)

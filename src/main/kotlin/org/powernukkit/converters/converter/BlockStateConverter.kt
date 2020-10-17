@@ -16,29 +16,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.converter
 
+import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.base.BasePlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-10-17
  */
-abstract class BaseBlock<
-        P : BasePlatform<P, *, *, *, BlockState, *, *, *, *, BlockEntity, Entity>,
-        BlockState : PlatformBlockState<P>,
-        BlockEntity : PlatformBlockEntity<P>,
-        Entity : PlatformEntity<P>
+open class BlockStateConverter<
+        FromPlatform : Platform<FromPlatform, FromBlock>,
+        FromBlock : PlatformBlock<FromPlatform>,
+        ToPlatform : Platform<ToPlatform, ToBlock>,
+        ToBlock : PlatformBlock<ToPlatform>,
         >(
-    platform: P,
-    final override val blockEntity: BlockEntity? = null,
-    final override val entities: List<Entity> = emptyList(),
-) : PlatformBlock<P>(platform) {
-    init {
-        validateEntities()
+    val fromPlatform: FromPlatform,
+    val toPlatform: ToPlatform,
+) {
+    open fun convert(
+        blockState: PlatformBlockState<FromPlatform>,
+        layer: Int,
+        layers: List<PlatformBlockState<FromPlatform>>,
+        fromBlock: FromBlock,
+        fromContainer: BlockContainer<FromPlatform, FromBlock>
+    ): List<PlatformBlockState<ToPlatform>> {
+        TODO("Not yet implemented")
     }
 }

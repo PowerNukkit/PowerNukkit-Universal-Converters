@@ -18,7 +18,6 @@
 
 package org.powernukkit.converters.converter
 
-import com.google.common.collect.MapMaker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.powernukkit.converters.platform.api.Platform
@@ -30,7 +29,7 @@ import org.powernukkit.converters.platform.api.block.createStructure
  * @author joserobjr
  * @since 2020-10-15
  */
-class StructureConverter<
+open class StructureConverter<
         FromPlatform : Platform<FromPlatform, FromBlock>,
         FromBlock : PlatformBlock<FromPlatform>,
         FromStructure : PlatformStructure<FromPlatform, FromBlock>,
@@ -40,30 +39,39 @@ class StructureConverter<
         >(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
+    val blockConverter: BlockConverter<
+            FromPlatform, FromBlock, ToPlatform, ToBlock
+            > = BlockConverter(fromPlatform, toPlatform),
 ) {
-    val blockConverter = BlockConverter(fromPlatform, toPlatform)
+    fun convertAll(fromStructures: Flow<FromStructure>): Flow<ToStructure> {
+        val singleBlockStructureCache = mutableMapOf<FromBlock, ToStructure>()
+        return fromStructures.map {
+            convert(it, singleBlockStructureCache)
+        }
+    }
 
-    // TODO Replace caching with a Kotlin coroutine semantic (I just don't know how yet lol) 
-    private val singleBlockStructureCache = MapMaker().weakKeys().weakValues().makeMap<FromBlock, ToStructure>()
-
-    // TODO Still deciding if we should use Flow or Channel
-    fun convertAll(fromStructures: Flow<FromStructure>) = fromStructures.map(this::convert)
-
-    private fun convert(fromStructure: FromStructure): ToStructure {
+    protected open fun convert(
+        fromStructure: FromStructure,
+        singleBlockStructureCache: MutableMap<FromBlock, ToStructure>,
+    ): ToStructure {
         val size = fromStructure.blocks.size
 
         @Suppress("UNCHECKED_CAST")
         val toStructure = toPlatform.createStructure(size) as ToStructure
 
         if (size == 1) {
-            convertSingleStructure(fromStructure, toStructure)
+            convertSingleStructure(fromStructure, toStructure, singleBlockStructureCache)
         } else {
             convertMultiStructure(fromStructure, toStructure)
         }
         return toStructure
     }
 
-    private fun convertSingleStructure(fromStructure: FromStructure, toStructure: ToStructure) {
+    protected open fun convertSingleStructure(
+        fromStructure: FromStructure,
+        toStructure: ToStructure,
+        singleBlockStructureCache: MutableMap<FromBlock, ToStructure>
+    ) {
         val (pos, block) = fromStructure.blocks.entries.first()
         val cacheStructure = singleBlockStructureCache.computeIfAbsent(block) { _ ->
             toStructure.createStructure(1).also {
@@ -74,7 +82,10 @@ class StructureConverter<
         toStructure.merge(cacheStructure, pos)
     }
 
-    private fun convertMultiStructure(fromStructure: FromStructure, toStructure: ToStructure) {
+    protected open fun convertMultiStructure(
+        fromStructure: FromStructure,
+        toStructure: ToStructure,
+    ) {
         fromStructure.blocks.forEach { (pos, block) ->
             blockConverter.convert(fromStructure, pos, block, toStructure)
         }

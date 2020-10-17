@@ -28,4 +28,17 @@ data class EntityPos(val xPos: Double, val yPos: Double, val zPos: Double) {
         yPos + pos.yPos,
         zPos + pos.zPos,
     )
+
+    operator fun minus(pos: BlockPos) = EntityPos(
+        xPos - pos.xPos,
+        yPos - pos.yPos,
+        zPos - pos.zPos,
+    )
+
+    fun toBlockPos() = BlockPos(xPos.toInt(), yPos.toInt(), zPos.toInt())
+
+    companion object {
+        val ZERO = EntityPos(0.0, 0.0, 0.0)
+        val ONE = EntityPos(1.0, 1.0, 1.0)
+    }
 }

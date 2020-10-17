@@ -18,21 +18,33 @@
 
 package org.powernukkit.converters.converter
 
+import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
 
 /**
  * @author joserobjr
- * @since 2020-10-15
+ * @since 2020-10-17
  */
-interface BlockAdapter<
+open class BlockLayersConverter<
         FromPlatform : Platform<FromPlatform, FromBlock>,
         FromBlock : PlatformBlock<FromPlatform>,
         ToPlatform : Platform<ToPlatform, ToBlock>,
         ToBlock : PlatformBlock<ToPlatform>,
-        > : Adapter<FromPlatform, List<FromBlock>, ToPlatform, List<ToBlock>> {
+        >(
+    val fromPlatform: FromPlatform,
+    val toPlatform: ToPlatform,
 
-    override fun adapt(fromPlatform: FromPlatform, toPlatform: ToPlatform, from: List<FromBlock>): List<ToBlock> {
-        TODO("Not yet implemented")
+    val blockStateConverter: BlockStateConverter<
+            FromPlatform, FromBlock, ToPlatform, ToBlock
+            > = BlockStateConverter(fromPlatform, toPlatform)
+) {
+    open fun convert(
+        layers: List<PlatformBlockState<FromPlatform>>,
+        fromBlock: FromBlock,
+        fromContainer: BlockContainer<FromPlatform, FromBlock>,
+    ) = layers.flatMapIndexed { layer: Int, blockState: PlatformBlockState<FromPlatform> ->
+        blockStateConverter.convert(blockState, layer, layers, fromBlock, fromContainer)
     }
 }

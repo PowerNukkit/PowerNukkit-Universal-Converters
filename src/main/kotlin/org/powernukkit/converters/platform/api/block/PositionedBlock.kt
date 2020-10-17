@@ -39,6 +39,8 @@ data class PositionedBlock<
         block.entities.map { it.withPos(it.pos + pos) }
     }
 
+    fun moveTo(pos: BlockPos) = PositionedBlock(pos, block)
+
     override fun toString(): String {
         return "${platform.name}PositionedBlock(pos=$pos, layers=$layers, blockEntity=$blockEntity, entities=${block.entities.size}"
     }
