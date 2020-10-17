@@ -27,29 +27,24 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockState
  * @author joserobjr
  * @since 2020-10-17
  */
-open class BlockStateConverter<
-        FromPlatform : Platform<FromPlatform, FromBlock>,
-        FromBlock : PlatformBlock<FromPlatform>,
-        ToPlatform : Platform<ToPlatform, ToBlock>,
-        ToBlock : PlatformBlock<ToPlatform>,
-        >(
+open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 
     val blockTypeConverter: BlockTypeConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
+            FromPlatform, ToPlatform
             > = BlockTypeConverter(fromPlatform, toPlatform),
 
     val blockPropertyValuesConverter: BlockPropertyValuesConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
+            FromPlatform, ToPlatform
             > = BlockPropertyValuesConverter(fromPlatform, toPlatform)
 ) {
     open fun convert(
         fromState: PlatformBlockState<FromPlatform>,
         fromLayer: Int,
         fromLayers: List<PlatformBlockState<FromPlatform>>,
-        fromBlock: FromBlock,
-        fromContainer: BlockContainer<FromPlatform, FromBlock>
+        fromBlock: PlatformBlock<FromPlatform>,
+        fromContainer: BlockContainer<FromPlatform>
     ): List<PlatformBlockState<ToPlatform>> {
         val type =
             blockTypeConverter.convert(

@@ -29,12 +29,7 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockType
  * @author joserobjr
  * @since 2020-10-17
  */
-open class BlockPropertyValuesConverter<
-        FromPlatform : Platform<FromPlatform, FromBlock>,
-        FromBlock : PlatformBlock<FromPlatform>,
-        ToPlatform : Platform<ToPlatform, ToBlock>,
-        ToBlock : PlatformBlock<ToPlatform>,
-        >(
+open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 ) {
@@ -44,8 +39,8 @@ open class BlockPropertyValuesConverter<
         fromState: PlatformBlockState<FromPlatform>,
         fromLayer: Int,
         fromLayers: List<PlatformBlockState<FromPlatform>>,
-        fromBlock: FromBlock,
-        fromContainer: BlockContainer<FromPlatform, FromBlock>
+        fromBlock: PlatformBlock<FromPlatform>,
+        fromContainer: BlockContainer<FromPlatform>
     ): Map<String, PlatformBlockPropertyValue<ToPlatform>> {
         TODO("Not yet implemented")
     }

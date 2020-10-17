@@ -26,12 +26,9 @@ import org.powernukkit.converters.platform.api.PlatformObject
  * @author joserobjr
  * @since 2020-10-16
  */
-data class PositionedBlock<
-        P : Platform<P, Block>,
-        Block : PlatformBlock<P>,
-        >(
+data class PositionedBlock<P : Platform<P>>(
     val pos: BlockPos,
-    val block: Block
+    val block: PlatformBlock<P>
 ) : PlatformObject<P> by block {
     val layers get() = block.blockLayers
     val blockEntity get() = block.blockEntity

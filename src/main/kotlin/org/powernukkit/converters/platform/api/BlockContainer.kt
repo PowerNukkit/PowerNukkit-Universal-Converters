@@ -26,10 +26,6 @@ import org.powernukkit.converters.platform.api.block.PositionedBlock
  * @author joserobjr
  * @since 2020-10-17
  */
-interface BlockContainer<
-        P : Platform<P, Block>,
-        Block : PlatformBlock<P>
-        > : Container<BlockPos, PositionedBlock<P, Block>> {
-
-    fun getBlock(pos: BlockPos): Block?
+interface BlockContainer<P : Platform<P>> : Container<BlockPos, PositionedBlock<P>> {
+    fun getBlock(pos: BlockPos): PlatformBlock<P>?
 }

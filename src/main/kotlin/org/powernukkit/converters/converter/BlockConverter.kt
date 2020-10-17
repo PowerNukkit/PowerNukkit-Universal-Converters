@@ -31,33 +31,28 @@ import org.powernukkit.converters.platform.api.block.plus
  * @author joserobjr
  * @since 2020-10-16
  */
-open class BlockConverter<
-        FromPlatform : Platform<FromPlatform, FromBlock>,
-        FromBlock : PlatformBlock<FromPlatform>,
-        ToPlatform : Platform<ToPlatform, ToBlock>,
-        ToBlock : PlatformBlock<ToPlatform>,
-        >(
+open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 
     val blockLayersConverter: BlockLayersConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
+            FromPlatform, ToPlatform
             > = BlockLayersConverter(fromPlatform, toPlatform),
 
     val blockEntityConverter: BlockEntityConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
+            FromPlatform, ToPlatform
             > = BlockEntityConverter(fromPlatform, toPlatform),
 
     val entityConverter: EntityConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
+            FromPlatform, ToPlatform
             > = EntityConverter(fromPlatform, toPlatform),
 ) {
     open fun convert(
-        fromContainer: BlockContainer<FromPlatform, FromBlock>,
+        fromContainer: BlockContainer<FromPlatform>,
         pos: BlockPos,
-        fromBlock: FromBlock,
+        fromBlock: PlatformBlock<FromPlatform>,
 
-        toContainer: MutableBlockContainer<ToPlatform, ToBlock>
+        toContainer: MutableBlockContainer<ToPlatform>
     ) {
         val layers = blockLayersConverter.convert(fromBlock.blockLayers, fromBlock, fromContainer)
         val blockEntity = blockEntityConverter.convert(fromBlock.blockEntity, fromBlock, fromContainer, layers)

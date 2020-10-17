@@ -29,35 +29,25 @@ import org.powernukkit.converters.platform.api.block.createStructure
  * @author joserobjr
  * @since 2020-10-15
  */
-open class StructureConverter<
-        FromPlatform : Platform<FromPlatform, FromBlock>,
-        FromBlock : PlatformBlock<FromPlatform>,
-        FromStructure : PlatformStructure<FromPlatform, FromBlock>,
-        ToPlatform : Platform<ToPlatform, ToBlock>,
-        ToBlock : PlatformBlock<ToPlatform>,
-        ToStructure : PlatformStructure<ToPlatform, ToBlock>,
-        >(
+open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
-    val blockConverter: BlockConverter<
-            FromPlatform, FromBlock, ToPlatform, ToBlock
-            > = BlockConverter(fromPlatform, toPlatform),
+    val blockConverter: BlockConverter<FromPlatform, ToPlatform> = BlockConverter(fromPlatform, toPlatform),
 ) {
-    fun convertAll(fromStructures: Flow<FromStructure>): Flow<ToStructure> {
-        val singleBlockStructureCache = mutableMapOf<FromBlock, ToStructure>()
+    fun convertAll(fromStructures: Flow<PlatformStructure<FromPlatform>>): Flow<PlatformStructure<ToPlatform>> {
+        val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>()
         return fromStructures.map {
             convert(it, singleBlockStructureCache)
         }
     }
 
     protected open fun convert(
-        fromStructure: FromStructure,
-        singleBlockStructureCache: MutableMap<FromBlock, ToStructure>,
-    ): ToStructure {
+        fromStructure: PlatformStructure<FromPlatform>,
+        singleBlockStructureCache: MutableMap<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>,
+    ): PlatformStructure<ToPlatform> {
         val size = fromStructure.blocks.size
 
-        @Suppress("UNCHECKED_CAST")
-        val toStructure = toPlatform.createStructure(size) as ToStructure
+        val toStructure = toPlatform.createStructure(size)
 
         if (size == 1) {
             convertSingleStructure(fromStructure, toStructure, singleBlockStructureCache)
@@ -68,9 +58,9 @@ open class StructureConverter<
     }
 
     protected open fun convertSingleStructure(
-        fromStructure: FromStructure,
-        toStructure: ToStructure,
-        singleBlockStructureCache: MutableMap<FromBlock, ToStructure>
+        fromStructure: PlatformStructure<FromPlatform>,
+        toStructure: PlatformStructure<ToPlatform>,
+        singleBlockStructureCache: MutableMap<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>
     ) {
         val (pos, block) = fromStructure.blocks.entries.first()
         val cacheStructure = singleBlockStructureCache.computeIfAbsent(block) { _ ->
@@ -83,8 +73,8 @@ open class StructureConverter<
     }
 
     protected open fun convertMultiStructure(
-        fromStructure: FromStructure,
-        toStructure: ToStructure,
+        fromStructure: PlatformStructure<FromPlatform>,
+        toStructure: PlatformStructure<ToPlatform>,
     ) {
         fromStructure.blocks.forEach { (pos, block) ->
             blockConverter.convert(fromStructure, pos, block, toStructure)

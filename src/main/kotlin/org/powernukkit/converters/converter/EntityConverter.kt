@@ -29,18 +29,13 @@ import org.powernukkit.converters.platform.api.entity.PlatformEntity
  * @author joserobjr
  * @since 2020-10-17
  */
-open class EntityConverter<
-        FromPlatform : Platform<FromPlatform, FromBlock>,
-        FromBlock : PlatformBlock<FromPlatform>,
-        ToPlatform : Platform<ToPlatform, ToBlock>,
-        ToBlock : PlatformBlock<ToPlatform>
-        >(
+open class EntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 ) {
     open fun convert(
         fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform, FromBlock>,
+        fromContainer: BlockContainer<FromPlatform>,
         convertedLayers: List<PlatformBlockState<ToPlatform>>,
         convertedBlockEntity: PlatformBlockEntity<ToPlatform>?
     ): List<PlatformEntity<ToPlatform>> {

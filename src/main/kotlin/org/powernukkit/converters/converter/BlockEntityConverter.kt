@@ -28,19 +28,14 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockState
  * @author joserobjr
  * @since 2020-10-17
  */
-open class BlockEntityConverter<
-        FromPlatform : Platform<FromPlatform, FromBlock>,
-        FromBlock : PlatformBlock<FromPlatform>,
-        ToPlatform : Platform<ToPlatform, ToBlock>,
-        ToBlock : PlatformBlock<ToPlatform>,
-        >(
+open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 ) {
     open fun convert(
         blockEntity: PlatformBlockEntity<FromPlatform>?,
-        fromBlock: FromBlock,
-        fromContainer: BlockContainer<FromPlatform, FromBlock>,
+        fromBlock: PlatformBlock<FromPlatform>,
+        fromContainer: BlockContainer<FromPlatform>,
         convertedLayers: List<PlatformBlockState<ToPlatform>>
     ): PlatformBlockEntity<ToPlatform>? {
         TODO("Not yet implemented")

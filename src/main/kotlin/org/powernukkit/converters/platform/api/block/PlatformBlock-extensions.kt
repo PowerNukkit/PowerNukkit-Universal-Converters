@@ -25,15 +25,14 @@ import org.powernukkit.converters.platform.api.Platform
  * @author joserobjr
  * @since 2020-10-16
  */
-fun <P : Platform<P, Block>, Block : PlatformBlock<P>>
-        Block.positionedAt(pos: BlockPos) = PositionedBlock(pos, this)
+fun <P : Platform<P>> PlatformBlock<P>.positionedAt(pos: BlockPos) = PositionedBlock(pos, this)
 
-operator fun <P : Platform<P, Block>, Block : PlatformBlock<P>>
-        Block.plus(other: Block): Block {
+@Suppress("UNCHECKED_CAST")
+operator fun <P : Platform<P>, Block : PlatformBlock<P>> Block.plus(other: Block): Block {
     val otherIsAir = other.isBlockAir
     return platform.createPlatformBlock(
         blockLayers = if (otherIsAir) this.blockLayers else other.blockLayers,
         blockEntity = other.blockEntity?.takeUnless { otherIsAir } ?: this.blockEntity,
         entities = this.entities + other.entities
-    )
+    ) as Block
 }

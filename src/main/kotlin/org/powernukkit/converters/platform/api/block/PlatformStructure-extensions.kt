@@ -25,5 +25,5 @@ import org.powernukkit.converters.platform.api.Platform
  * @since 2020-10-16
  */
 @Suppress("UNCHECKED_CAST")
-fun <P : Platform<P, Block>, Block : PlatformBlock<P>, Structure : PlatformStructure<P, Block>>
+fun <P : Platform<P>, Structure : PlatformStructure<P>>
         Structure.createStructure(size: Int = blocks.size) = platform.createStructure(size) as Structure
