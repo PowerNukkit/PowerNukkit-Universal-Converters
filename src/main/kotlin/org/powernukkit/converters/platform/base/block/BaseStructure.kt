@@ -18,17 +18,14 @@
 
 package org.powernukkit.converters.platform.base.block
 
-import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.base.BasePlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseStructure<
-        P : Platform<P, Block>,
-        Block : PlatformBlock<P>
-        >(
-    platform: P
-) : PlatformStructure<P, Block>(platform)
+abstract class BaseStructure<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
+    size: Int,
+) : PlatformStructure<P>(constructors.platform)

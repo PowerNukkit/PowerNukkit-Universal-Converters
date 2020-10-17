@@ -19,14 +19,15 @@
 package org.powernukkit.converters.platform.base.entity
 
 import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseEntity<P : Platform<P, *>>(
-    platform: P,
+abstract class BaseEntity<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
     pos: EntityPos
-) : PlatformEntity<P>(platform, pos)
+) : PlatformEntity<P>(constructors.platform, pos)

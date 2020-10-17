@@ -19,16 +19,13 @@
 package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
 import org.powernukkit.converters.platform.base.BasePlatform
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockEntity<
-        P : BasePlatform<P, *, BlockEntityType, *, *, *, *, *, *, *, *>,
-        BlockEntityType : PlatformBlockEntityType<P>
-        >(
-    final override val type: BlockEntityType,
+abstract class BaseBlockEntity<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
+    final override val type: BaseBlockEntityType<P>,
 ) : PlatformBlockEntity<P>()

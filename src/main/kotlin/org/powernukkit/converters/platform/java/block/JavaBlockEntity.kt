@@ -19,6 +19,8 @@
 package org.powernukkit.converters.platform.java.block
 
 import org.powernukkit.converters.platform.base.block.BaseBlockEntity
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
@@ -26,5 +28,6 @@ import org.powernukkit.converters.platform.java.JavaPlatform
  * @since 2020-10-11
  */
 class JavaBlockEntity(
-    type: JavaBlockEntityType,
-) : BaseBlockEntity<JavaPlatform, JavaBlockEntityType>(type)
+    constructors: BaseConstructors<JavaPlatform>,
+    type: BaseBlockEntityType<JavaPlatform>,
+) : BaseBlockEntity<JavaPlatform>(constructors, type)

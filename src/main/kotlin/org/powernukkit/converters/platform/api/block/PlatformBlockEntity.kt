@@ -25,7 +25,7 @@ import org.powernukkit.converters.platform.api.PlatformObject
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockEntity<P : Platform<P, *>> : PlatformObject<P> {
+abstract class PlatformBlockEntity<P : Platform<P>> : PlatformObject<P> {
     abstract val type: PlatformBlockEntityType<P>
     final override val platform get() = type.platform
 

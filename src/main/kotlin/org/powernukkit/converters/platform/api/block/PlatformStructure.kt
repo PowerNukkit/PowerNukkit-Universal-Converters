@@ -23,21 +23,19 @@ import org.powernukkit.converters.platform.api.MutableBlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 
-abstract class PlatformStructure<
-        P : Platform<P, Block>,
-        Block : PlatformBlock<P>>(
+abstract class PlatformStructure<P : Platform<P>>(
     final override val platform: P,
-) : PlatformObject<P>, MutableBlockContainer<P, Block> {
-    val blocks = mutableMapOf<BlockPos, Block>()
+) : PlatformObject<P>, MutableBlockContainer<P, PlatformBlock<P>> {
+    val blocks = mutableMapOf<BlockPos, PlatformBlock<P>>()
 
-    final override fun getBlock(pos: BlockPos) = blocks[pos]
-    final override fun get(key: BlockPos) = blocks[key]?.positionedAt(key)
     final override fun contains(key: BlockPos) = key in blocks
-    final override fun set(pos: BlockPos, block: Block) {
+    override fun getBlock(pos: BlockPos) = blocks[pos]
+    override fun get(key: BlockPos) = blocks[key]?.positionedAt(key)
+    override fun set(pos: BlockPos, block: PlatformBlock<P>) {
         blocks[pos] = block
     }
 
-    fun merge(structure: PlatformStructure<P, Block>, pos: BlockPos) {
+    fun merge(structure: PlatformStructure<P>, pos: BlockPos) {
         structure.blocks.forEach { (originalPos, block) ->
             blocks.compute(pos + originalPos) { _, previous ->
                 (previous ?: platform.airBlock) + block
@@ -49,7 +47,7 @@ abstract class PlatformStructure<
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PlatformStructure<*, *>
+        other as PlatformStructure<*>
 
         if (platform != other.platform) return false
         if (blocks != other.blocks) return false

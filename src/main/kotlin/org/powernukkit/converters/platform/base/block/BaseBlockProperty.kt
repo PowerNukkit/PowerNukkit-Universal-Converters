@@ -19,7 +19,6 @@
 package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
 
@@ -27,23 +26,20 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockProperty<
-        P : BasePlatform<P, *, *, *, *, BlockPropertyValue, *, *, *, *, *>,
-        BlockPropertyValue : PlatformBlockPropertyValue<P>
-        >(
-    platform: P,
+abstract class BaseBlockProperty<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
     id: String,
     final override val universal: UniversalBlockProperty?,
-    final override val values: List<BlockPropertyValue>
-) : PlatformBlockProperty<P>(platform, id) {
+    final override val values: List<BaseBlockPropertyValue<P>>
+) : PlatformBlockProperty<P>(constructors.platform, id) {
     init {
         require(values.isNotEmpty()) {
             "The ${platform.name} block property $id value list cannot be empty"
         }
     }
 
-    constructor(platform: P, id: String, universal: UniversalBlockProperty) : this(
-        platform, id, universal,
-        platform.createBlockPropertyValueList(universal)
+    constructor(constructors: BaseConstructors<P>, id: String, universal: UniversalBlockProperty) : this(
+        constructors, id, universal,
+        constructors.createBlockPropertyValueList(universal)
     )
 }

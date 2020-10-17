@@ -18,8 +18,10 @@
 
 package org.powernukkit.converters.platform.base.block
 
+import org.powernukkit.converters.internal.InitOnceDelegator
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.PlatformObject
+import org.powernukkit.converters.platform.api.block.PlatformStructure
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.universal.block.*
@@ -29,129 +31,86 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @author joserobjr
  * @since 2020-10-17
  */
-class BaseConstructors<
-        P : BasePlatform<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState,
-                BlockPropertyValue, BlockEntityDataType, Block, Structure, BlockEntity, Entity
-                >,
-        BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
-        BlockEntityType : BaseBlockEntityType<P, BlockEntityDataType>,
-        BlockType : BaseBlockType<P, BlockProperty, BlockEntityType, BlockPropertyValue>,
-        BlockState : BaseBlockState<P, BlockType, BlockProperty, BlockPropertyValue>,
-        BlockPropertyValue : BaseBlockPropertyValue<P>,
-        BlockEntityDataType : BaseBlockEntityDataType<P>,
-        Block : BaseBlock<P, BlockState, BlockEntity, Entity>,
-        Structure : BaseStructure<P, Block>,
-        BlockEntity : BaseBlockEntity<P, BlockEntityType>,
-        Entity : BaseEntity<P>
-        >(
-
-    override val platform: P,
+class BaseConstructors<P : BasePlatform<P>>(
 
     val blockState: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
-        BlockType, Map<String, BlockPropertyValue>
-    ) -> BlockState,
+        BaseConstructors<P>,
+        BaseBlockType<P>, Map<String, BaseBlockPropertyValue<P>>
+    ) -> BaseBlockState<P>,
 
     val blockProperty: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         id: String, UniversalBlockProperty
-    ) -> BlockProperty,
+    ) -> BaseBlockProperty<P>,
 
 
     val blockEntityType: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         id: String, UniversalBlockEntityType,
-        Map<String, BlockEntityDataType>
-    ) -> BlockEntityType,
+        Map<String, BaseBlockEntityDataType<P>>
+    ) -> BaseBlockEntityType<P>,
 
 
     val blockEntityDataType: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         UniversalBlockEntityDataType
-    ) -> BlockEntityDataType,
+    ) -> BaseBlockEntityDataType<P>,
 
 
     val blockType: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         NamespacedId, UniversalBlockType, ModelExtraBlock?
-    ) -> BlockType,
+    ) -> BaseBlockType<P>,
 
 
     val blockSingleLayer: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
-        BlockState, BlockEntity?, List<Entity>
-    ) -> Block,
+        BaseConstructors<P>,
+        BaseBlockState<P>, BaseBlockEntity<P>?, List<BaseEntity<P>>
+    ) -> BaseBlock<P>,
 
 
     val blockMultiLayer: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
-        List<BlockState>, BlockEntity?, List<Entity>
-    ) -> Block,
+        BaseConstructors<P>,
+        List<BaseBlockState<P>>, BaseBlockEntity<P>?, List<BaseEntity<P>>
+    ) -> BaseBlock<P>,
 
 
     val blockPropertyValueInt: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         Int, UniversalBlockPropertyValue, Boolean
-    ) -> BlockPropertyValue,
+    ) -> BaseBlockPropertyValue<P>,
 
 
     val blockPropertyValueString: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         String, UniversalBlockPropertyValue, Boolean
-    ) -> BlockPropertyValue,
+    ) -> BaseBlockPropertyValue<P>,
 
 
     val blockPropertyValueBoolean: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         Boolean, UniversalBlockPropertyValue, Boolean
-    ) -> BlockPropertyValue,
+    ) -> BaseBlockPropertyValue<P>,
 
 
     val structure: (
-        BaseConstructors<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-                BlockEntityDataType, Block, Structure, BlockEntity, Entity,
-                >,
+        BaseConstructors<P>,
         size: Int
-    ) -> Structure
+    ) -> PlatformStructure<P>
 
 
 ) : PlatformObject<P> {
 
+    override var platform: P by InitOnceDelegator(); private set
+
+    @Suppress("UNCHECKED_CAST")
+    internal fun assignPlatform(platform: BasePlatform<P>) {
+        this.platform = platform as P
+    }
+
     fun createBlockProperty(id: String, universal: UniversalBlockProperty) = blockProperty(this, id, universal)
 
-    fun createBlockPropertyValue(universalValue: UniversalBlockPropertyValue): BlockPropertyValue {
+    fun createBlockPropertyValue(universalValue: UniversalBlockPropertyValue): BaseBlockPropertyValue<P> {
         val value = universalValue.getEditionValue(platform.minecraftEdition)
         val int = value.toIntOrNull()
         if (int != null) {
@@ -163,21 +122,21 @@ class BaseConstructors<
         return createBlockPropertyValue(value, universalValue, universalValue.default)
     }
 
-    fun createBlockPropertyValueList(universal: UniversalBlockProperty): List<BlockPropertyValue> {
+    fun createBlockPropertyValueList(universal: UniversalBlockProperty): List<BaseBlockPropertyValue<P>> {
         return universal.values.map(this::createBlockPropertyValue)
     }
 
     fun createStructure(size: Int) = structure(this, size)
 
     fun createBlockState(
-        blockType: BlockType,
-        values: Map<String, BlockPropertyValue> = blockType.defaultPropertyValues()
+        blockType: BaseBlockType<P>,
+        values: Map<String, BaseBlockPropertyValue<P>> = blockType.defaultPropertyValues()
     ) = blockState(this, blockType, values)
 
     fun createBlockEntityType(
         id: String,
         universal: UniversalBlockEntityType,
-        values: Map<String, BlockEntityDataType>
+        values: Map<String, BaseBlockEntityDataType<P>>
     ) = blockEntityType(this, id, universal, values)
 
     fun createBlockEntityDataType(universal: UniversalBlockEntityDataType) =
@@ -190,15 +149,15 @@ class BaseConstructors<
     ) = blockType(this, id, universal, extra)
 
     fun createBlock(
-        blockState: BlockState,
-        blockEntity: BlockEntity? = null,
-        entities: List<Entity> = emptyList()
+        blockState: BaseBlockState<P>,
+        blockEntity: BaseBlockEntity<P>? = null,
+        entities: List<BaseEntity<P>> = emptyList()
     ) = blockSingleLayer(this, blockState, blockEntity, entities)
 
     fun createBlock(
-        blockLayers: List<BlockState>,
-        blockEntity: BlockEntity? = null,
-        entities: List<Entity> = emptyList()
+        blockLayers: List<BaseBlockState<P>>,
+        blockEntity: BaseBlockEntity<P>? = null,
+        entities: List<BaseEntity<P>> = emptyList()
     ) = blockMultiLayer(this, blockLayers, blockEntity, entities)
 
     fun createBlockPropertyValue(

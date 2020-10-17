@@ -25,7 +25,7 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.ent
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class PlatformBlockEntityDataType<P : Platform<P, *>>(
+abstract class PlatformBlockEntityDataType<P : Platform<P>>(
     val platform: P,
     val name: String,
     val type: ModelData.Type,

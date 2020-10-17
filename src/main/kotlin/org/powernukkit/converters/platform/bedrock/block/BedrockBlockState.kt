@@ -18,7 +18,10 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
+import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValue
 import org.powernukkit.converters.platform.base.block.BaseBlockState
+import org.powernukkit.converters.platform.base.block.BaseBlockType
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**
@@ -26,9 +29,7 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
  * @since 2020-10-11
  */
 class BedrockBlockState(
-    type: BedrockBlockType,
-    values: Map<String, BedrockBlockPropertyValue>,
-): BaseBlockState<BedrockPlatform, BedrockBlockType, BedrockBlockProperty, BedrockBlockPropertyValue>(
-    type,
-    values,
-)
+    constructors: BaseConstructors<BedrockPlatform>,
+    type: BaseBlockType<BedrockPlatform>,
+    values: Map<String, BaseBlockPropertyValue<BedrockPlatform>>,
+) : BaseBlockState<BedrockPlatform>(constructors, type, values)

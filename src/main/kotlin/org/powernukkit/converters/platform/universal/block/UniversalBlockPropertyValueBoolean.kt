@@ -43,7 +43,7 @@ class UniversalBlockPropertyValueBoolean(
         )
     )
 
-    override fun stringValue() = value.toString()
+    override val stringValue get() = value.toString()
     override fun intValue() = if (value) 1 else 0
     override fun booleanValue() = value
 }

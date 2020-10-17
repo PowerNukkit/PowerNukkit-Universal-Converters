@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.bedrock.block
 
 import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValue
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
@@ -27,7 +28,7 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @since 2020-10-13
  */
 abstract class BedrockBlockPropertyValue(
-    platform: BedrockPlatform,
+    constructors: BaseConstructors<BedrockPlatform>,
     universalValue: UniversalBlockPropertyValue?,
     default: Boolean,
-) : BaseBlockPropertyValue<BedrockPlatform>(platform, universalValue, default)
+) : BaseBlockPropertyValue<BedrockPlatform>(constructors, universalValue, default)

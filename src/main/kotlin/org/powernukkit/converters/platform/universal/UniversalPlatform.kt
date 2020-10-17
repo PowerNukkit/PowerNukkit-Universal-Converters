@@ -35,7 +35,7 @@ import org.powernukkit.converters.platform.universal.entity.UniversalEntity
  */
 class UniversalPlatform internal constructor(
     definitions: ModelDefinitions
-) : Platform<UniversalPlatform, UniversalBlock>("Universal", MinecraftEdition.UNIVERSAL) {
+) : Platform<UniversalPlatform>("Universal", MinecraftEdition.UNIVERSAL) {
     val emptyOptionalBlockPropertyValue = UniversalBlockPropertyValueEmptyOpt(this)
 
     val blockPropertiesById = definitions.blockProperties
@@ -70,8 +70,10 @@ class UniversalPlatform internal constructor(
         UniversalBlockType::editionId,
     )
 
-    override val airBlockType =
-        checkNotNull(blockTypesById[NamespacedId("air")]) { "The minecraft:air block type is not registered" }
+    override val airBlockType = checkNotNull(blockTypesById[NamespacedId("air")]) {
+        "The minecraft:air block type is not registered"
+    }
+
     override val airBlockState = UniversalBlockState(airBlockType)
     override val airBlock = UniversalBlock(this, listOf(airBlockState))
 

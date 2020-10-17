@@ -19,21 +19,48 @@
 package org.powernukkit.converters.platform.bedrock.block
 
 import org.powernukkit.converters.platform.base.block.BaseBlock
+import org.powernukkit.converters.platform.base.block.BaseBlockEntity
+import org.powernukkit.converters.platform.base.block.BaseBlockState
+import org.powernukkit.converters.platform.base.block.BaseConstructors
+import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
-import org.powernukkit.converters.platform.bedrock.entity.BedrockEntity
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
 class BedrockBlock(
-    platform: BedrockPlatform,
-    mainState: BedrockBlockState,
-    secondaryState: BedrockBlockState = platform.airBlockState,
-    blockEntity: BedrockBlockEntity? = null,
-    entities: List<BedrockEntity> = emptyList(),
-) : BaseBlock<BedrockPlatform, BedrockBlockState, BedrockBlockEntity, BedrockEntity>(
-    platform, blockEntity, entities
+    constructors: BaseConstructors<BedrockPlatform>,
+    mainState: BaseBlockState<BedrockPlatform>,
+    secondaryState: BaseBlockState<BedrockPlatform> = constructors.platform.airBlockState,
+    blockEntity: BaseBlockEntity<BedrockPlatform>? = null,
+    entities: List<BaseEntity<BedrockPlatform>> = emptyList(),
+) : BaseBlock<BedrockPlatform>(
+    constructors, blockEntity, entities
 ) {
     override val blockLayers = listOf(mainState, secondaryState)
+
+    constructor(
+        constructors: BaseConstructors<BedrockPlatform>,
+        mainState: BaseBlockState<BedrockPlatform>,
+        blockEntity: BaseBlockEntity<BedrockPlatform>? = null,
+        entities: List<BaseEntity<BedrockPlatform>> = emptyList(),
+    ) : this(
+        constructors, mainState,
+        secondaryState = constructors.platform.airBlockState,
+        blockEntity = blockEntity,
+        entities = entities
+    )
+
+    constructor(
+        constructors: BaseConstructors<BedrockPlatform>,
+        layers: List<BaseBlockState<BedrockPlatform>>,
+        blockEntity: BaseBlockEntity<BedrockPlatform>? = null,
+        entities: List<BaseEntity<BedrockPlatform>> = emptyList(),
+    ) : this(
+        constructors, layers.first(),
+        secondaryState = layers.getOrNull(1) ?: constructors.platform.airBlockState,
+        blockEntity = blockEntity,
+        entities = entities
+    )
 }

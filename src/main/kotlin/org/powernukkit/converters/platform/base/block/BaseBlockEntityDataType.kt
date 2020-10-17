@@ -20,6 +20,7 @@ package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntityDataType
+import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityDataType
 import org.powernukkit.converters.platform.universal.definitions.model.block.entity.ModelData
 
@@ -27,16 +28,26 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.ent
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockEntityDataType<P : Platform<P, *>>(
-    platform: P,
+abstract class BaseBlockEntityDataType<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
     name: String,
     type: ModelData.Type,
     optional: Boolean,
     default: String?,
     val universal: UniversalBlockEntityDataType?
-) : PlatformBlockEntityDataType<P>(platform, name, type, optional, default) {
-    constructor(platform: P, universal: UniversalBlockEntityDataType) : this(
-        platform = platform,
+) : PlatformBlockEntityDataType<P>(constructors.platform, name, type, optional, default) {
+    constructor(constructors: BaseConstructors<P>, universal: UniversalBlockEntityDataType) : this(
+        constructors,
+        constructors.platform,
+        universal
+    )
+
+    private constructor(
+        constructors: BaseConstructors<P>,
+        platform: Platform<P>,
+        universal: UniversalBlockEntityDataType
+    ) : this(
+        constructors = constructors,
         universal = universal,
         name = universal.getEditionId(platform.minecraftEdition),
         type = universal.getEditionType(platform.minecraftEdition),

@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.bedrock.entity
 
 import org.powernukkit.converters.math.EntityPos
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
@@ -27,8 +28,8 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
  * @since 2020-10-11
  */
 class BedrockEntity(
-    platform: BedrockPlatform,
+    private val constructors: BaseConstructors<BedrockPlatform>,
     pos: EntityPos
-) : BaseEntity<BedrockPlatform>(platform, pos) {
-    override fun withPos(entityPos: EntityPos) = BedrockEntity(platform, pos)
+) : BaseEntity<BedrockPlatform>(constructors, pos) {
+    override fun withPos(entityPos: EntityPos) = BedrockEntity(constructors, pos)
 }

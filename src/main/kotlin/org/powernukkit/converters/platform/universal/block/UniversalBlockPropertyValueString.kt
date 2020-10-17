@@ -30,7 +30,7 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.pro
  */
 class UniversalBlockPropertyValueString(
     platform: UniversalPlatform,
-    private val value: String,
+    override val stringValue: String,
     editionValue: Map<MinecraftEdition, String>,
     default: Boolean,
 ) : UniversalBlockPropertyValue(platform, editionValue, default) {
@@ -39,13 +39,11 @@ class UniversalBlockPropertyValueString(
     constructor(platform: UniversalPlatform, model: ModelValue) : this(
         platform = platform,
         default = model.default,
-        value = model.value,
+        stringValue = model.value,
 
         editionValue = enumMapOfNonNullsOrEmpty(
             model.java?.let { MinecraftEdition.JAVA to it },
             model.bedrock?.let { MinecraftEdition.BEDROCK to it }
         )
     )
-
-    override fun stringValue() = value
 }

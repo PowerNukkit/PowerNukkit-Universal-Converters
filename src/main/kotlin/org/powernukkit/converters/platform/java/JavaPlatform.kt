@@ -19,13 +19,10 @@
 package org.powernukkit.converters.platform.java
 
 import org.powernukkit.converters.platform.api.MinecraftEdition
-import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.java.block.*
-import org.powernukkit.converters.platform.java.entity.JavaEntity
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.platform.universal.block.*
-import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
  * @author joserobjr
@@ -34,64 +31,11 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
 class JavaPlatform(
     universal: UniversalPlatform,
     name: String
-) : BasePlatform<
-        JavaPlatform, JavaBlockProperty, JavaBlockEntityType, JavaBlockType, JavaBlockState,
-        JavaBlockPropertyValue, JavaBlockEntityDataType, JavaBlock, JavaStructure, JavaBlockEntity,
-        JavaEntity
-        >(
+) : BasePlatform<JavaPlatform>(
+    BaseConstructors(
+        ::JavaBlockState, ::JavaBlockProperty, ::JavaBlockEntityType, ::JavaBlockEntityDataType,
+        ::JavaBlockType, ::JavaBlock, ::JavaBlock, ::JavaBlockPropertyValueInt, ::JavaBlockPropertyValueString,
+        ::JavaBlockPropertyValueBoolean, ::JavaStructure
+    ),
     universal, name, MinecraftEdition.JAVA
-) {
-    override fun createBlockProperty(id: String, universal: UniversalBlockProperty) =
-        JavaBlockProperty(this, id, universal)
-
-    override fun createBlockEntityType(
-        id: String,
-        universal: UniversalBlockEntityType,
-        values: Map<String, JavaBlockEntityDataType>
-    ) = JavaBlockEntityType(this, id, universal, values)
-
-    override fun createBlockEntityDataType(universal: UniversalBlockEntityDataType) =
-        JavaBlockEntityDataType(this, universal)
-
-    override fun createBlockType(id: NamespacedId, universal: UniversalBlockType, extra: ModelExtraBlock?) =
-        JavaBlockType(this, id, universal, extra)
-
-    override fun createBlockState(blockType: JavaBlockType, values: Map<String, JavaBlockPropertyValue>) =
-        JavaBlockState(blockType, values)
-
-    override fun createBlockPropertyValue(int: Int, universalValue: UniversalBlockPropertyValue, default: Boolean) =
-        JavaBlockPropertyValueInt(this, int, universalValue, default)
-
-    override fun createBlockPropertyValue(
-        string: String,
-        universalValue: UniversalBlockPropertyValue,
-        default: Boolean
-    ) = JavaBlockPropertyValueString(this, string, universalValue, default)
-
-    override fun createBlockPropertyValue(
-        boolean: Boolean,
-        universalValue: UniversalBlockPropertyValue,
-        default: Boolean
-    ) = JavaBlockPropertyValueBoolean(this, boolean, universalValue, default)
-
-    override fun createStructure(size: Int) = JavaStructure(this)
-
-    override fun createBlock(
-        blockLayers: List<JavaBlockState>,
-        blockEntity: JavaBlockEntity?,
-        entities: List<JavaEntity>
-    ): JavaBlock {
-        // TODO Apply waterlogging if blockLayer[1] is water
-        return JavaBlock(
-            this,
-            blockLayers.firstOrNull() ?: airBlockState,
-            blockEntity, entities
-        )
-    }
-
-    override fun createBlock(
-        blockState: JavaBlockState,
-        blockEntity: JavaBlockEntity?,
-        entities: List<JavaEntity>
-    ) = JavaBlock(this, blockState, blockEntity, entities)
-}
+)

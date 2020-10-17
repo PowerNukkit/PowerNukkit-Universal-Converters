@@ -21,29 +21,27 @@ package org.powernukkit.converters.platform.api
 import org.powernukkit.converters.platform.api.block.*
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
 
-abstract class Platform<
-        P : Platform<P, Block>,
-        Block : PlatformBlock<P>>(
+abstract class Platform<P : Platform<P>>(
     val name: String,
     val minecraftEdition: MinecraftEdition
 ) {
     abstract val airBlockType: PlatformBlockType<P>
     abstract val airBlockState: PlatformBlockState<P>
-    abstract val airBlock: Block
+    abstract val airBlock: PlatformBlock<P>
 
-    abstract fun createStructure(size: Int = 1): PlatformStructure<P, Block>
+    abstract fun createStructure(size: Int = 1): PlatformStructure<P>
 
     abstract fun createPlatformBlock(
         blockState: PlatformBlockState<P>,
         blockEntity: PlatformBlockEntity<P>? = null,
         entities: List<PlatformEntity<P>> = emptyList()
-    ): Block
+    ): PlatformBlock<P>
 
     abstract fun createPlatformBlock(
         blockLayers: List<PlatformBlockState<P>>,
         blockEntity: PlatformBlockEntity<P>? = null,
         entities: List<PlatformEntity<P>> = emptyList()
-    ): Block
+    ): PlatformBlock<P>
 
     override fun toString(): String {
         return "Platform(name='$name', minecraftEdition=$minecraftEdition)"

@@ -18,7 +18,6 @@
 
 package org.powernukkit.converters.platform.base.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityDataType
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
@@ -27,12 +26,9 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityT
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockEntityType<
-        P : BasePlatform<P, *, *, *, *, *, BlockEntityDataType, *, *, *, *>,
-        BlockEntityDataType : PlatformBlockEntityDataType<P>
-        >(
-    platform: P,
+abstract class BaseBlockEntityType<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
     id: String,
     final override val universalType: UniversalBlockEntityType?,
-    final override val data: Map<String, BlockEntityDataType>
-) : PlatformBlockEntityType<P>(platform, id)
+    final override val data: Map<String, BaseBlockEntityDataType<P>>
+) : PlatformBlockEntityType<P>(constructors.platform, id)

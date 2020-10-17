@@ -18,7 +18,6 @@
 
 package org.powernukkit.converters.platform.base.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.base.BasePlatform
 
@@ -26,17 +25,13 @@ import org.powernukkit.converters.platform.base.BasePlatform
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockState<
-        P : BasePlatform<P, BlockProperty, *, BlockType, *, BlockPropertyValue, *, *, *, *, *>,
-        BlockType : BaseBlockType<P, BlockProperty, *, BlockPropertyValue>,
-        BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
-        BlockPropertyValue : PlatformBlockPropertyValue<P>
-        >(
-    final override val type: BlockType,
-    final override val values: Map<String, BlockPropertyValue>
+abstract class BaseBlockState<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
+    final override val type: BaseBlockType<P>,
+    final override val values: Map<String, BaseBlockPropertyValue<P>>
 ) : PlatformBlockState<P>() {
-    override fun getPropertyMap(): Map<BlockProperty, BlockPropertyValue> {
+    override fun getPropertyMap(): Map<BaseBlockProperty<P>, BaseBlockPropertyValue<P>> {
         @Suppress("UNCHECKED_CAST")
-        return super.getPropertyMap() as Map<BlockProperty, BlockPropertyValue>
+        return super.getPropertyMap() as Map<BaseBlockProperty<P>, BaseBlockPropertyValue<P>>
     }
 }

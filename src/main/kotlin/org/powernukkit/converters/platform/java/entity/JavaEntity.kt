@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.java.entity
 
 import org.powernukkit.converters.math.EntityPos
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.java.JavaPlatform
 
@@ -27,8 +28,8 @@ import org.powernukkit.converters.platform.java.JavaPlatform
  * @since 2020-10-11
  */
 class JavaEntity(
-    platform: JavaPlatform,
+    private val constructors: BaseConstructors<JavaPlatform>,
     pos: EntityPos
-) : BaseEntity<JavaPlatform>(platform, pos) {
-    override fun withPos(entityPos: EntityPos) = JavaEntity(platform, pos)
+) : BaseEntity<JavaPlatform>(constructors, pos) {
+    override fun withPos(entityPos: EntityPos) = JavaEntity(constructors, pos)
 }

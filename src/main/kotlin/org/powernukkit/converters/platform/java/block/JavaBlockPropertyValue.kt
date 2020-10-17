@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.java.block
 
 import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValue
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
@@ -27,7 +28,7 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @since 2020-10-13
  */
 abstract class JavaBlockPropertyValue(
-    platform: JavaPlatform,
+    constructors: BaseConstructors<JavaPlatform>,
     universalValue: UniversalBlockPropertyValue?,
     default: Boolean,
-) : BaseBlockPropertyValue<JavaPlatform>(platform, universalValue, default)
+) : BaseBlockPropertyValue<JavaPlatform>(constructors, universalValue, default)

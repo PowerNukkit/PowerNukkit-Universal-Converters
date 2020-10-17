@@ -19,25 +19,18 @@
 package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
 import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.entity.BaseEntity
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlock<
-        P : BasePlatform<P, *, *, *, BlockState, *, *, *, *, BlockEntity, Entity>,
-        BlockState : PlatformBlockState<P>,
-        BlockEntity : PlatformBlockEntity<P>,
-        Entity : PlatformEntity<P>
-        >(
-    platform: P,
-    final override val blockEntity: BlockEntity? = null,
-    final override val entities: List<Entity> = emptyList(),
-) : PlatformBlock<P>(platform) {
+abstract class BaseBlock<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
+    final override val blockEntity: BaseBlockEntity<P>? = null,
+    final override val entities: List<BaseEntity<P>> = emptyList(),
+) : PlatformBlock<P>(constructors.platform) {
     init {
         validateEntities()
     }

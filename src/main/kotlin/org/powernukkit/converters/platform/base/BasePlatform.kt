@@ -25,7 +25,9 @@ import org.powernukkit.converters.platform.api.TechnicalValues
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.base.block.*
+import org.powernukkit.converters.platform.base.block.BaseBlockEntity
+import org.powernukkit.converters.platform.base.block.BaseBlockState
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
@@ -33,34 +35,17 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BasePlatform<
-        P : BasePlatform<
-                P, BlockProperty, BlockEntityType, BlockType, BlockState,
-                BlockPropertyValue, BlockEntityDataType, Block, Structure, BlockEntity, Entity>,
-        BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
-        BlockEntityType : BaseBlockEntityType<P, BlockEntityDataType>,
-        BlockType : BaseBlockType<P, BlockProperty, BlockEntityType, BlockPropertyValue>,
-        BlockState : BaseBlockState<P, BlockType, BlockProperty, BlockPropertyValue>,
-        BlockPropertyValue : BaseBlockPropertyValue<P>,
-        BlockEntityDataType : BaseBlockEntityDataType<P>,
-        Block : BaseBlock<P, BlockState, BlockEntity, Entity>,
-        Structure : BaseStructure<P, Block>,
-        BlockEntity : BaseBlockEntity<P, BlockEntityType>,
-        Entity : BaseEntity<P>
-        >(
+abstract class BasePlatform<P : BasePlatform<P>>(
+    private val constructors: BaseConstructors<P>,
     val universal: UniversalPlatform,
     name: String,
     minecraftEdition: MinecraftEdition,
+) : Platform<P>(name, minecraftEdition) {
 
-    ) : Platform<P, Block>(name, minecraftEdition) {
-
-    @Suppress("LeakingThis")
-    private val constructors = createBaseConstructors()
-
-    protected abstract fun createBaseConstructors(): BaseConstructors<
-            P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue,
-            BlockEntityDataType, Block, Structure, BlockEntity, Entity
-            >
+    init {
+        @Suppress("LeakingThis")
+        constructors.assignPlatform(this)
+    }
 
     val blockPropertiesByUniversalId = universal.blockPropertiesById
         .mapValues { (_, universalProperty) ->
@@ -111,9 +96,9 @@ abstract class BasePlatform<
         blockEntity: PlatformBlockEntity<P>?,
         entities: List<PlatformEntity<P>>
     ) = constructors.createBlock(
-        blockLayers as List<BlockState>,
-        blockEntity as BlockEntity?,
-        entities as List<Entity>
+        blockLayers as List<BaseBlockState<P>>,
+        blockEntity as BaseBlockEntity<P>?,
+        entities as List<BaseEntity<P>>
     )
 
     @Suppress("UNCHECKED_CAST")
@@ -122,7 +107,9 @@ abstract class BasePlatform<
         blockEntity: PlatformBlockEntity<P>?,
         entities: List<PlatformEntity<P>>
     ) = constructors.createBlock(
-        blockState as BlockState, blockEntity as BlockEntity?,
-        entities as List<Entity>
+        blockState as BaseBlockState<P>, blockEntity as BaseBlockEntity<P>?,
+        entities as List<BaseEntity<P>>
     )
+
+    override fun createStructure(size: Int) = constructors.createStructure(size)
 }

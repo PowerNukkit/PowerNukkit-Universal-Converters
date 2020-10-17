@@ -19,20 +19,28 @@
 package org.powernukkit.converters.platform.java.block
 
 import org.powernukkit.converters.platform.base.block.BaseBlock
+import org.powernukkit.converters.platform.base.block.BaseBlockEntity
+import org.powernukkit.converters.platform.base.block.BaseBlockState
+import org.powernukkit.converters.platform.base.block.BaseConstructors
+import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.java.JavaPlatform
-import org.powernukkit.converters.platform.java.entity.JavaEntity
 
 /**
  * @author joserobjr
  * @since 2020-10-11
  */
 class JavaBlock(
-    platform: JavaPlatform,
-    val blockState: JavaBlockState,
-    blockEntity: JavaBlockEntity? = null,
-    entities: List<JavaEntity> = emptyList(),
-) : BaseBlock<JavaPlatform, JavaBlockState, JavaBlockEntity, JavaEntity>(
-    platform, blockEntity, entities
-) {
+    constructors: BaseConstructors<JavaPlatform>,
+    blockState: BaseBlockState<JavaPlatform>,
+    blockEntity: BaseBlockEntity<JavaPlatform>? = null,
+    entities: List<BaseEntity<JavaPlatform>> = emptyList(),
+) : BaseBlock<JavaPlatform>(constructors, blockEntity, entities) {
     override val blockLayers = listOf(blockState)
+
+    constructor(
+        constructors: BaseConstructors<JavaPlatform>,
+        layers: List<BaseBlockState<JavaPlatform>>,
+        blockEntity: BaseBlockEntity<JavaPlatform>? = null,
+        entities: List<BaseEntity<JavaPlatform>> = emptyList(),
+    ) : this(constructors, layers.first(), blockEntity, entities)
 }

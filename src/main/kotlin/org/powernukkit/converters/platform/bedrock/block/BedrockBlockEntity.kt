@@ -19,6 +19,8 @@
 package org.powernukkit.converters.platform.bedrock.block
 
 import org.powernukkit.converters.platform.base.block.BaseBlockEntity
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
+import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**
@@ -26,5 +28,6 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
  * @since 2020-10-11
  */
 class BedrockBlockEntity(
-    type: BedrockBlockEntityType,
-) : BaseBlockEntity<BedrockPlatform, BedrockBlockEntityType>(type)
+    constructors: BaseConstructors<BedrockPlatform>,
+    type: BaseBlockEntityType<BedrockPlatform>,
+) : BaseBlockEntity<BedrockPlatform>(constructors, type)

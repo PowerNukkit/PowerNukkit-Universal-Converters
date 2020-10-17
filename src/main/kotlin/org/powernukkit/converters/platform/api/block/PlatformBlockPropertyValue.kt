@@ -24,7 +24,7 @@ import org.powernukkit.converters.platform.api.Platform
  * @author joserobjr
  * @since 2020-10-12
  */
-abstract class PlatformBlockPropertyValue<P : Platform<P, *>>(
+abstract class PlatformBlockPropertyValue<P : Platform<P>>(
     val platform: P,
     val default: Boolean
 ) : IPlatformBlockPropertyValue {
