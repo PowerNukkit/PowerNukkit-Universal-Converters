@@ -22,6 +22,7 @@ import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.bedrock.block.*
+import org.powernukkit.converters.platform.bedrock.entity.BedrockEntity
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
@@ -35,7 +36,8 @@ class BedrockPlatform(
     name: String
 ) : BasePlatform<
         BedrockPlatform, BedrockBlockProperty, BedrockBlockEntityType, BedrockBlockType, BedrockBlockState,
-        BedrockBlockPropertyValue, BedrockBlockEntityDataType, BedrockBlock, BedrockStructure
+        BedrockBlockPropertyValue, BedrockBlockEntityDataType, BedrockBlock, BedrockStructure,
+        BedrockBlockEntity, BedrockEntity
         >(
     universal, name, MinecraftEdition.BEDROCK
 ) {
@@ -73,4 +75,27 @@ class BedrockPlatform(
     ) = BedrockBlockPropertyValueBoolean(this, boolean, universalValue, default)
 
     override fun createStructure(size: Int) = BedrockStructure(this)
+
+    override fun createBlock(
+        blockLayers: List<BedrockBlockState>,
+        blockEntity: BedrockBlockEntity?,
+        entities: List<BedrockEntity>
+    ) = BedrockBlock(
+        this,
+        mainState = blockLayers.getOrNull(0) ?: airBlockState,
+        secondaryState = blockLayers.getOrNull(1) ?: airBlockState,
+        blockEntity = blockEntity,
+        entities = entities,
+    )
+
+    override fun createBlock(
+        blockState: BedrockBlockState,
+        blockEntity: BedrockBlockEntity?,
+        entities: List<BedrockEntity>
+    ) = BedrockBlock(
+        this,
+        mainState = blockState,
+        blockEntity = blockEntity,
+        entities = entities,
+    )
 }

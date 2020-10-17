@@ -19,13 +19,30 @@
 package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.MutableContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 
-abstract class PlatformStructure<P : Platform<P, *>, B : PlatformBlock<P>>(
+abstract class PlatformStructure<
+        P : Platform<P, Block>,
+        Block : PlatformBlock<P>>(
     final override val platform: P,
-) : PlatformObject<P> {
-    val blocks = mutableMapOf<BlockPos, B>()
+) : PlatformObject<P>, MutableContainer<BlockPos, PositionedBlock<P, Block>> {
+    val blocks = mutableMapOf<BlockPos, Block>()
+
+    final override fun get(key: BlockPos) = blocks[key]?.positionedAt(key)
+    final override fun contains(key: BlockPos) = key in blocks
+    final override fun set(key: BlockPos, value: PositionedBlock<P, Block>) {
+        blocks[key] = value.block
+    }
+
+    fun merge(structure: PlatformStructure<P, Block>, pos: BlockPos) {
+        structure.blocks.forEach { (originalPos, block) ->
+            blocks.compute(pos + originalPos) { _, previous ->
+                (previous ?: platform.airBlock) + block
+            }
+        }
+    }
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -27,7 +27,7 @@ import org.powernukkit.converters.platform.base.BasePlatform
  * @since 2020-10-13
  */
 abstract class BaseBlockState<
-        P : BasePlatform<P, BlockProperty, *, BlockType, *, BlockPropertyValue, *, *, *>,
+        P : BasePlatform<P, BlockProperty, *, BlockType, *, BlockPropertyValue, *, *, *, *, *>,
         BlockType : BaseBlockType<P, BlockProperty, *, BlockPropertyValue>,
         BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
         BlockPropertyValue : PlatformBlockPropertyValue<P>

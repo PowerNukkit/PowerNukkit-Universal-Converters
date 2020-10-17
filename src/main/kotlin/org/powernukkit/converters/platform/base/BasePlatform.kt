@@ -23,6 +23,7 @@ import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.TechnicalValues
 import org.powernukkit.converters.platform.api.block.*
+import org.powernukkit.converters.platform.api.entity.PlatformEntity
 import org.powernukkit.converters.platform.base.block.BaseBlockProperty
 import org.powernukkit.converters.platform.base.block.BaseBlockType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
@@ -34,7 +35,7 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @since 2020-10-13
  */
 abstract class BasePlatform<
-        P : BasePlatform<P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue, BlockEntityDataType, Block, Structure>,
+        P : BasePlatform<P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue, BlockEntityDataType, Block, Structure, BlockEntity, Entity>,
         BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
         BlockEntityType : PlatformBlockEntityType<P>,
         BlockType : BaseBlockType<P, BlockProperty, BlockEntityType, BlockPropertyValue>,
@@ -43,6 +44,8 @@ abstract class BasePlatform<
         BlockEntityDataType : PlatformBlockEntityDataType<P>,
         Block : PlatformBlock<P>,
         Structure : PlatformStructure<P, Block>,
+        BlockEntity : PlatformBlockEntity<P>,
+        Entity : PlatformEntity<P>,
         >(
     val universal: UniversalPlatform,
     name: String,
@@ -91,6 +94,9 @@ abstract class BasePlatform<
     @Suppress("LeakingThis")
     final override val airBlockState = createBlockState(airBlockType)
 
+    @Suppress("LeakingThis")
+    final override val airBlock = createBlock(airBlockState)
+
     protected abstract fun createBlockProperty(id: String, universal: UniversalBlockProperty): BlockProperty
     protected abstract fun createBlockEntityType(
         id: String,
@@ -106,11 +112,36 @@ abstract class BasePlatform<
         extra: ModelExtraBlock? = null
     ): BlockType
 
-    protected open fun createBlockState(blockType: BlockType): BlockState {
-        return createBlockState(blockType, blockType.defaultPropertyValues())
-    }
+    @Suppress("UNCHECKED_CAST")
+    final override fun createPlatformBlock(
+        blockLayers: List<PlatformBlockState<P>>,
+        blockEntity: PlatformBlockEntity<P>?,
+        entities: List<PlatformEntity<P>>
+    ) = createBlock(blockLayers as List<BlockState>, blockEntity as BlockEntity?, entities as List<Entity>)
 
-    protected abstract fun createBlockState(blockType: BlockType, values: Map<String, BlockPropertyValue>): BlockState
+    @Suppress("UNCHECKED_CAST")
+    final override fun createPlatformBlock(
+        blockState: PlatformBlockState<P>,
+        blockEntity: PlatformBlockEntity<P>?,
+        entities: List<PlatformEntity<P>>
+    ) = createBlock(blockState as BlockState, blockEntity as BlockEntity?, entities as List<Entity>)
+
+    protected abstract fun createBlock(
+        blockState: BlockState,
+        blockEntity: BlockEntity? = null,
+        entities: List<Entity> = emptyList()
+    ): Block
+
+    protected abstract fun createBlock(
+        blockLayers: List<BlockState>,
+        blockEntity: BlockEntity? = null,
+        entities: List<Entity> = emptyList()
+    ): Block
+
+    protected abstract fun createBlockState(
+        blockType: BlockType,
+        values: Map<String, BlockPropertyValue> = blockType.defaultPropertyValues()
+    ): BlockState
 
     protected abstract fun createBlockPropertyValue(
         int: Int,

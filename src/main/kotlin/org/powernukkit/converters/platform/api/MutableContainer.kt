@@ -16,15 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.universal.block
-
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.universal.UniversalPlatform
+package org.powernukkit.converters.platform.api
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-16
  */
-class UniversalBlockEntity(
-    override val type: UniversalBlockEntityType,
-) : PlatformBlockEntity<UniversalPlatform>()
+interface MutableContainer<K, V> : Container<K, V> {
+    operator fun set(key: K, value: V)
+}

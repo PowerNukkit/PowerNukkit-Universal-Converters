@@ -22,6 +22,7 @@ import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.java.block.*
+import org.powernukkit.converters.platform.java.entity.JavaEntity
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
@@ -35,7 +36,8 @@ class JavaPlatform(
     name: String
 ) : BasePlatform<
         JavaPlatform, JavaBlockProperty, JavaBlockEntityType, JavaBlockType, JavaBlockState,
-        JavaBlockPropertyValue, JavaBlockEntityDataType, JavaBlock, JavaStructure
+        JavaBlockPropertyValue, JavaBlockEntityDataType, JavaBlock, JavaStructure, JavaBlockEntity,
+        JavaEntity
         >(
     universal, name, MinecraftEdition.JAVA
 ) {
@@ -73,4 +75,23 @@ class JavaPlatform(
     ) = JavaBlockPropertyValueBoolean(this, boolean, universalValue, default)
 
     override fun createStructure(size: Int) = JavaStructure(this)
+
+    override fun createBlock(
+        blockLayers: List<JavaBlockState>,
+        blockEntity: JavaBlockEntity?,
+        entities: List<JavaEntity>
+    ): JavaBlock {
+        // TODO Apply waterlogging if blockLayer[1] is water
+        return JavaBlock(
+            this,
+            blockLayers.firstOrNull() ?: airBlockState,
+            blockEntity, entities
+        )
+    }
+
+    override fun createBlock(
+        blockState: JavaBlockState,
+        blockEntity: JavaBlockEntity?,
+        entities: List<JavaEntity>
+    ) = JavaBlock(this, blockState, blockEntity, entities)
 }

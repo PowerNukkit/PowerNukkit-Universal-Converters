@@ -18,7 +18,6 @@
 
 package org.powernukkit.converters.platform.base.block
 
-import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
 import org.powernukkit.converters.platform.base.BasePlatform
@@ -28,9 +27,8 @@ import org.powernukkit.converters.platform.base.BasePlatform
  * @since 2020-10-13
  */
 abstract class BaseBlockEntity<
-        P : BasePlatform<P, *, BlockEntityType, *, *, *, *, *, *>,
+        P : BasePlatform<P, *, BlockEntityType, *, *, *, *, *, *, *, *>,
         BlockEntityType : PlatformBlockEntityType<P>
         >(
     final override val type: BlockEntityType,
-    pos: BlockPos
-): PlatformBlockEntity<P>(pos)
+) : PlatformBlockEntity<P>()

@@ -28,7 +28,7 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityT
  * @since 2020-10-13
  */
 abstract class BaseBlockEntityType<
-        P : BasePlatform<P, *, *, *, *, *, BlockEntityDataType, *, *>,
+        P : BasePlatform<P, *, *, *, *, *, BlockEntityDataType, *, *, *, *>,
         BlockEntityDataType : PlatformBlockEntityDataType<P>
         >(
     platform: P,

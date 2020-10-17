@@ -28,7 +28,7 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @since 2020-10-13
  */
 abstract class BaseBlockProperty<
-        P : BasePlatform<P, *, *, *, *, BlockPropertyValue, *, *, *>,
+        P : BasePlatform<P, *, *, *, *, BlockPropertyValue, *, *, *, *, *>,
         BlockPropertyValue : PlatformBlockPropertyValue<P>
         >(
     platform: P,

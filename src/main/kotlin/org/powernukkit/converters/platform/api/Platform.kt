@@ -18,10 +18,8 @@
 
 package org.powernukkit.converters.platform.api
 
-import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.block.PlatformBlockType
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.*
+import org.powernukkit.converters.platform.api.entity.PlatformEntity
 
 abstract class Platform<
         P : Platform<P, Block>,
@@ -31,10 +29,23 @@ abstract class Platform<
 ) {
     abstract val airBlockType: PlatformBlockType<P>
     abstract val airBlockState: PlatformBlockState<P>
+    abstract val airBlock: Block
+
+    abstract fun createStructure(size: Int = 1): PlatformStructure<P, Block>
+
+    abstract fun createPlatformBlock(
+        blockState: PlatformBlockState<P>,
+        blockEntity: PlatformBlockEntity<P>? = null,
+        entities: List<PlatformEntity<P>> = emptyList()
+    ): Block
+
+    abstract fun createPlatformBlock(
+        blockLayers: List<PlatformBlockState<P>>,
+        blockEntity: PlatformBlockEntity<P>? = null,
+        entities: List<PlatformEntity<P>> = emptyList()
+    ): Block
 
     override fun toString(): String {
         return "Platform(name='$name', minecraftEdition=$minecraftEdition)"
     }
-
-    abstract fun createStructure(size: Int = 1): PlatformStructure<P, Block>
 }

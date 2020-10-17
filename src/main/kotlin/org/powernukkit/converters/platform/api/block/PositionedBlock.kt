@@ -16,15 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.universal.block
+package org.powernukkit.converters.platform.api.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.Platform
+import org.powernukkit.converters.platform.api.PlatformObject
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-16
  */
-class UniversalBlockEntity(
-    override val type: UniversalBlockEntityType,
-) : PlatformBlockEntity<UniversalPlatform>()
+data class PositionedBlock<
+        P : Platform<P, Block>,
+        Block : PlatformBlock<P>,
+        >(
+    val pos: BlockPos,
+    val block: Block
+) : PlatformObject<P> by block {
+    val layers get() = block.blockLayers
+    val blockEntity get() = block.blockEntity
+    val entities by lazy {
+        block.entities.map { it.withPos(it.pos + pos) }
+    }
+
+    override fun toString(): String {
+        return "${platform.name}PositionedBlock(pos=$pos, layers=$layers, blockEntity=$blockEntity, entities=${block.entities.size}"
+    }
+}

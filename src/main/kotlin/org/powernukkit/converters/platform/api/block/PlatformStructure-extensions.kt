@@ -16,15 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.universal.block
+package org.powernukkit.converters.platform.api.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-16
  */
-class UniversalBlockEntity(
-    override val type: UniversalBlockEntityType,
-) : PlatformBlockEntity<UniversalPlatform>()
+@Suppress("UNCHECKED_CAST")
+fun <P : Platform<P, Block>, Block : PlatformBlock<P>, Structure : PlatformStructure<P, Block>>
+        Structure.createStructure(size: Int = blocks.size) = platform.createStructure(size) as Structure

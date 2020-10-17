@@ -16,15 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.universal.block
+package org.powernukkit.converters.platform.api.block
 
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-16
  */
-class UniversalBlockEntity(
-    override val type: UniversalBlockEntityType,
-) : PlatformBlockEntity<UniversalPlatform>()
+fun <P : Platform<P, Block>, Block : PlatformBlock<P>>
+        Block.positionedAt(pos: BlockPos) = PositionedBlock(pos, this)
+
+operator fun <P : Platform<P, Block>, Block : PlatformBlock<P>>
+        Block.plus(other: Block): Block {
+    val otherIsAir = other.isBlockAir
+    return platform.createPlatformBlock(
+        blockLayers = if (otherIsAir) this.blockLayers else other.blockLayers,
+        blockEntity = other.blockEntity?.takeUnless { otherIsAir } ?: this.blockEntity,
+        entities = this.entities + other.entities
+    )
+}

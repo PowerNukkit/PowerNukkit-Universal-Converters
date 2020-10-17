@@ -18,11 +18,13 @@
 
 package org.powernukkit.converters.converter
 
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.SendChannel
+import com.google.common.collect.MapMaker
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.createStructure
 
 /**
  * @author joserobjr
@@ -37,22 +39,44 @@ class StructureConverter<
         ToStructure : PlatformStructure<ToPlatform, ToBlock>,
         >(
     val fromPlatform: FromPlatform,
-    val fromStructures: ReceiveChannel<FromStructure>,
     val toPlatform: ToPlatform,
-    val toStructures: SendChannel<ToStructure>
 ) {
-    suspend fun convertAll() {
-        for (fromStructure in fromStructures) {
-            toStructures.send(fromStructure.convert())
+    val blockConverter = BlockConverter(fromPlatform, toPlatform)
+
+    // TODO Replace caching with a Kotlin coroutine semantic (I just don't know how yet lol) 
+    private val singleBlockStructureCache = MapMaker().weakKeys().weakValues().makeMap<FromBlock, ToStructure>()
+
+    // TODO Still deciding if we should use Flow or Channel
+    fun convertAll(fromStructures: Flow<FromStructure>) = fromStructures.map(this::convert)
+
+    private fun convert(fromStructure: FromStructure): ToStructure {
+        val size = fromStructure.blocks.size
+
+        @Suppress("UNCHECKED_CAST")
+        val toStructure = toPlatform.createStructure(size) as ToStructure
+
+        if (size == 1) {
+            convertSingleStructure(fromStructure, toStructure)
+        } else {
+            convertMultiStructure(fromStructure, toStructure)
         }
+        return toStructure
     }
 
-    private fun FromStructure.convert(): ToStructure {
-        @Suppress("UNCHECKED_CAST")
-        val toStructure = toPlatform.createStructure(blocks.size) as ToStructure
-        val context = StructureConversionContext(fromPlatform, this, toPlatform, toStructure)
-        // TODO Add adapters
-        context.convert()
-        return toStructure
+    private fun convertSingleStructure(fromStructure: FromStructure, toStructure: ToStructure) {
+        val (pos, block) = fromStructure.blocks.entries.first()
+        val cacheStructure = singleBlockStructureCache.computeIfAbsent(block) { _ ->
+            toStructure.createStructure(1).also {
+                blockConverter.convert(fromStructure, pos, block, it)
+            }
+        }
+
+        toStructure.merge(cacheStructure, pos)
+    }
+
+    private fun convertMultiStructure(fromStructure: FromStructure, toStructure: ToStructure) {
+        fromStructure.blocks.forEach { (pos, block) ->
+            blockConverter.convert(fromStructure, pos, block, toStructure)
+        }
     }
 }

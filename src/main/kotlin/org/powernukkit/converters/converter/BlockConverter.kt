@@ -19,43 +19,32 @@
 package org.powernukkit.converters.converter
 
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.Container
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.PositionedBlock
 
 /**
  * @author joserobjr
- * @since 2020-10-15
+ * @since 2020-10-16
  */
-class StructureConversionContext<
+class BlockConverter<
         FromPlatform : Platform<FromPlatform, FromBlock>,
         FromBlock : PlatformBlock<FromPlatform>,
-        FromStructure : PlatformStructure<FromPlatform, FromBlock>,
         ToPlatform : Platform<ToPlatform, ToBlock>,
         ToBlock : PlatformBlock<ToPlatform>,
         ToStructure : PlatformStructure<ToPlatform, ToBlock>,
         >(
     val fromPlatform: FromPlatform,
-    val fromStructure: FromStructure,
-    val toPlatform: ToPlatform,
-    val toStructure: ToStructure,
+    val toPlatform: ToPlatform
 ) {
-    val convertedBlocks: MutableSet<BlockPos> = mutableSetOf()
-    var stage = Stage.BLOCK; private set
-
-    fun convert() {
-        fromStructure.blocks.forEach { (pos, block) ->
-            if (pos !in convertedBlocks) {
-                adaptBlock(block)
-            }
-        }
-    }
-
-    fun adaptBlock(fromBlock: FromBlock) {
+    fun convert(
+        container: Container<BlockPos, PositionedBlock<FromPlatform, FromBlock>>,
+        pos: BlockPos,
+        fromBlock: FromBlock,
+        toStructure: ToStructure
+    ): ToBlock {
         TODO()
-    }
-
-    enum class Stage {
-        BLOCK
     }
 }
