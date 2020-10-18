@@ -21,6 +21,7 @@ package org.powernukkit.converters.platform.api
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PositionedBlock
+import org.powernukkit.converters.platform.api.block.positionedAt
 
 /**
  * @author joserobjr
@@ -28,4 +29,6 @@ import org.powernukkit.converters.platform.api.block.PositionedBlock
  */
 interface BlockContainer<P : Platform<P>> : Container<BlockPos, PositionedBlock<P>> {
     fun getBlock(pos: BlockPos): PlatformBlock<P>?
+
+    override fun get(key: BlockPos) = getBlock(key)?.positionedAt(key)
 }

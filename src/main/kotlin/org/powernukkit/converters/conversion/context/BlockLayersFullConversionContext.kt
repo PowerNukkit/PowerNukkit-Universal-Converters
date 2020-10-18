@@ -30,10 +30,32 @@ data class BlockLayersFullConversionContext<FromPlatform : Platform<FromPlatform
     val parentContext: BlockConversionContext<FromPlatform, ToPlatform>
 ) {
     var layersRequiresAdapter: Boolean = false
-    var toLayers: List<PlatformBlockState<ToPlatform>>? = null
+    // TODO Commented because BlockConversionContext already has toLayers, seems to be a good idea to use it instead
+    //var toLayers: List<PlatformBlockState<ToPlatform>>? = null
 
     val fromPlatform get() = parentContext.fromPlatform
     val toPlatform get() = parentContext.toPlatform
     val fromBlock get() = parentContext.fromBlock
+    val fromPos get() = parentContext.fromPos
     val fromContainer get() = parentContext.fromContainer
+
+    val toContainer get() = parentContext.toContainer
+
+    var toLayers
+        get() = parentContext.toLayers
+        set(value) {
+            parentContext.toLayers = value
+        }
+
+    var toBlockEntity
+        get() = parentContext.toBlockEntity
+        set(value) {
+            parentContext.toBlockEntity = value
+        }
+
+    var toEntities
+        get() = parentContext.toEntities
+        set(value) {
+            parentContext.toEntities = value
+        }
 }

@@ -56,27 +56,26 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
             adapters.fromAdapters[fromState.type.id]?.applyAdapters()
         }
 
-        if (context.type == null && !context.typeRequiresAdapter) {
-            context.type =
-                blockTypeConverter.convert(fromState.type, context)
+        if (context.toType == null && !context.typeRequiresAdapter) {
+            context.toType = blockTypeConverter.convert(fromState.type, context)
         }
 
-        context.type?.let { toType ->
+        context.toType?.let { toType ->
             adapters?.toAdapters?.get(toType.id)?.applyAdapters()
         }
 
-        context.type?.let { toType ->
-            if (context.values == null && !context.valuesRequiresAdapter) {
-                context.values = blockPropertyValuesConverter.convert(
+        context.toType?.let { toType ->
+            if (context.toPropertyValues == null && !context.valuesRequiresAdapter) {
+                context.toPropertyValues = blockPropertyValuesConverter.convert(
                     fromState.values, toType, context
                 )
             }
         }
 
         if (adapters != null) {
-            context.type?.let { adapters.toAdapters[it.id]?.applyAdapters() }
+            context.toType?.let { adapters.toAdapters[it.id]?.applyAdapters() }
             adapters.lastAdapters.applyAdapters()
-            context.type?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
+            context.toType?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
         }
 
         fun List<BlockStateAdapter<FromPlatform, ToPlatform>>.applyListAdapters() {
@@ -88,17 +87,17 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
         if (adapters != null) {
             adapters.firstAdapters.applyListAdapters()
             adapters.fromAdapters[fromState.type.id]?.applyListAdapters()
-            context.result.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let { toId ->
+            context.toBlockStates.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let { toId ->
                 adapters.toAdapters[toId]?.applyListAdapters()
             }
             adapters.lastAdapters.applyListAdapters()
-            context.result.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let { toId ->
+            context.toBlockStates.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let { toId ->
                 adapters.lastToAdapters[toId]?.applyListAdapters()
             }
         }
 
 
-        return context.result.takeUnless { it.isNullOrEmpty() }
+        return context.toBlockStates.takeUnless { it.isNullOrEmpty() }
             ?: listOf(context.toCompletedState())
     }
 }

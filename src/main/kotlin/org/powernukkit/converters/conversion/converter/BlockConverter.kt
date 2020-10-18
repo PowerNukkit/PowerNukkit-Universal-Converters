@@ -46,15 +46,16 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
     val adapters: Adapters<NamespacedId, BlockAdapter<FromPlatform, ToPlatform>>? = null,
 ) {
     open fun convert(
-        fromContainer: BlockContainer<FromPlatform>,
-        pos: BlockPos,
         fromBlock: PlatformBlock<FromPlatform>,
+        fromPos: BlockPos,
+        fromContainer: BlockContainer<FromPlatform>,
 
         toContainer: MutableBlockContainer<ToPlatform>
     ) {
         val context = BlockConversionContext(
             fromPlatform, toPlatform,
-            fromBlock, fromContainer
+            fromBlock, fromPos, fromContainer,
+            toContainer
         )
 
         if (adapters != null) {
@@ -73,10 +74,10 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
         val toEntities = checkNotNull(context.toEntities) { "Failed to convert the entities of $context" }
 
         if (toEntities.all { it.pos in BoundingBox.SIMPLE_BOX }) {
-            toContainer[pos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, toEntities)
+            toContainer[fromPos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, toEntities)
         } else {
             val sameBlock = toEntities.filter { it.pos in BoundingBox.SIMPLE_BOX }
-            toContainer[pos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, sameBlock)
+            toContainer[fromPos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, sameBlock)
 
             val otherBlocks = toEntities.asSequence()
                 .filter { it.pos !in BoundingBox.SIMPLE_BOX }

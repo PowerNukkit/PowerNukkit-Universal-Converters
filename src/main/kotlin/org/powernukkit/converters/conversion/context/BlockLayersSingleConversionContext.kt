@@ -35,6 +35,27 @@ data class BlockLayersSingleConversionContext<FromPlatform : Platform<FromPlatfo
     val fromPlatform get() = parentContext.fromPlatform
     val toPlatform get() = parentContext.toPlatform
     val fromBlock get() = parentContext.fromBlock
+    val fromPos get() = parentContext.fromPos
     val fromContainer get() = parentContext.fromContainer
     val fromLayers get() = parentContext.fromLayers
+
+    val toContainer get() = parentContext.toContainer
+
+    var toLayers
+        get() = parentContext.toLayers
+        set(value) {
+            parentContext.toLayers = value
+        }
+
+    var toBlockEntity
+        get() = parentContext.toBlockEntity
+        set(value) {
+            parentContext.toBlockEntity = value
+        }
+
+    var toEntities
+        get() = parentContext.toEntities
+        set(value) {
+            parentContext.toEntities = value
+        }
 }

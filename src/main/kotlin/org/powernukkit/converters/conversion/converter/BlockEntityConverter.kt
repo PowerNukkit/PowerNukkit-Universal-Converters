@@ -34,6 +34,7 @@ open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatfor
         blockEntity: PlatformBlockEntity<FromPlatform>?,
         context: BlockConversionContext<FromPlatform, ToPlatform>
     ): PlatformBlockEntity<ToPlatform>? {
-        TODO("Not yet implemented")
+        //TODO Implement block entity conversion
+        return null
     }
 }

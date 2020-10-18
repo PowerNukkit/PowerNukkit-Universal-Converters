@@ -31,26 +31,54 @@ data class BlockStateConversionContext<FromPlatform : Platform<FromPlatform>, To
     val fromBlockState: PlatformBlockState<FromPlatform>,
     val parentContext: BlockLayersSingleConversionContext<FromPlatform, ToPlatform>,
 ) {
-    var type: PlatformBlockType<ToPlatform>? = null
-    var values: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
+    var toType: PlatformBlockType<ToPlatform>? = null
+    var toPropertyValues: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
+
     var typeRequiresAdapter: Boolean = false
     var valuesRequiresAdapter: Boolean = false
 
-    var result: List<PlatformBlockState<ToPlatform>>? = null
+    var toBlockStates: List<PlatformBlockState<ToPlatform>>? = null
 
     val fromPlatform get() = parentContext.fromPlatform
     val toPlatform get() = parentContext.toPlatform
     val fromBlock get() = parentContext.fromBlock
+    val fromPos get() = parentContext.fromPos
     val fromContainer get() = parentContext.fromContainer
     val fromLayers get() = parentContext.fromLayers
     val fromLayer get() = parentContext.fromLayer
 
+    val toContainer get() = parentContext.toContainer
+
+    var toLayers
+        get() = parentContext.toLayers
+        set(value) {
+            parentContext.toLayers = value
+        }
+
+    var toBlockEntity
+        get() = parentContext.toBlockEntity
+        set(value) {
+            parentContext.toBlockEntity = value
+        }
+
+    var toEntities
+        get() = parentContext.toEntities
+        set(value) {
+            parentContext.toEntities = value
+        }
+
+    var toBlockStateLayers
+        get() = parentContext.toBlockStateLayers
+        set(value) {
+            parentContext.toBlockStateLayers = value
+        }
+
     fun toCompletedState(): PlatformBlockState<ToPlatform> {
-        val type = requireNotNull(type) {
+        val type = requireNotNull(toType) {
             "The type is not defined"
         }
 
-        val values = requireNotNull(values) {
+        val values = requireNotNull(toPropertyValues) {
             "The properties are not defined"
         }
 

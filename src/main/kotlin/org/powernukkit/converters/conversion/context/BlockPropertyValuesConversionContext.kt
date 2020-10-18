@@ -37,7 +37,52 @@ data class BlockPropertyValuesConversionContext<FromPlatform : Platform<FromPlat
     val fromPlatform get() = parentContext.fromPlatform
     val toPlatform get() = parentContext.toPlatform
     val fromBlock get() = parentContext.fromBlock
+    val fromPos get() = parentContext.fromPos
     val fromContainer get() = parentContext.fromContainer
     val fromLayers get() = parentContext.fromLayers
     val fromLayer get() = parentContext.fromLayer
+
+    val toContainer get() = parentContext.toContainer
+
+    var toLayers
+        get() = parentContext.toLayers
+        set(value) {
+            parentContext.toLayers = value
+        }
+
+    var toBlockEntity
+        get() = parentContext.toBlockEntity
+        set(value) {
+            parentContext.toBlockEntity = value
+        }
+
+    var toEntities
+        get() = parentContext.toEntities
+        set(value) {
+            parentContext.toEntities = value
+        }
+
+    var toBlockStateLayers
+        get() = parentContext.toBlockStateLayers
+        set(value) {
+            parentContext.toBlockStateLayers = value
+        }
+
+    var toFinalType
+        get() = parentContext.toType
+        set(value) {
+            parentContext.toType = value
+        }
+
+    var toPropertyValues
+        get() = parentContext.toPropertyValues
+        set(value) {
+            parentContext.toPropertyValues = value
+        }
+
+    var toBlockStates
+        get() = parentContext.toBlockStates
+        set(value) {
+            parentContext.toBlockStates = value
+        }
 }

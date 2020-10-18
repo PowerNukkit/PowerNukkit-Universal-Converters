@@ -18,7 +18,9 @@
 
 package org.powernukkit.converters.conversion.context
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.platform.api.MutableBlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
@@ -33,7 +35,9 @@ data class BlockConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatf
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
     val fromBlock: PlatformBlock<FromPlatform>,
+    val fromPos: BlockPos,
     val fromContainer: BlockContainer<FromPlatform>,
+    val toContainer: MutableBlockContainer<ToPlatform>,
 ) {
     var toLayers: List<PlatformBlockState<ToPlatform>>? = null
     var toBlockEntity: PlatformBlockEntity<ToPlatform>? = null

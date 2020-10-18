@@ -30,7 +30,6 @@ abstract class PlatformStructure<P : Platform<P>>(
 
     final override fun contains(key: BlockPos) = key in blocks
     override fun getBlock(pos: BlockPos) = blocks[pos]
-    override fun get(key: BlockPos) = blocks[key]?.positionedAt(key)
     override fun set(pos: BlockPos, block: PlatformBlock<P>) {
         blocks[pos] = block
     }

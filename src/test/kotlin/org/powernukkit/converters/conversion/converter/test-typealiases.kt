@@ -18,24 +18,26 @@
 
 package org.powernukkit.converters.conversion.converter
 
-import org.powernukkit.converters.conversion.context.BlockConversionContext
-import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import io.mockk.every
+import org.powernukkit.converters.platform.bedrock.BedrockPlatform
+import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-18
  */
-open class EntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform,
-) {
-    open fun convertList(
-        fromEntityList: List<PlatformEntity<FromPlatform>>,
-        context: BlockConversionContext<FromPlatform, ToPlatform>
-    ): List<PlatformEntity<ToPlatform>> {
-        // TODO Implement entity conversion
-        return emptyList()
-    }
+internal typealias FromPlatform = JavaPlatform
 
+/**
+ * @author joserobjr
+ * @since 2020-10-18
+ */
+internal typealias ToPlatform = BedrockPlatform
+
+internal fun FromPlatform.commonMocks() {
+    every { name } returns "TestFrom"
+}
+
+internal fun ToPlatform.commonMocks() {
+    every { name } returns "TestTo"
 }

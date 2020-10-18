@@ -65,7 +65,7 @@ open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
         val (pos, block) = fromStructure.blocks.entries.first()
         val cacheStructure = singleBlockStructureCache.computeIfAbsent(block) { _ ->
             toStructure.createStructure(1).also {
-                blockConverter.convert(fromStructure, pos, block, it)
+                blockConverter.convert(block, pos, fromStructure, it)
             }
         }
 
@@ -77,7 +77,7 @@ open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
         toStructure: PlatformStructure<ToPlatform>,
     ) {
         fromStructure.blocks.forEach { (pos, block) ->
-            blockConverter.convert(fromStructure, pos, block, toStructure)
+            blockConverter.convert(block, pos, fromStructure, toStructure)
         }
     }
 }
