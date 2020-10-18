@@ -16,28 +16,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.converter
+package org.powernukkit.converters.conversion.context
 
-import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
+import org.powernukkit.converters.platform.api.PlatformObject
+import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.api.block.PlatformBlockType
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-18
  */
-open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform,
-) {
-    open fun convert(
-        blockEntity: PlatformBlockEntity<FromPlatform>?,
-        fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>,
-        convertedLayers: List<PlatformBlockState<ToPlatform>>
-    ): PlatformBlockEntity<ToPlatform>? {
-        TODO("Not yet implemented")
+data class IncompleteBlockState<P : Platform<P>>(
+    override val platform: P,
+    var type: PlatformBlockType<P>? = null,
+    var values: Map<String, PlatformBlockPropertyValue<P>>? = null,
+    var typeRequiresAdapter: Boolean = false,
+    var valuesRequiresAdapter: Boolean = false,
+) : PlatformObject<P> {
+    fun toCompletedState(): PlatformBlockState<P> {
+        val type = requireNotNull(type) {
+            "The type is not defined"
+        }
+
+        val values = requireNotNull(values) {
+            "The properties are not defined"
+        }
+
+        return type.withState(values)
     }
 }

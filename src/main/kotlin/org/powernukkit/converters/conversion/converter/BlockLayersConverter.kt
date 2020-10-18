@@ -16,8 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.converter
+package org.powernukkit.converters.conversion.converter
 
+import org.powernukkit.converters.conversion.adapter.Adapters
+import org.powernukkit.converters.conversion.adapter.BlockLayersAdapter
+import org.powernukkit.converters.conversion.context.BlockLayerConversionContext
+import org.powernukkit.converters.conversion.context.FullBlockLayersConversionContext
 import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform

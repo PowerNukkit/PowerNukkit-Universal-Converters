@@ -16,39 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.converter
+package org.powernukkit.converters.conversion.converter
 
 import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.api.entity.PlatformEntity
 
 /**
  * @author joserobjr
- * @since 2020-10-18
+ * @since 2020-10-17
  */
-interface BlockStateAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
-    fun adaptBlockState(
-        fromPlatform: FromPlatform,
-        toPlatform: ToPlatform,
-        fromState: PlatformBlockState<FromPlatform>,
-        incomplete: IncompleteBlockState<ToPlatform>,
-        current: List<PlatformBlockState<ToPlatform>>?,
-        fromLayer: Int,
-        fromLayers: List<PlatformBlockState<FromPlatform>>,
+open class EntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
+    val fromPlatform: FromPlatform,
+    val toPlatform: ToPlatform,
+) {
+    open fun convert(
         fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>
-    ): List<PlatformBlockState<ToPlatform>>?
+        fromContainer: BlockContainer<FromPlatform>,
+        convertedLayers: List<PlatformBlockState<ToPlatform>>,
+        convertedBlockEntity: PlatformBlockEntity<ToPlatform>?
+    ): List<PlatformEntity<ToPlatform>> {
+        TODO("Not yet implemented")
+    }
 
-    fun adaptBlockStateList(
-        fromPlatform: FromPlatform,
-        toPlatform: ToPlatform,
-        fromState: PlatformBlockState<FromPlatform>,
-        incomplete: IncompleteBlockState<ToPlatform>,
-        current: List<PlatformBlockState<ToPlatform>>?,
-        fromLayer: Int,
-        fromLayers: List<PlatformBlockState<FromPlatform>>,
-        fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>
-    ): List<PlatformBlockState<ToPlatform>>?
 }

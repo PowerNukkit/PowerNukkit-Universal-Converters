@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.converter
+package org.powernukkit.converters.conversion.converter
 
 import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.math.BlockPos

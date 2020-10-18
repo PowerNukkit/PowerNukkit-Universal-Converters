@@ -16,15 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.converter
-
-import org.powernukkit.converters.platform.api.Platform
+package org.powernukkit.converters.conversion.adapter
 
 /**
  * @author joserobjr
  * @since 2020-10-18
  */
-interface BlockLayersAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
-    fun adaptBlockStateToLayers(context: BlockLayerConversionContext<FromPlatform, ToPlatform>)
-    fun adaptEntireBlockStateLayers(context: FullBlockLayersConversionContext<FromPlatform, ToPlatform>)
-}
+data class Adapters<I, A>(
+    val firstAdapters: List<A> = emptyList(),
+    val fromAdapters: Map<I, List<A>> = emptyMap(),
+    val toAdapters: Map<I, List<A>> = emptyMap(),
+    val lastAdapters: List<A> = emptyList(),
+    val lastToAdapters: Map<I, List<A>> = emptyMap(),
+) 

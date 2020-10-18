@@ -16,30 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.converter
+package org.powernukkit.converters.conversion.adapter
 
 import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 
 /**
  * @author joserobjr
- * @since 2020-10-18
+ * @since 2020-10-17
  */
-interface BlockPropertyValuesAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
-    fun adaptBlockPropertyValues(
-        fromPlatform: FromPlatform,
-        toPlatform: ToPlatform,
-        fromValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
-        toType: PlatformBlockType<ToPlatform>,
-        current: Map<String, PlatformBlockPropertyValue<ToPlatform>>?,
+interface BlockTypeAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
+    fun adaptBlockType(
+        fromType: PlatformBlockType<FromPlatform>,
         fromState: PlatformBlockState<FromPlatform>,
         fromLayer: Int,
         fromLayers: List<PlatformBlockState<FromPlatform>>,
         fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>
-    ): Map<String, PlatformBlockPropertyValue<ToPlatform>>?
+        fromContainer: BlockContainer<FromPlatform>,
+        fromPlatform: FromPlatform,
+        toPlatform: ToPlatform,
+        currentResult: PlatformBlockType<ToPlatform>?
+    ): PlatformBlockType<ToPlatform>?
 }
