@@ -19,6 +19,7 @@
 package org.powernukkit.converters.converter
 
 import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
@@ -32,6 +33,8 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockType
 open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
+
+    val adapters: Adapters<NamespacedId, BlockPropertyValuesAdapter<FromPlatform, ToPlatform>>,
 ) {
     open fun convert(
         fromValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
@@ -42,6 +45,28 @@ open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, T
         fromBlock: PlatformBlock<FromPlatform>,
         fromContainer: BlockContainer<FromPlatform>
     ): Map<String, PlatformBlockPropertyValue<ToPlatform>> {
-        TODO("Not yet implemented")
+
+        var result: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
+
+        fun List<BlockPropertyValuesAdapter<FromPlatform, ToPlatform>>.applyAdapters() {
+
+            result = fold(result) { current, adapter ->
+                adapter.adaptBlockPropertyValues(
+                    fromPlatform, toPlatform, fromValues, toType, current,
+                    fromState, fromLayer, fromLayers, fromBlock, fromContainer
+                )
+            }
+
+        }
+
+        adapters.firstAdapters.applyAdapters()
+        adapters.fromAdapters[fromState.type.id]?.applyAdapters()
+        adapters.toAdapters[toType.id]?.applyAdapters()
+        adapters.lastAdapters.applyAdapters()
+        adapters.lastToAdapters[toType.id]?.applyAdapters()
+        
+        return checkNotNull(result) {
+            "Could not convert the properties from the block state $fromState to type $toType, from platform ${fromPlatform.name} to ${toPlatform.name}"
+        }
     }
 }

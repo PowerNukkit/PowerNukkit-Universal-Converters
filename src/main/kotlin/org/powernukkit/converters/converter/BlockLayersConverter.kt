@@ -19,6 +19,7 @@
 package org.powernukkit.converters.converter
 
 import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
@@ -31,15 +32,76 @@ open class BlockLayersConverter<FromPlatform : Platform<FromPlatform>, ToPlatfor
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 
-    val blockStateConverter: BlockStateConverter<
-            FromPlatform, ToPlatform
-            > = BlockStateConverter(fromPlatform, toPlatform)
+    val blockStateConverter: BlockStateConverter<FromPlatform, ToPlatform>,
+    val adapters: Adapters<NamespacedId, BlockLayersAdapter<FromPlatform, ToPlatform>>? = null,
 ) {
     open fun convert(
-        layers: List<PlatformBlockState<FromPlatform>>,
+        fromLayers: List<PlatformBlockState<FromPlatform>>,
         fromBlock: PlatformBlock<FromPlatform>,
         fromContainer: BlockContainer<FromPlatform>,
-    ) = layers.flatMapIndexed { layer: Int, blockState: PlatformBlockState<FromPlatform> ->
-        blockStateConverter.convert(blockState, layer, layers, fromBlock, fromContainer)
+    ): List<PlatformBlockState<ToPlatform>> {
+        if (adapters == null) {
+            return fromLayers.flatMapIndexed { fromLayer: Int, fromBlockState: PlatformBlockState<FromPlatform> ->
+                blockStateConverter.convert(fromBlockState, fromLayer, fromLayers, fromBlock, fromContainer)
+            }
+        }
+
+        val context = FullBlockLayersConversionContext(fromPlatform, toPlatform, fromLayers, fromBlock, fromContainer)
+
+        fun List<BlockLayersAdapter<FromPlatform, ToPlatform>>.applyEntireBlockStateLayersAdapters() {
+            forEach { adapter ->
+                adapter.adaptEntireBlockStateLayers(context)
+            }
+        }
+
+        fun List<BlockLayersAdapter<FromPlatform, ToPlatform>>.applyLayerAdapters(
+            context: BlockLayerConversionContext<FromPlatform, ToPlatform>,
+        ) {
+            return forEach { adapter ->
+                adapter.adaptBlockStateToLayers(context)
+            }
+        }
+
+        adapters.firstAdapters.applyEntireBlockStateLayersAdapters()
+        adapters.fromAdapters[fromLayers.first().type.id]?.applyEntireBlockStateLayersAdapters()
+
+        if (!context.layersRequiresAdapter) {
+            context.toLayers =
+                fromLayers.flatMapIndexed { fromLayer: Int, fromBlockState: PlatformBlockState<FromPlatform> ->
+                    val subContext = BlockLayerConversionContext(context, fromLayer, fromBlockState)
+
+                    adapters.firstAdapters.applyLayerAdapters(subContext)
+
+                    adapters.fromAdapters[fromBlockState.type.id]?.applyLayerAdapters(subContext)
+
+                    subContext.toBlockStateLayers.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id
+                        ?.let { adapters.toAdapters[it]?.applyLayerAdapters(subContext) }
+
+                    adapters.lastAdapters.applyLayerAdapters(subContext)
+
+                    subContext.toBlockStateLayers.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id
+                        ?.let { adapters.lastToAdapters[it]?.applyLayerAdapters(subContext) }
+
+                    if (subContext.toBlockStateLayers.isNullOrEmpty() && subContext.requiresAdapter) {
+                        error("Could not convert the block state in $subContext to a list of block layers")
+                    }
+
+                    subContext.toBlockStateLayers.takeUnless { it.isNullOrEmpty() }
+                        ?: blockStateConverter.convert(fromBlockState, fromLayer, fromLayers, fromBlock, fromContainer)
+                }
+        }
+
+        context.toLayers.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let {
+            adapters.toAdapters[it]?.applyEntireBlockStateLayersAdapters()
+        }
+
+        adapters.lastAdapters.applyEntireBlockStateLayersAdapters()
+
+        context.toLayers.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let {
+            adapters.lastToAdapters[it]?.applyEntireBlockStateLayersAdapters()
+        }
+
+        return context.toLayers.takeUnless { it.isNullOrEmpty() }
+            ?: error("Could not convert the layers from the context $context")
     }
 }

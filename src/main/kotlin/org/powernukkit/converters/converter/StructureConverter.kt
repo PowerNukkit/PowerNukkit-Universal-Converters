@@ -32,7 +32,7 @@ import org.powernukkit.converters.platform.api.block.createStructure
 open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
-    val blockConverter: BlockConverter<FromPlatform, ToPlatform> = BlockConverter(fromPlatform, toPlatform),
+    val blockConverter: BlockConverter<FromPlatform, ToPlatform>,
 ) {
     fun convertAll(fromStructures: Flow<PlatformStructure<FromPlatform>>): Flow<PlatformStructure<ToPlatform>> {
         val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>()

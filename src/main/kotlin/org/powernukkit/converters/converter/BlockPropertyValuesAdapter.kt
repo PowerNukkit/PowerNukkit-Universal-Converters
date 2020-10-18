@@ -19,50 +19,27 @@
 package org.powernukkit.converters.converter
 
 import org.powernukkit.converters.platform.api.BlockContainer
-import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-18
  */
-open class BlockTypeConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform,
-
-    val adapters: Adapters<NamespacedId, BlockTypeAdapter<FromPlatform, ToPlatform>>,
-) {
-    fun convert(
-        fromType: PlatformBlockType<FromPlatform>,
+interface BlockPropertyValuesAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
+    fun adaptBlockPropertyValues(
+        fromPlatform: FromPlatform,
+        toPlatform: ToPlatform,
+        fromValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
+        toType: PlatformBlockType<ToPlatform>,
+        current: Map<String, PlatformBlockPropertyValue<ToPlatform>>?,
         fromState: PlatformBlockState<FromPlatform>,
         fromLayer: Int,
         fromLayers: List<PlatformBlockState<FromPlatform>>,
         fromBlock: PlatformBlock<FromPlatform>,
         fromContainer: BlockContainer<FromPlatform>
-    ): PlatformBlockType<ToPlatform> {
-        var result: PlatformBlockType<ToPlatform>? = null
-
-        fun List<BlockTypeAdapter<FromPlatform, ToPlatform>>.applyAdapters() {
-            result = fold(result) { current, adapter ->
-                adapter.adaptBlockType(
-                    fromType, fromState, fromLayer, fromLayers, fromBlock, fromContainer,
-                    fromPlatform, toPlatform, current
-                )
-            }
-        }
-
-        adapters.firstAdapters.applyAdapters()
-        adapters.fromAdapters[fromType.id]?.applyAdapters()
-        result?.let { adapters.toAdapters[it.id]?.applyAdapters() }
-        adapters.lastAdapters.applyAdapters()
-        result?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
-        
-        return checkNotNull(result) {
-            "Could not convert the block type $fromType from ${fromPlatform.name} to ${toPlatform.name}"
-        }
-    }
-
+    ): Map<String, PlatformBlockPropertyValue<ToPlatform>>?
 }

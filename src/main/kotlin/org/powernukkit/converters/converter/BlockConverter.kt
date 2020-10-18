@@ -35,17 +35,9 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 
-    val blockLayersConverter: BlockLayersConverter<
-            FromPlatform, ToPlatform
-            > = BlockLayersConverter(fromPlatform, toPlatform),
-
-    val blockEntityConverter: BlockEntityConverter<
-            FromPlatform, ToPlatform
-            > = BlockEntityConverter(fromPlatform, toPlatform),
-
-    val entityConverter: EntityConverter<
-            FromPlatform, ToPlatform
-            > = EntityConverter(fromPlatform, toPlatform),
+    val blockLayersConverter: BlockLayersConverter<FromPlatform, ToPlatform>,
+    val blockEntityConverter: BlockEntityConverter<FromPlatform, ToPlatform>,
+    val entityConverter: EntityConverter<FromPlatform, ToPlatform>,
 ) {
     open fun convert(
         fromContainer: BlockContainer<FromPlatform>,

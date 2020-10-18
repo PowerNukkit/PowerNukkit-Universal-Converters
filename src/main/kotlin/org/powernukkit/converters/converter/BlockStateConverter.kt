@@ -19,6 +19,7 @@
 package org.powernukkit.converters.converter
 
 import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
@@ -31,13 +32,10 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
 
-    val blockTypeConverter: BlockTypeConverter<
-            FromPlatform, ToPlatform
-            > = BlockTypeConverter(fromPlatform, toPlatform),
+    val blockTypeConverter: BlockTypeConverter<FromPlatform, ToPlatform>,
+    val blockPropertyValuesConverter: BlockPropertyValuesConverter<FromPlatform, ToPlatform>,
 
-    val blockPropertyValuesConverter: BlockPropertyValuesConverter<
-            FromPlatform, ToPlatform
-            > = BlockPropertyValuesConverter(fromPlatform, toPlatform)
+    val adapters: Adapters<NamespacedId, BlockStateAdapter<FromPlatform, ToPlatform>>? = null
 ) {
     open fun convert(
         fromState: PlatformBlockState<FromPlatform>,
@@ -46,18 +44,71 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
         fromBlock: PlatformBlock<FromPlatform>,
         fromContainer: BlockContainer<FromPlatform>
     ): List<PlatformBlockState<ToPlatform>> {
-        val type =
-            blockTypeConverter.convert(
-                fromState.type,
-                fromState, fromLayer, fromLayers, fromBlock, fromContainer
-            )
+        val incomplete = IncompleteBlockState(toPlatform)
+        var result: List<PlatformBlockState<ToPlatform>>? = null
 
-        val values = blockPropertyValuesConverter.convert(
-            fromState.values,
-            type, fromState, fromLayer, fromLayers, fromBlock, fromContainer
-        )
+        fun List<BlockStateAdapter<FromPlatform, ToPlatform>>.applyAdapters() {
+            result = fold(result) { current, adapter ->
+                adapter.adaptBlockState(
+                    fromPlatform, toPlatform, fromState, incomplete, current,
+                    fromLayer, fromLayers, fromBlock, fromContainer
+                )
+            }
+        }
 
-        val mainState = type.withState(values)
-        return listOf(mainState)
+        if (adapters != null) {
+            adapters.firstAdapters.applyAdapters()
+            adapters.fromAdapters[fromState.type.id]?.applyAdapters()
+        }
+
+        if (incomplete.type == null && !incomplete.typeRequiresAdapter) {
+            incomplete.type =
+                blockTypeConverter.convert(
+                    fromState.type,
+                    fromState, fromLayer, fromLayers, fromBlock, fromContainer
+                )
+        }
+
+        incomplete.type?.let { toType ->
+            adapters?.toAdapters?.get(toType.id)?.applyAdapters()
+
+            if (incomplete.values == null && !incomplete.valuesRequiresAdapter) {
+                incomplete.values = blockPropertyValuesConverter.convert(
+                    fromState.values, toType,
+                    fromState, fromLayer, fromLayers, fromBlock, fromContainer
+                )
+            }
+        }
+
+        if (adapters != null) {
+            incomplete.type?.let { adapters.toAdapters[it.id]?.applyAdapters() }
+            adapters.lastAdapters.applyAdapters()
+            incomplete.type?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
+        }
+
+        fun List<BlockStateAdapter<FromPlatform, ToPlatform>>.applyListAdapters() {
+            result = fold(result) { current, adapter ->
+                adapter.adaptBlockStateList(
+                    fromPlatform, toPlatform, fromState, incomplete, current,
+                    fromLayer, fromLayers, fromBlock, fromContainer
+                )
+            }
+        }
+
+        if (adapters != null) {
+            adapters.firstAdapters.applyListAdapters()
+            adapters.fromAdapters[fromState.type.id]?.applyListAdapters()
+            result.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let { toId ->
+                adapters.toAdapters[toId]?.applyListAdapters()
+            }
+            adapters.lastAdapters.applyListAdapters()
+            result.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let { toId ->
+                adapters.lastToAdapters[toId]?.applyListAdapters()
+            }
+        }
+
+
+        return result.takeUnless { it.isNullOrEmpty() }
+            ?: listOf(incomplete.toCompletedState())
     }
 }
