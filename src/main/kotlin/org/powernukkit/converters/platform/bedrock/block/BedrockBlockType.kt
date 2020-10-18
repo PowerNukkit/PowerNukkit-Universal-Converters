@@ -19,10 +19,10 @@
 package org.powernukkit.converters.platform.bedrock.block
 
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
 import org.powernukkit.converters.platform.base.block.BaseBlockProperty
 import org.powernukkit.converters.platform.base.block.BaseBlockType
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock

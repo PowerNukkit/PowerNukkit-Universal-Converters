@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.block
+package org.powernukkit.converters.platform.base
 
 import org.powernukkit.converters.internal.InitOnceDelegator
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.PlatformObject
 import org.powernukkit.converters.platform.api.block.PlatformStructure
-import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.block.*
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock

@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.platform.java.block
 
-import org.powernukkit.converters.platform.base.block.BaseConstructors
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseStructure
 import org.powernukkit.converters.platform.java.JavaPlatform
 

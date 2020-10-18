@@ -20,8 +20,8 @@ package org.powernukkit.converters.platform.base.entity
 
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 
 /**
  * @author joserobjr

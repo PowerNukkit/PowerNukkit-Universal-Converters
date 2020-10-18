@@ -18,10 +18,10 @@
 
 package org.powernukkit.converters.platform.java.block
 
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlock
 import org.powernukkit.converters.platform.base.block.BaseBlockEntity
 import org.powernukkit.converters.platform.base.block.BaseBlockState
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.java.JavaPlatform
 

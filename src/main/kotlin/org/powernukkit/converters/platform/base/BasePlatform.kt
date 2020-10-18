@@ -27,7 +27,6 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
 import org.powernukkit.converters.platform.base.block.BaseBlockEntity
 import org.powernukkit.converters.platform.base.block.BaseBlockState
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 

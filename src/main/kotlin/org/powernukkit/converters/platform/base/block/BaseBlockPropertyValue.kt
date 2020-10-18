@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 

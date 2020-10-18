@@ -18,8 +18,8 @@
 
 package org.powernukkit.converters.platform.java.block
 
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValueInt
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 

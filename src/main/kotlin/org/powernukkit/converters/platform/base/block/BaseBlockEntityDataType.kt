@@ -20,6 +20,7 @@ package org.powernukkit.converters.platform.base.block
 
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntityDataType
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityDataType
 import org.powernukkit.converters.platform.universal.definitions.model.block.entity.ModelData

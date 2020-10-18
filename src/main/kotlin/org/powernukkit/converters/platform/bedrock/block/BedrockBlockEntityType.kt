@@ -18,9 +18,9 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockEntityDataType
 import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
 

@@ -18,8 +18,8 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValueString
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 

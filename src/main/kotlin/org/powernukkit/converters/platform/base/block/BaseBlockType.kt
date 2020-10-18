@@ -23,6 +23,7 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock

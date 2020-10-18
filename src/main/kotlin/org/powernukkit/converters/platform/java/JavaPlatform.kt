@@ -19,8 +19,8 @@
 package org.powernukkit.converters.platform.java
 
 import org.powernukkit.converters.platform.api.MinecraftEdition
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.java.block.*
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 

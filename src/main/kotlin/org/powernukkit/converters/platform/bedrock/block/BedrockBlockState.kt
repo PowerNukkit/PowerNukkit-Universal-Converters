@@ -18,10 +18,10 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValue
 import org.powernukkit.converters.platform.base.block.BaseBlockState
 import org.powernukkit.converters.platform.base.block.BaseBlockType
-import org.powernukkit.converters.platform.base.block.BaseConstructors
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**

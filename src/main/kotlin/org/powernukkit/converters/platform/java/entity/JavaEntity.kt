@@ -19,7 +19,7 @@
 package org.powernukkit.converters.platform.java.entity
 
 import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.base.block.BaseConstructors
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.java.JavaPlatform
 
