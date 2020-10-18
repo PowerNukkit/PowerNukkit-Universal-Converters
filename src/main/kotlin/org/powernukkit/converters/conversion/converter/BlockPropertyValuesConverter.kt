@@ -16,16 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.context
+package org.powernukkit.converters.conversion.converter
 
 import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.BlockPropertyValuesAdapter
-import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.conversion.context.BlockPropertyValuesConversionContext
+import org.powernukkit.converters.conversion.context.BlockStateConversionContext
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 
 /**
@@ -41,34 +40,26 @@ open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, T
     open fun convert(
         fromValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
         toType: PlatformBlockType<ToPlatform>,
-        fromState: PlatformBlockState<FromPlatform>,
-        fromLayer: Int,
-        fromLayers: List<PlatformBlockState<FromPlatform>>,
-        fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>
+        context: BlockStateConversionContext<FromPlatform, ToPlatform>,
     ): Map<String, PlatformBlockPropertyValue<ToPlatform>> {
-
-        var result: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
+        val context = BlockPropertyValuesConversionContext(fromValues, toType, context)
 
         fun List<BlockPropertyValuesAdapter<FromPlatform, ToPlatform>>.applyAdapters() {
 
-            result = fold(result) { current, adapter ->
-                adapter.adaptBlockPropertyValues(
-                    fromPlatform, toPlatform, fromValues, toType, current,
-                    fromState, fromLayer, fromLayers, fromBlock, fromContainer
-                )
+            forEach { adapter ->
+                adapter.adaptBlockPropertyValues(context)
             }
 
         }
 
         adapters.firstAdapters.applyAdapters()
-        adapters.fromAdapters[fromState.type.id]?.applyAdapters()
+        adapters.fromAdapters[context.fromBlockState.type.id]?.applyAdapters()
         adapters.toAdapters[toType.id]?.applyAdapters()
         adapters.lastAdapters.applyAdapters()
         adapters.lastToAdapters[toType.id]?.applyAdapters()
-        
-        return checkNotNull(result) {
-            "Could not convert the properties from the block state $fromState to type $toType, from platform ${fromPlatform.name} to ${toPlatform.name}"
+
+        return checkNotNull(context.result) {
+            "Could not convert the properties from the block state ${context.fromBlockState} to type $toType, from platform ${fromPlatform.name} to ${toPlatform.name}"
         }
     }
 }

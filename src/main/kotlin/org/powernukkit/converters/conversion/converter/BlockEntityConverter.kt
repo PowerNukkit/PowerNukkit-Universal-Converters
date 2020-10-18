@@ -18,11 +18,9 @@
 
 package org.powernukkit.converters.conversion.converter
 
-import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.conversion.context.BlockConversionContext
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
 
 /**
  * @author joserobjr
@@ -34,9 +32,7 @@ open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatfor
 ) {
     open fun convert(
         blockEntity: PlatformBlockEntity<FromPlatform>?,
-        fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>,
-        convertedLayers: List<PlatformBlockState<ToPlatform>>
+        context: BlockConversionContext<FromPlatform, ToPlatform>
     ): PlatformBlockEntity<ToPlatform>? {
         TODO("Not yet implemented")
     }

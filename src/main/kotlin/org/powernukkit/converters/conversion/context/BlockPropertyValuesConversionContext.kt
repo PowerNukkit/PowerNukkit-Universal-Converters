@@ -19,31 +19,25 @@
 package org.powernukkit.converters.conversion.context
 
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.PlatformObject
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 
 /**
  * @author joserobjr
  * @since 2020-10-18
  */
-data class IncompleteBlockState<P : Platform<P>>(
-    override val platform: P,
-    var type: PlatformBlockType<P>? = null,
-    var values: Map<String, PlatformBlockPropertyValue<P>>? = null,
-    var typeRequiresAdapter: Boolean = false,
-    var valuesRequiresAdapter: Boolean = false,
-) : PlatformObject<P> {
-    fun toCompletedState(): PlatformBlockState<P> {
-        val type = requireNotNull(type) {
-            "The type is not defined"
-        }
+data class BlockPropertyValuesConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
+    val fromValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
+    val toType: PlatformBlockType<ToPlatform>,
+    val parentContext: BlockStateConversionContext<FromPlatform, ToPlatform>,
+) {
+    var result: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
 
-        val values = requireNotNull(values) {
-            "The properties are not defined"
-        }
-
-        return type.withState(values)
-    }
+    val fromBlockState get() = parentContext.fromBlockState
+    val fromPlatform get() = parentContext.fromPlatform
+    val toPlatform get() = parentContext.toPlatform
+    val fromBlock get() = parentContext.fromBlock
+    val fromContainer get() = parentContext.fromContainer
+    val fromLayers get() = parentContext.fromLayers
+    val fromLayer get() = parentContext.fromLayer
 }

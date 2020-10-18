@@ -16,25 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.converter
+package org.powernukkit.converters.conversion.context
 
-import org.powernukkit.converters.conversion.context.BlockConversionContext
+import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
+import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-18
  */
-open class EntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
+data class BlockConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
+    val fromBlock: PlatformBlock<FromPlatform>,
+    val fromContainer: BlockContainer<FromPlatform>,
 ) {
-    open fun convertList(
-        fromEntityList: List<PlatformEntity<FromPlatform>>,
-        context: BlockConversionContext<FromPlatform, ToPlatform>
-    ): List<PlatformEntity<ToPlatform>> {
-        TODO("Not yet implemented")
-    }
-
+    var toLayers: List<PlatformBlockState<ToPlatform>>? = null
+    var toBlockEntity: PlatformBlockEntity<ToPlatform>? = null
+    var toEntities: List<PlatformEntity<ToPlatform>>? = null
 }

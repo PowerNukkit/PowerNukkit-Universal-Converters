@@ -18,38 +18,14 @@
 
 package org.powernukkit.converters.conversion.adapter
 
-import org.powernukkit.converters.conversion.context.IncompleteBlockState
-import org.powernukkit.converters.platform.api.BlockContainer
+import org.powernukkit.converters.conversion.context.BlockStateConversionContext
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
 
 /**
  * @author joserobjr
  * @since 2020-10-18
  */
 interface BlockStateAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
-    fun adaptBlockState(
-        fromPlatform: FromPlatform,
-        toPlatform: ToPlatform,
-        fromState: PlatformBlockState<FromPlatform>,
-        incomplete: IncompleteBlockState<ToPlatform>,
-        current: List<PlatformBlockState<ToPlatform>>?,
-        fromLayer: Int,
-        fromLayers: List<PlatformBlockState<FromPlatform>>,
-        fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>
-    ): List<PlatformBlockState<ToPlatform>>?
-
-    fun adaptBlockStateList(
-        fromPlatform: FromPlatform,
-        toPlatform: ToPlatform,
-        fromState: PlatformBlockState<FromPlatform>,
-        incomplete: IncompleteBlockState<ToPlatform>,
-        current: List<PlatformBlockState<ToPlatform>>?,
-        fromLayer: Int,
-        fromLayers: List<PlatformBlockState<FromPlatform>>,
-        fromBlock: PlatformBlock<FromPlatform>,
-        fromContainer: BlockContainer<FromPlatform>
-    ): List<PlatformBlockState<ToPlatform>>?
+    fun adaptBlockState(context: BlockStateConversionContext<FromPlatform, ToPlatform>)
+    fun adaptBlockStateList(context: BlockStateConversionContext<FromPlatform, ToPlatform>)
 }

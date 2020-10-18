@@ -25,11 +25,16 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockState
  * @author joserobjr
  * @since 2020-10-18
  */
-data class BlockLayerConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val layersContext: FullBlockLayersConversionContext<FromPlatform, ToPlatform>,
+data class BlockLayersSingleConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromLayer: Int,
-    val fromBlockState: PlatformBlockState<FromPlatform>,
+    val parentContext: BlockLayersFullConversionContext<FromPlatform, ToPlatform>,
 ) {
     var requiresAdapter: Boolean = false
     var toBlockStateLayers: List<PlatformBlockState<ToPlatform>>? = null
+
+    val fromPlatform get() = parentContext.fromPlatform
+    val toPlatform get() = parentContext.toPlatform
+    val fromBlock get() = parentContext.fromBlock
+    val fromContainer get() = parentContext.fromContainer
+    val fromLayers get() = parentContext.fromLayers
 }

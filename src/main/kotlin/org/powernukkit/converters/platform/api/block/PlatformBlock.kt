@@ -34,6 +34,8 @@ abstract class PlatformBlock<P : Platform<P>>(
     abstract val blockEntity: PlatformBlockEntity<P>?
     abstract val entities: List<PlatformEntity<P>>
 
+    open val mainState get() = blockLayers.first()
+
     val isBlockAir
         get() = platform.airBlockState.let { air ->
             blockLayers.all { it == air }

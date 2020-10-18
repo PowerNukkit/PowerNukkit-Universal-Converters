@@ -18,22 +18,22 @@
 
 package org.powernukkit.converters.conversion.context
 
-import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 
 /**
  * @author joserobjr
  * @since 2020-10-18
  */
-data class FullBlockLayersConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform,
+data class BlockLayersFullConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromLayers: List<PlatformBlockState<FromPlatform>>,
-    val fromBlock: PlatformBlock<FromPlatform>,
-    val fromContainer: BlockContainer<FromPlatform>,
+    val parentContext: BlockConversionContext<FromPlatform, ToPlatform>
 ) {
     var layersRequiresAdapter: Boolean = false
     var toLayers: List<PlatformBlockState<ToPlatform>>? = null
+
+    val fromPlatform get() = parentContext.fromPlatform
+    val toPlatform get() = parentContext.toPlatform
+    val fromBlock get() = parentContext.fromBlock
+    val fromContainer get() = parentContext.fromContainer
 }

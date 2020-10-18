@@ -18,11 +18,15 @@
 
 package org.powernukkit.converters.conversion.converter
 
+import org.powernukkit.converters.conversion.adapter.Adapters
+import org.powernukkit.converters.conversion.adapter.BlockAdapter
+import org.powernukkit.converters.conversion.context.BlockConversionContext
 import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.BoundingBox
 import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.MutableBlockContainer
+import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.plus
@@ -38,6 +42,8 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
     val blockLayersConverter: BlockLayersConverter<FromPlatform, ToPlatform>,
     val blockEntityConverter: BlockEntityConverter<FromPlatform, ToPlatform>,
     val entityConverter: EntityConverter<FromPlatform, ToPlatform>,
+
+    val adapters: Adapters<NamespacedId, BlockAdapter<FromPlatform, ToPlatform>>? = null,
 ) {
     open fun convert(
         fromContainer: BlockContainer<FromPlatform>,
@@ -46,17 +52,33 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
 
         toContainer: MutableBlockContainer<ToPlatform>
     ) {
-        val layers = blockLayersConverter.convert(fromBlock.blockLayers, fromBlock, fromContainer)
-        val blockEntity = blockEntityConverter.convert(fromBlock.blockEntity, fromBlock, fromContainer, layers)
-        val entities = entityConverter.convert(fromBlock, fromContainer, layers, blockEntity)
+        val context = BlockConversionContext(
+            fromPlatform, toPlatform,
+            fromBlock, fromContainer
+        )
 
-        if (entities.all { it.pos in BoundingBox.SIMPLE_BOX }) {
-            toContainer[pos] = toPlatform.createPlatformBlock(layers, blockEntity, entities)
+        if (adapters != null) {
+            adapters.firstAdapters.forEach { it.adaptBlock(context) }
+            adapters.fromAdapters[fromBlock.mainState.type.id]?.forEach { it.adaptBlock(context) }
+        }
+
+        context.toLayers = blockLayersConverter.convert(fromBlock.blockLayers, context)
+        context.toBlockEntity = blockEntityConverter.convert(fromBlock.blockEntity, context)
+        context.toEntities = entityConverter.convertList(fromBlock.entities, context)
+
+        val toLayers = context.toLayers.takeUnless { it.isNullOrEmpty() }
+            ?: error("Failed to convert the block layers of $context")
+
+        val toBlockEntity = context.toBlockEntity
+        val toEntities = checkNotNull(context.toEntities) { "Failed to convert the entities of $context" }
+
+        if (toEntities.all { it.pos in BoundingBox.SIMPLE_BOX }) {
+            toContainer[pos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, toEntities)
         } else {
-            val sameBlock = entities.filter { it.pos in BoundingBox.SIMPLE_BOX }
-            toContainer[pos] = toPlatform.createPlatformBlock(layers, blockEntity, sameBlock)
+            val sameBlock = toEntities.filter { it.pos in BoundingBox.SIMPLE_BOX }
+            toContainer[pos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, sameBlock)
 
-            val otherBlocks = entities.asSequence()
+            val otherBlocks = toEntities.asSequence()
                 .filter { it.pos !in BoundingBox.SIMPLE_BOX }
                 .map {
                     val blockPos = it.pos.toBlockPos()

@@ -16,25 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.converter
+package org.powernukkit.converters.conversion.adapter
 
 import org.powernukkit.converters.conversion.context.BlockConversionContext
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-18
  */
-open class EntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform,
-) {
-    open fun convertList(
-        fromEntityList: List<PlatformEntity<FromPlatform>>,
-        context: BlockConversionContext<FromPlatform, ToPlatform>
-    ): List<PlatformEntity<ToPlatform>> {
-        TODO("Not yet implemented")
-    }
-
+interface BlockAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
+    fun adaptBlock(context: BlockConversionContext<FromPlatform, ToPlatform>)
 }

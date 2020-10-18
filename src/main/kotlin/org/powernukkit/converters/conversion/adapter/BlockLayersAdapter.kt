@@ -18,8 +18,8 @@
 
 package org.powernukkit.converters.conversion.adapter
 
-import org.powernukkit.converters.conversion.context.BlockLayerConversionContext
-import org.powernukkit.converters.conversion.context.FullBlockLayersConversionContext
+import org.powernukkit.converters.conversion.context.BlockLayersFullConversionContext
+import org.powernukkit.converters.conversion.context.BlockLayersSingleConversionContext
 import org.powernukkit.converters.platform.api.Platform
 
 /**
@@ -27,6 +27,6 @@ import org.powernukkit.converters.platform.api.Platform
  * @since 2020-10-18
  */
 interface BlockLayersAdapter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> {
-    fun adaptBlockStateToLayers(context: BlockLayerConversionContext<FromPlatform, ToPlatform>)
-    fun adaptEntireBlockStateLayers(context: FullBlockLayersConversionContext<FromPlatform, ToPlatform>)
+    fun adaptBlockStateToLayers(context: BlockLayersSingleConversionContext<FromPlatform, ToPlatform>)
+    fun adaptEntireBlockStateLayers(context: BlockLayersFullConversionContext<FromPlatform, ToPlatform>)
 }
