@@ -486,10 +486,6 @@
         <block-property id="conditional" bedrock="conditional_bit" >
             <boolean />
         </block-property>
-        <block-property id="dirt_type" java-requires-adapter="true">
-            <value default="true">normal</value>
-            <value>coarse</value>
-        </block-property>
         <block-property id="bed_occupied" bedrock="occupied_bit" java="occupied">
             <boolean />
         </block-property>
