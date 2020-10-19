@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.base
 
 import org.powernukkit.converters.internal.InitOnceDelegator
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.PlatformObject
 import org.powernukkit.converters.platform.api.block.PlatformStructure
@@ -95,7 +96,7 @@ class BaseConstructors<P : BasePlatform<P>>(
 
     val structure: (
         BaseConstructors<P>,
-        size: Int
+        BlockPos, size: Int
     ) -> PlatformStructure<P>
 
 
@@ -126,7 +127,7 @@ class BaseConstructors<P : BasePlatform<P>>(
         return universal.values.map(this::createBlockPropertyValue)
     }
 
-    fun createStructure(size: Int) = structure(this, size)
+    fun createStructure(worldPos: BlockPos, size: Int) = structure(this, worldPos, size)
 
     fun createBlockState(
         blockType: BaseBlockType<P>,

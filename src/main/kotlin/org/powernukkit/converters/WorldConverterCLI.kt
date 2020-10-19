@@ -63,7 +63,7 @@ object WorldConverterCLI {
             BlockPos(4, 5, 6) to javaDirt,
         ).map { (pos, state) ->
             val block = javaPlatform.createPlatformBlock(state)
-            javaPlatform.createStructure(1).also { it[pos] = block }
+            javaPlatform.createStructure(pos, 1).also { it[BlockPos.ZERO] = block }
         }
 
         runBlocking {

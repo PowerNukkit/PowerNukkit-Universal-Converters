@@ -28,7 +28,10 @@ import org.powernukkit.converters.platform.api.block.positionedAt
  * @since 2020-10-17
  */
 interface BlockContainer<P : Platform<P>> : Container<BlockPos, PositionedBlock<P>> {
+    val worldPos: BlockPos
+    val mainBlock: PlatformBlock<P>
+
     fun getBlock(pos: BlockPos): PlatformBlock<P>?
 
-    override fun get(key: BlockPos) = getBlock(key)?.positionedAt(key)
+    override fun get(key: BlockPos) = getBlock(key)?.positionedAt(this, key)
 }

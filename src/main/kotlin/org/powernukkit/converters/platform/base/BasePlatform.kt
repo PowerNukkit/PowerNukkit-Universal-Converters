@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.base
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
@@ -112,5 +113,5 @@ abstract class BasePlatform<P : BasePlatform<P>>(
         entities as List<BaseEntity<P>>
     )
 
-    override fun createStructure(size: Int) = constructors.createStructure(size)
+    override fun createStructure(worldPos: BlockPos, size: Int) = constructors.createStructure(worldPos, size)
 }

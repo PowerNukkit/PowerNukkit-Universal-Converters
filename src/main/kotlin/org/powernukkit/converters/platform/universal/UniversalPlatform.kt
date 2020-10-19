@@ -22,6 +22,7 @@ import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.internal.toMapOfList
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
@@ -108,7 +109,7 @@ class UniversalPlatform internal constructor(
                 value.map { it.second }.toMap()
             }
 
-    override fun createStructure(size: Int) = UniversalStructure(this)
+    override fun createStructure(worldPos: BlockPos, size: Int) = UniversalStructure(this, worldPos, size)
 
     @Suppress("UNCHECKED_CAST")
     override fun createPlatformBlock(

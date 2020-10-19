@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.java.block
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseStructure
 import org.powernukkit.converters.platform.java.JavaPlatform
@@ -28,5 +29,10 @@ import org.powernukkit.converters.platform.java.JavaPlatform
  */
 class JavaStructure(
     constructors: BaseConstructors<JavaPlatform>,
+    worldPos: BlockPos,
     size: Int,
-) : BaseStructure<JavaPlatform>(constructors, size)
+) : BaseStructure<JavaPlatform>(
+    constructors,
+    worldPos,
+    size,
+)

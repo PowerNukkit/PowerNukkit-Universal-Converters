@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.api.block
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.Platform
 
 /**
@@ -26,4 +27,4 @@ import org.powernukkit.converters.platform.api.Platform
  */
 @Suppress("UNCHECKED_CAST")
 fun <P : Platform<P>, Structure : PlatformStructure<P>>
-        Structure.createStructure(size: Int = blocks.size) = platform.createStructure(size) as Structure
+        Structure.createStructure(size: Int = blocks.size) = platform.createStructure(BlockPos.ZERO, size) as Structure

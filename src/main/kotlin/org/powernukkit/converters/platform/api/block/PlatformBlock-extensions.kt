@@ -19,13 +19,15 @@
 package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
  * @since 2020-10-16
  */
-fun <P : Platform<P>> PlatformBlock<P>.positionedAt(pos: BlockPos) = PositionedBlock(pos, this)
+fun <P : Platform<P>> PlatformBlock<P>.positionedAt(container: BlockContainer<P>, pos: BlockPos) =
+    PositionedBlock(container, pos, this)
 
 @Suppress("UNCHECKED_CAST")
 operator fun <P : Platform<P>, Block : PlatformBlock<P>> Block.plus(other: Block): Block {

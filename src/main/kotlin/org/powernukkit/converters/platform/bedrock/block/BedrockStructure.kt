@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
@@ -28,5 +29,10 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
  */
 class BedrockStructure(
     constructors: BaseConstructors<BedrockPlatform>,
+    worldPos: BlockPos,
     size: Int,
-) : BaseStructure<BedrockPlatform>(constructors, size)
+) : BaseStructure<BedrockPlatform>(
+    constructors,
+    worldPos,
+    size,
+)

@@ -25,8 +25,15 @@ import org.powernukkit.converters.platform.api.PlatformObject
 
 abstract class PlatformStructure<P : Platform<P>>(
     final override val platform: P,
+    final override var worldPos: BlockPos,
 ) : PlatformObject<P>, MutableBlockContainer<P> {
     val blocks = mutableMapOf<BlockPos, PlatformBlock<P>>()
+
+    var mainBlock
+        get() = blocks[BlockPos.ZERO] ?: platform.airBlock
+        set(value) {
+            blocks[BlockPos.ZERO] = value
+        }
 
     final override fun contains(key: BlockPos) = key in blocks
     override fun getBlock(pos: BlockPos) = blocks[pos]

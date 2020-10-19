@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.universal.block
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.block.PlatformStructure
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
@@ -26,5 +27,10 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
  * @since 2020-10-10
  */
 class UniversalStructure(
-    platform: UniversalPlatform
-) : PlatformStructure<UniversalPlatform>(platform)
+    platform: UniversalPlatform,
+    worldPos: BlockPos,
+    size: Int
+) : PlatformStructure<UniversalPlatform>(
+    platform,
+    worldPos,
+)

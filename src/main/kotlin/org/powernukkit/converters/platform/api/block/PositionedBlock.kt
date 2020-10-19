@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 
@@ -27,6 +28,7 @@ import org.powernukkit.converters.platform.api.PlatformObject
  * @since 2020-10-16
  */
 data class PositionedBlock<P : Platform<P>>(
+    val container: BlockContainer<P>,
     val pos: BlockPos,
     val block: PlatformBlock<P>
 ) : PlatformObject<P> by block {
@@ -36,7 +38,7 @@ data class PositionedBlock<P : Platform<P>>(
         block.entities.map { it.withPos(it.pos + pos) }
     }
 
-    fun moveTo(pos: BlockPos) = PositionedBlock(pos, block)
+    fun moveTo(pos: BlockPos) = PositionedBlock(container, pos, block)
 
     override fun toString(): String {
         return "${platform.name}PositionedBlock(pos=$pos, layers=$layers, blockEntity=$blockEntity, entities=${block.entities.size}"

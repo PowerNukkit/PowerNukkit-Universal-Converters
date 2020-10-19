@@ -27,6 +27,9 @@ import org.powernukkit.converters.platform.api.block.PositionedBlock
  * @since 2020-10-17
  */
 interface MutableBlockContainer<P : Platform<P>> : MutableContainer<BlockPos, PositionedBlock<P>>, BlockContainer<P> {
+    override var worldPos: BlockPos
+    override var mainBlock: PlatformBlock<P>
+
     operator fun set(pos: BlockPos, block: PlatformBlock<P>)
     override fun set(key: BlockPos, value: PositionedBlock<P>) {
         this[key] = value.block

@@ -36,7 +36,7 @@ internal class FromUniversalConverterTest {
 
         val converter = FromUniversalConverter(universalPlatform, bedrockPlatform)
 
-        val universalStructure = universalPlatform.createStructure(1)
+        val universalStructure = universalPlatform.createStructure(BlockPos.ZERO, 1)
         universalStructure[BlockPos.ZERO] = universalPlatform.airBlock
 
         val (bedrockStructure, problems) = converter.convertStructure(universalStructure)

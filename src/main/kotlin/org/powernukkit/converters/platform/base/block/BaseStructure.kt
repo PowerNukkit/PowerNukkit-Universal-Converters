@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.base.block
 
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.block.PlatformStructure
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
@@ -28,5 +29,9 @@ import org.powernukkit.converters.platform.base.BasePlatform
  */
 abstract class BaseStructure<P : BasePlatform<P>>(
     constructors: BaseConstructors<P>,
+    worldPos: BlockPos,
     size: Int,
-) : PlatformStructure<P>(constructors.platform)
+) : PlatformStructure<P>(
+    constructors.platform,
+    worldPos,
+)

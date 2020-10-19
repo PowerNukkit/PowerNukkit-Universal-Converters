@@ -68,7 +68,7 @@ open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
     ): Pair<PlatformStructure<ToPlatform>, List<ConversionProblem>> {
         val size = fromStructure.blocks.size
 
-        val toStructure = toPlatform.createStructure(size)
+        val toStructure = toPlatform.createStructure(fromStructure.worldPos, size)
 
         val problems = if (size == 1) {
             convertSingleStructure(fromStructure, toStructure, singleBlockStructureCache)
