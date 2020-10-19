@@ -16,10 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion
+package org.powernukkit.converters.conversion.adapter
 
 /**
  * @author joserobjr
- * @since 2020-10-18
+ * @since 2020-10-19
  */
-class ConversionProblem(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
+fun <A> Adapters<A>?.addFirst(vararg adapters: A): Adapters<A> {
+    return this?.copy(
+        firstAdapters = listOf(*adapters) + firstAdapters
+    ) ?: Adapters(firstAdapters = adapters.toList())
+}

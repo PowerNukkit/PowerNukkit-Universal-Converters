@@ -16,21 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.universal
+package org.powernukkit.converters.conversion.universal.to
 
-import org.powernukkit.converters.conversion.adapter.BlockTypeAdapter
-import org.powernukkit.converters.conversion.context.BlockTypeConversionContext
+import org.powernukkit.converters.conversion.adapter.BlockPropertyValuesAdapter
+import org.powernukkit.converters.conversion.context.BlockPropertyValuesConversionContext
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-18
+ * @since 2020-10-19
  */
-interface ToUniversalTypeAdapter<FromPlatform : Platform<FromPlatform>> :
-    BlockTypeAdapter<FromPlatform, UniversalPlatform> {
+interface ToUniversalBlockPropertyValuesAdapter<FromPlatform : Platform<FromPlatform>> :
+    BlockPropertyValuesAdapter<FromPlatform, UniversalPlatform> {
 
-    override fun adaptBlockType(context: BlockTypeConversionContext<FromPlatform, UniversalPlatform>) {
+    override fun adaptBlockPropertyValues(context: BlockPropertyValuesConversionContext<FromPlatform, UniversalPlatform>) {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        private object Default : ToUniversalBlockPropertyValuesAdapter<UniversalPlatform>
+
+        @Suppress("UNCHECKED_CAST")
+        fun <FromPlatform : Platform<FromPlatform>> default() =
+            Default as ToUniversalBlockPropertyValuesAdapter<FromPlatform>
     }
 }

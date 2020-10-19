@@ -18,9 +18,9 @@
 
 package org.powernukkit.converters.conversion.universal.from
 
-import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.conversion.adapter.BlockPropertyValuesAdapter
 import org.powernukkit.converters.conversion.context.BlockPropertyValuesConversionContext
+import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue

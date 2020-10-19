@@ -18,6 +18,9 @@
 
 package org.powernukkit.converters.platform.bedrock
 
+import org.powernukkit.converters.conversion.converter.PlatformAdapters
+import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
+import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
@@ -39,4 +42,12 @@ class BedrockPlatform(
         ::BedrockStructure
     ),
     universal, name, MinecraftEdition.BEDROCK
-)
+) {
+    override fun convertToUniversal(adapters: PlatformAdapters<BedrockPlatform, UniversalPlatform>?): ToUniversalConverter<BedrockPlatform> {
+        return ToUniversalConverter(this, universal)
+    }
+
+    override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, BedrockPlatform>?): FromUniversalConverter<BedrockPlatform> {
+        return FromUniversalConverter(universal, this)
+    }
+}

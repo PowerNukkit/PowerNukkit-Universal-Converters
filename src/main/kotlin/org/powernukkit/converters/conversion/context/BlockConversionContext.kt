@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
-import org.powernukkit.converters.conversion.ConversionProblem
+import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.MutableBlockContainer

@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
-import org.powernukkit.converters.conversion.ConversionProblem
+import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 

@@ -18,26 +18,28 @@
 
 package org.powernukkit.converters.conversion.converter
 
-import org.powernukkit.converters.conversion.adapter.Adapters
-import org.powernukkit.converters.conversion.adapter.BlockEntityAdapter
-import org.powernukkit.converters.conversion.context.BlockConversionContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
+import org.powernukkit.converters.platform.api.block.PlatformStructure
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-19
  */
-open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
+abstract class PlatformConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
-    val adapters: Adapters<BlockEntityAdapter<FromPlatform, ToPlatform>>?,
 ) {
-    open fun convert(
-        blockEntity: PlatformBlockEntity<FromPlatform>?,
-        context: BlockConversionContext<FromPlatform, ToPlatform>
-    ): PlatformBlockEntity<ToPlatform>? {
-        //TODO Implement block entity conversion
-        return null
-    }
+    abstract fun convertStructure(
+        from: PlatformStructure<FromPlatform>
+    ): Pair<PlatformStructure<ToPlatform>, List<ConversionProblem>>
+
+    abstract fun CoroutineScope.convertAllStructures(
+        from: ReceiveChannel<PlatformStructure<FromPlatform>>,
+        to: SendChannel<PlatformStructure<ToPlatform>>,
+        problems: SendChannel<ConversionProblem>? = null,
+    ): Job
 }

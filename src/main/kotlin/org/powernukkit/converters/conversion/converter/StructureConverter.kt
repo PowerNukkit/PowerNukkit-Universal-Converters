@@ -18,9 +18,10 @@
 
 package org.powernukkit.converters.conversion.converter
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import org.powernukkit.converters.conversion.ConversionProblem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.launch
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.PlatformStructure
@@ -35,11 +36,20 @@ open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
     val toPlatform: ToPlatform,
     val blockConverter: BlockConverter<FromPlatform, ToPlatform>,
 ) {
-    fun convertAll(fromStructures: Flow<PlatformStructure<FromPlatform>>)
-            : Flow<Pair<PlatformStructure<ToPlatform>, List<ConversionProblem>>> {
+    fun CoroutineScope.convertAll(
+        fromStructures: ReceiveChannel<PlatformStructure<FromPlatform>>,
+        toStructures: SendChannel<PlatformStructure<ToPlatform>>,
+        problems: SendChannel<ConversionProblem>? = null,
+    ) = launch {
         val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>()
-        return fromStructures.map {
-            convert(it, singleBlockStructureCache)
+        for (fromStructure in fromStructures) {
+            val (toStructure, conversionProblems) = convert(fromStructure, singleBlockStructureCache)
+            toStructures.send(toStructure)
+            if (problems != null && conversionProblems.isNotEmpty()) {
+                launch {
+                    conversionProblems.forEach { problems.send(it) }
+                }
+            }
         }
     }
 

@@ -18,6 +18,17 @@
 
 package org.powernukkit.converters
 
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
+import org.powernukkit.converters.conversion.converter.ConversionProblem
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.api.block.PlatformStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
@@ -36,10 +47,53 @@ object WorldConverterCLI {
     @JvmStatic
     fun main(args: Array<String>) {
         val universalPlatform = DefinitionLoader().loadBuiltin()
-        val javaPlatform = JavaPlatform(universalPlatform, "Java")
-        val bedrockPlatform = BedrockPlatform(universalPlatform, "Bedrock")
-        println(universalPlatform.airBlockState)
-        println(bedrockPlatform.airBlockState)
-        println(javaPlatform.airBlockState)
+        val javaPlatform = JavaPlatform(universalPlatform)
+        val bedrockPlatform = BedrockPlatform(universalPlatform)
+
+        val converter = javaPlatform.convertToUniversal().convertToPlatform(bedrockPlatform)
+
+        val javaStone = javaPlatform.getBlockType(NamespacedId("stone"))!!.withDefaultState()
+        val javaGrass = javaPlatform.getBlockType(NamespacedId("grass"))!!.withDefaultState()
+        val javaDirt = javaPlatform.getBlockType(NamespacedId("dirt"))!!.withDefaultState()
+
+        val javaStructures = flowOf(
+            BlockPos(1, 2, 3) to javaPlatform.airBlockState,
+            BlockPos(2, 2, 3) to javaStone,
+            BlockPos(3, 3, 3) to javaGrass,
+            BlockPos(4, 5, 6) to javaDirt,
+        ).map { (pos, state) ->
+            val block = javaPlatform.createPlatformBlock(state)
+            javaPlatform.createStructure(1).also { it[pos] = block }
+        }
+
+        runBlocking {
+            val javaChannel = Channel<PlatformStructure<JavaPlatform>>()
+            val bedrockChannel = Channel<PlatformStructure<BedrockPlatform>>()
+            val problems = Channel<ConversionProblem>()
+            with(converter) {
+                convertAllStructures(javaChannel, bedrockChannel, problems)
+            }
+
+            repeat(2) {
+                launch {
+                    javaStructures.collect { javaStructure ->
+                        javaChannel.send(javaStructure)
+                    }
+                }
+            }
+
+            select<Unit> {
+                bedrockChannel.onReceive { bedrockStructure ->
+                    println("Got an structure: $bedrockStructure")
+                }
+
+                problems.onReceive { problem ->
+                    println("Got a problem :(")
+                    problem.printStackTrace()
+                }
+            }
+        }
+
+        println("Completed.")
     }
 }

@@ -18,6 +18,9 @@
 
 package org.powernukkit.converters.platform.java
 
+import org.powernukkit.converters.conversion.converter.PlatformAdapters
+import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
+import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
@@ -38,4 +41,12 @@ class JavaPlatform(
         ::JavaBlockPropertyValueBoolean, ::JavaStructure
     ),
     universal, name, MinecraftEdition.JAVA
-)
+) {
+    override fun convertToUniversal(adapters: PlatformAdapters<JavaPlatform, UniversalPlatform>?): ToUniversalConverter<JavaPlatform> {
+        return ToUniversalConverter(this, universal)
+    }
+
+    override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, JavaPlatform>?): FromUniversalConverter<JavaPlatform> {
+        return FromUniversalConverter(universal, this)
+    }
+}

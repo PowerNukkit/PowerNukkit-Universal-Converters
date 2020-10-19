@@ -18,26 +18,19 @@
 
 package org.powernukkit.converters.conversion.converter
 
-import org.powernukkit.converters.conversion.adapter.Adapters
-import org.powernukkit.converters.conversion.adapter.BlockEntityAdapter
-import org.powernukkit.converters.conversion.context.BlockConversionContext
+import org.powernukkit.converters.conversion.adapter.*
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-19
  */
-open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform,
-    val adapters: Adapters<BlockEntityAdapter<FromPlatform, ToPlatform>>?,
-) {
-    open fun convert(
-        blockEntity: PlatformBlockEntity<FromPlatform>?,
-        context: BlockConversionContext<FromPlatform, ToPlatform>
-    ): PlatformBlockEntity<ToPlatform>? {
-        //TODO Implement block entity conversion
-        return null
-    }
-}
+data class PlatformAdapters<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
+    val blockTypeAdapters: Adapters<BlockTypeAdapter<FromPlatform, ToPlatform>>? = null,
+    val blockPropertyValueAdapters: Adapters<BlockPropertyValuesAdapter<FromPlatform, ToPlatform>>? = null,
+    val blockStateAdapters: Adapters<BlockStateAdapter<FromPlatform, ToPlatform>>? = null,
+    val blockLayersAdapters: Adapters<BlockLayersAdapter<FromPlatform, ToPlatform>>? = null,
+    val blockEntityAdapters: Adapters<BlockEntityAdapter<FromPlatform, ToPlatform>>? = null,
+    val entityAdapters: Adapters<EntityAdapter<FromPlatform, ToPlatform>>? = null,
+    val blockAdapters: Adapters<BlockAdapter<FromPlatform, ToPlatform>>? = null,
+)

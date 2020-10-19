@@ -18,8 +18,12 @@
 
 package org.powernukkit.converters.platform.api
 
+import org.powernukkit.converters.conversion.converter.PlatformAdapters
+import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
+import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.block.*
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 abstract class Platform<P : Platform<P>>(
     val name: String,
@@ -28,6 +32,9 @@ abstract class Platform<P : Platform<P>>(
     abstract val airBlockType: PlatformBlockType<P>
     abstract val airBlockState: PlatformBlockState<P>
     abstract val airBlock: PlatformBlock<P>
+
+    abstract fun convertToUniversal(adapters: PlatformAdapters<P, UniversalPlatform>? = null): ToUniversalConverter<P>
+    abstract fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, P>? = null): FromUniversalConverter<P>
 
     abstract fun createStructure(size: Int = 1): PlatformStructure<P>
 

@@ -100,4 +100,6 @@ abstract class BaseBlockType<P : BasePlatform<P>>(
 
         return constructors.createBlockState(this, adjustedValues)
     }
+
+    fun withDefaultState() = withState(defaultPropertyValues())
 }

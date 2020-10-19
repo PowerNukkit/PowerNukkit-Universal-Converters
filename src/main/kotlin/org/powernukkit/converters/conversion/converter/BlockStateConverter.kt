@@ -22,7 +22,6 @@ import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.BlockStateAdapter
 import org.powernukkit.converters.conversion.context.BlockLayersSingleConversionContext
 import org.powernukkit.converters.conversion.context.BlockStateConversionContext
-import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 
@@ -37,7 +36,7 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
     val blockTypeConverter: BlockTypeConverter<FromPlatform, ToPlatform>,
     val blockPropertyValuesConverter: BlockPropertyValuesConverter<FromPlatform, ToPlatform>,
 
-    val adapters: Adapters<NamespacedId, BlockStateAdapter<FromPlatform, ToPlatform>>? = null
+    val adapters: Adapters<BlockStateAdapter<FromPlatform, ToPlatform>>? = null
 ) {
     open fun convert(
         fromState: PlatformBlockState<FromPlatform>,

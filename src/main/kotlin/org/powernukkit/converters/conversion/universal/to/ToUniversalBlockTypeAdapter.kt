@@ -16,28 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.converter
+package org.powernukkit.converters.conversion.universal.to
 
-import org.powernukkit.converters.conversion.adapter.Adapters
-import org.powernukkit.converters.conversion.adapter.BlockEntityAdapter
-import org.powernukkit.converters.conversion.context.BlockConversionContext
+import org.powernukkit.converters.conversion.adapter.BlockTypeAdapter
+import org.powernukkit.converters.conversion.context.BlockTypeConversionContext
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
+import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-17
+ * @since 2020-10-18
  */
-open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val fromPlatform: FromPlatform,
-    val toPlatform: ToPlatform,
-    val adapters: Adapters<BlockEntityAdapter<FromPlatform, ToPlatform>>?,
-) {
-    open fun convert(
-        blockEntity: PlatformBlockEntity<FromPlatform>?,
-        context: BlockConversionContext<FromPlatform, ToPlatform>
-    ): PlatformBlockEntity<ToPlatform>? {
-        //TODO Implement block entity conversion
-        return null
+interface ToUniversalBlockTypeAdapter<FromPlatform : Platform<FromPlatform>> :
+    BlockTypeAdapter<FromPlatform, UniversalPlatform> {
+
+    override fun adaptBlockType(context: BlockTypeConversionContext<FromPlatform, UniversalPlatform>) {
+        TODO("Not yet implemented")
+    }
+
+    companion object {
+        private object Default : ToUniversalBlockTypeAdapter<UniversalPlatform>
+
+        @Suppress("UNCHECKED_CAST")
+        fun <FromPlatform : Platform<FromPlatform>> default() =
+            Default as ToUniversalBlockTypeAdapter<FromPlatform>
     }
 }

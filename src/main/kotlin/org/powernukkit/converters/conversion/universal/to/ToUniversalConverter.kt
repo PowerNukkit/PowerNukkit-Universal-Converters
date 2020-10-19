@@ -16,11 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.universal.from
+package org.powernukkit.converters.conversion.universal.to
 
 import org.powernukkit.converters.conversion.adapter.addFirst
 import org.powernukkit.converters.conversion.converter.DirectPlatformConverter
 import org.powernukkit.converters.conversion.converter.PlatformAdapters
+import org.powernukkit.converters.conversion.universal.ChainedConverter
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
@@ -28,20 +29,30 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
  * @author joserobjr
  * @since 2020-10-18
  */
-class FromUniversalConverter<ToPlatform : Platform<ToPlatform>>(
+class ToUniversalConverter<FromPlatform : Platform<FromPlatform>>(
+    fromPlatform: FromPlatform,
     universalPlatform: UniversalPlatform,
-    toPlatform: ToPlatform,
-    platformAdapters: PlatformAdapters<UniversalPlatform, ToPlatform>? = null,
-) : DirectPlatformConverter<UniversalPlatform, ToPlatform>(
+    platformAdapters: PlatformAdapters<FromPlatform, UniversalPlatform>? = null,
+) : DirectPlatformConverter<FromPlatform, UniversalPlatform>(
+    fromPlatform,
     universalPlatform,
-    toPlatform,
     (platformAdapters ?: PlatformAdapters()).run {
         copy(
             blockTypeAdapters = blockTypeAdapters
-                .addFirst(FromUniversalBlockTypeAdapter.default()),
+                .addFirst(ToUniversalBlockTypeAdapter.default()),
 
             blockPropertyValueAdapters = blockPropertyValueAdapters
-                .addFirst(FromUniversalBlockPropertyValuesAdapter.default())
+                .addFirst(ToUniversalBlockPropertyValuesAdapter.default())
         )
     }
-)
+) {
+    fun <ToPlatform : Platform<ToPlatform>> convertToPlatform(
+        toPlatform: ToPlatform,
+        adapters: PlatformAdapters<UniversalPlatform, ToPlatform>? = null,
+    ): ChainedConverter<FromPlatform, ToPlatform> {
+        return ChainedConverter(
+            fromPlatform, toPlatform,
+            this, toPlatform.convertFromUniversal(adapters)
+        )
+    }
+}

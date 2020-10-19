@@ -18,6 +18,9 @@
 
 package org.powernukkit.converters.platform.universal
 
+import org.powernukkit.converters.conversion.converter.PlatformAdapters
+import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
+import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
@@ -77,14 +80,18 @@ class UniversalPlatform internal constructor(
     override val airBlockState = UniversalBlockState(airBlockType)
     override val airBlock = UniversalBlock(this, listOf(airBlockState))
 
+    override fun convertToUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): ToUniversalConverter<UniversalPlatform> {
+        throw UnsupportedOperationException("Cannot convert an universal platform to an other universal platform")
+    }
+
+    override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): FromUniversalConverter<UniversalPlatform> {
+        throw UnsupportedOperationException("Cannot convert an universal platform to an other universal platform")
+    }
+
     override fun getBlockType(id: NamespacedId) = blockTypesById[id]
 
     fun getBlockPropertyByEditionId(edition: MinecraftEdition, propertyId: String): List<UniversalBlockProperty> {
         return blockPropertiesByEditionId[edition]?.get(propertyId) ?: emptyList()
-    }
-
-    override fun toString(): String {
-        return "UniversalPlatform(name='$name', minecraftEdition=$minecraftEdition, blockPropertiesById=$blockPropertiesById, blockTypesById=$blockTypesById)"
     }
 
     private fun <K : Any, T> Map<K, T>.createEditionIdMap(
@@ -124,4 +131,8 @@ class UniversalPlatform internal constructor(
         blockEntity as UniversalBlockEntity?,
         entities.onEach { it as UniversalEntity } as List<UniversalEntity>
     )
+
+    override fun toString(): String {
+        return "UniversalPlatform(name='$name', minecraftEdition=$minecraftEdition, blockPropertiesById=$blockPropertiesById, blockTypesById=$blockTypesById)"
+    }
 }

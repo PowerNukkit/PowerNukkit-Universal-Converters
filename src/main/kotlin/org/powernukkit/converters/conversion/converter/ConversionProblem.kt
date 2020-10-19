@@ -16,20 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.context
-
-import org.powernukkit.converters.conversion.converter.ConversionProblem
+package org.powernukkit.converters.conversion.converter
 
 /**
  * @author joserobjr
  * @since 2020-10-18
  */
-interface ProblemHolder {
-    val problems: List<ConversionProblem>
-    fun plusAssign(problem: ConversionProblem)
-
-    fun <T> addProblem(problem: String, cause: Throwable? = null): T? {
-        plusAssign(ConversionProblem(problem, cause))
-        return null
-    }
-}
+class ConversionProblem(message: String, cause: Throwable? = null) : RuntimeException(message, cause)

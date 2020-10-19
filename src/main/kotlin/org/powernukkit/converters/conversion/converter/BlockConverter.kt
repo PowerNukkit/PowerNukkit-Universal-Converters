@@ -18,7 +18,6 @@
 
 package org.powernukkit.converters.conversion.converter
 
-import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.BlockAdapter
 import org.powernukkit.converters.conversion.context.BlockConversionContext
@@ -27,7 +26,6 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.BoundingBox
 import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.MutableBlockContainer
-import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
 import org.powernukkit.converters.platform.api.block.plus
@@ -44,7 +42,7 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
     val blockEntityConverter: BlockEntityConverter<FromPlatform, ToPlatform>,
     val entityConverter: EntityConverter<FromPlatform, ToPlatform>,
 
-    val adapters: Adapters<NamespacedId, BlockAdapter<FromPlatform, ToPlatform>>? = null,
+    val adapters: Adapters<BlockAdapter<FromPlatform, ToPlatform>>? = null,
 ) {
     open fun convert(
         fromBlock: PlatformBlock<FromPlatform>,
