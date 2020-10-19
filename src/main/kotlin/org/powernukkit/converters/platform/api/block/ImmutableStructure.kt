@@ -16,23 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.bedrock.block
+package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.platform.base.BaseConstructors
-import org.powernukkit.converters.platform.base.block.BaseStructure
-import org.powernukkit.converters.platform.bedrock.BedrockPlatform
+import org.powernukkit.converters.platform.api.Platform
+import java.util.*
 
 /**
  * @author joserobjr
- * @since 2020-10-11
+ * @since 2020-10-19
  */
-class BedrockStructure(
-    constructors: BaseConstructors<BedrockPlatform>,
-    worldPos: BlockPos,
-    size: Int,
-) : BaseStructure<BedrockPlatform>(
-    constructors,
-    worldPos,
-    size,
-)
+class ImmutableStructure<P : Platform<P>>(
+    platform: P,
+    blocks: Map<BlockPos, PlatformBlock<P>>,
+) : PlatformStructure<P>(platform) {
+
+    override val blocks: Map<BlockPos, PlatformBlock<P>> = Collections.unmodifiableMap(blocks.toMap())
+
+    constructor(platform: P, mainBlock: PlatformBlock<P>) : this(platform, mapOf(BlockPos.ZERO to mainBlock))
+
+    init {
+        require(BlockPos.ZERO in blocks) {
+            "Immutable platform structures must have at least one block at 0, 0, 0. Got: $blocks"
+        }
+    }
+
+    override fun toImmutableStructure() = this
+
+    fun positionedAt(worldPos: BlockPos) = PositionedStructure(worldPos, this)
+}

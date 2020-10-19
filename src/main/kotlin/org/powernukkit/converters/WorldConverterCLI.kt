@@ -27,7 +27,8 @@ import kotlinx.coroutines.selects.selectUnbiased
 import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.ImmutableStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
@@ -58,17 +59,20 @@ object WorldConverterCLI {
 
         val javaStructures = flowOf(
             BlockPos(1, 2, 3) to javaPlatform.airBlockState,
-            BlockPos(2, 2, 3) to javaStone,
-            BlockPos(3, 3, 3) to javaGrass,
-            BlockPos(4, 5, 6) to javaDirt,
+            BlockPos(2, 2, 3) to javaStone,                 //2
+            BlockPos(3, 3, 3) to javaGrass,                 //2
+            BlockPos(4, 5, 6) to javaDirt,                  //2
         ).map { (pos, state) ->
             val block = javaPlatform.createPlatformBlock(state)
-            javaPlatform.createStructure(pos, 1).also { it[BlockPos.ZERO] = block }
+            PositionedStructure(
+                pos,
+                ImmutableStructure(javaPlatform, mapOf(BlockPos.ZERO to block))
+            )
         }
 
         runBlocking {
-            val javaChannel = Channel<PlatformStructure<JavaPlatform>>()
-            val bedrockChannel = Channel<PlatformStructure<BedrockPlatform>>()
+            val javaChannel = Channel<PositionedStructure<JavaPlatform>>()
+            val bedrockChannel = Channel<PositionedStructure<BedrockPlatform>>()
             val problems = Channel<ConversionProblem>()
             val conversionJob = with(converter) {
                 convertAllStructures(javaChannel, bedrockChannel, problems)

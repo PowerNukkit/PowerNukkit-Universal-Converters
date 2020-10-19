@@ -18,13 +18,7 @@
 
 package org.powernukkit.converters.platform.api.block
 
-import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.platform.api.Platform
-
 /**
  * @author joserobjr
  * @since 2020-10-16
  */
-@Suppress("UNCHECKED_CAST")
-fun <P : Platform<P>, Structure : PlatformStructure<P>>
-        Structure.createStructure(size: Int = blocks.size) = platform.createStructure(BlockPos.ZERO, size) as Structure

@@ -39,7 +39,6 @@ class BedrockPlatform(
         ::BedrockBlockState, ::BedrockBlockProperty, ::BedrockBlockEntityType,
         ::BedrockBlockEntityDataType, ::BedrockBlockType, ::BedrockBlock, ::BedrockBlock,
         ::BedrockBlockPropertyValueInt, ::BedrockBlockPropertyValueString, ::BedrockBlockPropertyValueBoolean,
-        ::BedrockStructure
     ),
     universal, name, MinecraftEdition.BEDROCK
 ) {

@@ -29,7 +29,7 @@ import org.powernukkit.converters.conversion.converter.PlatformConverter
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 /**
@@ -42,7 +42,7 @@ class ChainedConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platf
     private val toUniversalConverter: ToUniversalConverter<FromPlatform>,
     private val fromUniversalConverter: FromUniversalConverter<ToPlatform>,
 ) : PlatformConverter<FromPlatform, ToPlatform>(fromPlatform, toPlatform) {
-    override fun convertStructure(from: PlatformStructure<FromPlatform>): Pair<PlatformStructure<ToPlatform>, List<ConversionProblem>> {
+    override fun convertStructure(from: PositionedStructure<FromPlatform>): Pair<PositionedStructure<ToPlatform>, List<ConversionProblem>> {
         val totalProblems = mutableListOf<ConversionProblem>()
         val (universalStructure, universalProblems) = toUniversalConverter.convertStructure(from)
         totalProblems += universalProblems
@@ -53,11 +53,11 @@ class ChainedConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platf
     }
 
     override fun CoroutineScope.convertAllStructures(
-        from: ReceiveChannel<PlatformStructure<FromPlatform>>,
-        to: SendChannel<PlatformStructure<ToPlatform>>,
+        from: ReceiveChannel<PositionedStructure<FromPlatform>>,
+        to: SendChannel<PositionedStructure<ToPlatform>>,
         problems: SendChannel<ConversionProblem>?
     ) = launch {
-        val universalStructures = Channel<PlatformStructure<UniversalPlatform>>()
+        val universalStructures = Channel<PositionedStructure<UniversalPlatform>>()
         val toUniversalProblems = problems?.let { Channel<ConversionProblem>() }
         try {
             val toUniversalJob = with(toUniversalConverter) {

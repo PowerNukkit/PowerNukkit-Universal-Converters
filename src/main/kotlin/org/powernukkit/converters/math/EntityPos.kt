@@ -37,6 +37,10 @@ data class EntityPos(val xPos: Double, val yPos: Double, val zPos: Double) {
 
     fun toBlockPos() = BlockPos(xPos.toInt(), yPos.toInt(), zPos.toInt())
 
+    override fun toString(): String {
+        return "[$xPos, $yPos, $zPos]"
+    }
+
     companion object {
         val ZERO = EntityPos(0.0, 0.0, 0.0)
         val ONE = EntityPos(1.0, 1.0, 1.0)

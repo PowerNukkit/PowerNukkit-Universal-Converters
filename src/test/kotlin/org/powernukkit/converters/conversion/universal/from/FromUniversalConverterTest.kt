@@ -20,6 +20,7 @@ package org.powernukkit.converters.conversion.universal.from
 
 import org.junit.jupiter.api.Test
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.block.ImmutableStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
 import kotlin.test.assertEquals
@@ -36,13 +37,13 @@ internal class FromUniversalConverterTest {
 
         val converter = FromUniversalConverter(universalPlatform, bedrockPlatform)
 
-        val universalStructure = universalPlatform.createStructure(BlockPos.ZERO, 1)
-        universalStructure[BlockPos.ZERO] = universalPlatform.airBlock
+        val universalStructure = ImmutableStructure(universalPlatform, universalPlatform.airBlock)
 
-        val (bedrockStructure, problems) = converter.convertStructure(universalStructure)
+        val (positionedStructure, problems) = converter.convertStructure(universalStructure.positionedAt(BlockPos.ZERO))
+        val (worldPos, bedrockStructure) = positionedStructure
 
         problems.forEach { it.printStackTrace() }
-        
+
         assertEquals(emptyList(), problems)
         assertEquals(1, bedrockStructure.blocks.size)
         assertEquals(BlockPos.ZERO, bedrockStructure.blocks.keys.first())

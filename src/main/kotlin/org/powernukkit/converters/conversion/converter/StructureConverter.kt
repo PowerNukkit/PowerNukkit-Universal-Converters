@@ -23,30 +23,29 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformStructure
-import org.powernukkit.converters.platform.api.block.createStructure
+import org.powernukkit.converters.platform.api.block.*
 
 /**
  * @author joserobjr
  * @since 2020-10-15
  */
-open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
+class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
     val blockConverter: BlockConverter<FromPlatform, ToPlatform>,
 ) {
     fun CoroutineScope.convertAll(
-        fromStructures: ReceiveChannel<PlatformStructure<FromPlatform>>,
-        toStructures: SendChannel<PlatformStructure<ToPlatform>>,
+        fromStructures: ReceiveChannel<PositionedStructure<FromPlatform>>,
+        toStructures: SendChannel<PositionedStructure<ToPlatform>>,
         problems: SendChannel<ConversionProblem>? = null,
     ) = launch {
         try {
-            val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>()
+            val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, ImmutableStructure<ToPlatform>>()
             for (fromStructure in fromStructures) {
                 val (toStructure, conversionProblems) = convert(fromStructure, singleBlockStructureCache)
-                if (toStructure.blocks.isNotEmpty()) {
+                if (toStructure.content.isNotEmpty()) {
                     toStructures.send(toStructure)
                 }
                 if (problems != null && conversionProblems.isNotEmpty()) {
@@ -58,55 +57,51 @@ open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
         }
     }
 
-    fun convert(from: PlatformStructure<FromPlatform>): Pair<PlatformStructure<ToPlatform>, List<ConversionProblem>> {
+    fun convert(from: PositionedStructure<FromPlatform>): Pair<PositionedStructure<ToPlatform>, List<ConversionProblem>> {
         return convert(from, mutableMapOf())
     }
 
-    protected open fun convert(
-        fromStructure: PlatformStructure<FromPlatform>,
-        singleBlockStructureCache: MutableMap<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>,
-    ): Pair<PlatformStructure<ToPlatform>, List<ConversionProblem>> {
+    private fun convert(
+        fromPositionedStructure: PositionedStructure<FromPlatform>,
+        singleBlockStructureCache: MutableMap<PlatformBlock<FromPlatform>, ImmutableStructure<ToPlatform>>,
+    ): Pair<PositionedStructure<ToPlatform>, List<ConversionProblem>> {
+        val fromStructure = fromPositionedStructure.content
         val size = fromStructure.blocks.size
 
-        val toStructure = toPlatform.createStructure(fromStructure.worldPos, size)
-
-        val problems = if (size == 1) {
-            convertSingleStructure(fromStructure, toStructure, singleBlockStructureCache)
+        val (toStructure, problems) = if (size == 1) {
+            convertSingleStructure(fromStructure, singleBlockStructureCache)
         } else {
-            convertMultiStructure(fromStructure, toStructure)
+            convertMultiStructure(fromStructure)
         }
-        return toStructure to problems
+        return PositionedStructure(fromPositionedStructure.worldPos, toStructure) to problems
     }
 
-    protected open fun convertSingleStructure(
-        fromStructure: PlatformStructure<FromPlatform>,
-        toStructure: PlatformStructure<ToPlatform>,
-        singleBlockStructureCache: MutableMap<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>
-    ): List<ConversionProblem> {
-        val (pos, block) = fromStructure.blocks.entries.first()
+    private fun convertSingleStructure(
+        fromStructure: ImmutableStructure<FromPlatform>,
+        singleBlockStructureCache: MutableMap<PlatformBlock<FromPlatform>, ImmutableStructure<ToPlatform>>
+    ): Pair<ImmutableStructure<ToPlatform>, List<ConversionProblem>> {
         var problems = emptyList<ConversionProblem>()
-        val cacheStructure = singleBlockStructureCache.computeIfAbsent(block) { _ ->
-            toStructure.createStructure(1).also {
-                problems = blockConverter.convert(block, pos, fromStructure, it)
-            }
+        val cacheStructure = singleBlockStructureCache.computeIfAbsent(fromStructure.mainBlock) { fromBlock ->
+            val toStructure = MutableStructure(toPlatform, emptyMap())
+            problems = blockConverter.convert(fromBlock, BlockPos.ZERO, fromStructure, toStructure)
+            toStructure.toImmutableStructure()
         }
 
         if (problems.isNotEmpty()) {
-            singleBlockStructureCache.remove(block)
+            singleBlockStructureCache.remove(fromStructure.mainBlock)
         }
 
-        toStructure.merge(cacheStructure, pos)
-        return problems
+        return cacheStructure to problems
     }
 
-    protected open fun convertMultiStructure(
+    private fun convertMultiStructure(
         fromStructure: PlatformStructure<FromPlatform>,
-        toStructure: PlatformStructure<ToPlatform>,
-    ): List<ConversionProblem> {
+    ): Pair<ImmutableStructure<ToPlatform>, List<ConversionProblem>> {
         val problems = mutableListOf<ConversionProblem>()
+        val toStructure = MutableStructure(toPlatform, emptyMap())
         fromStructure.blocks.forEach { (pos, block) ->
             problems += blockConverter.convert(block, pos, fromStructure, toStructure)
         }
-        return problems
+        return toStructure.toImmutableStructure() to problems
     }
 }

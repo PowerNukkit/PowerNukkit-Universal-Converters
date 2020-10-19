@@ -24,7 +24,7 @@ import kotlinx.coroutines.channels.SendChannel
 import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 
 /**
  * @author joserobjr
@@ -79,12 +79,12 @@ open class DirectPlatformConverter<FromPlatform : Platform<FromPlatform>, ToPlat
     )
 
     final override fun convertStructure(
-        from: PlatformStructure<FromPlatform>
+        from: PositionedStructure<FromPlatform>
     ) = structureConverter.convert(from)
 
     override fun CoroutineScope.convertAllStructures(
-        from: ReceiveChannel<PlatformStructure<FromPlatform>>,
-        to: SendChannel<PlatformStructure<ToPlatform>>,
+        from: ReceiveChannel<PositionedStructure<FromPlatform>>,
+        to: SendChannel<PositionedStructure<ToPlatform>>,
         problems: SendChannel<ConversionProblem>?
     ) = with(structureConverter) {
         convertAll(from, to, problems)

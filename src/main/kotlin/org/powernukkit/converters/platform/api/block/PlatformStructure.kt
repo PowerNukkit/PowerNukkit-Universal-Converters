@@ -19,35 +19,32 @@
 package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.platform.api.MutableBlockContainer
+import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 
 abstract class PlatformStructure<P : Platform<P>>(
     final override val platform: P,
-    final override var worldPos: BlockPos,
-) : PlatformObject<P>, MutableBlockContainer<P> {
-    val blocks = mutableMapOf<BlockPos, PlatformBlock<P>>()
+) : PlatformObject<P>, BlockContainer<P> {
+    abstract val blocks: Map<BlockPos, PlatformBlock<P>>
 
-    var mainBlock
-        get() = blocks[BlockPos.ZERO] ?: platform.airBlock
-        set(value) {
-            blocks[BlockPos.ZERO] = value
-        }
+    override val mainBlock get() = blocks[BlockPos.ZERO] ?: platform.airBlock
+
+    fun toMutableStructure() = MutableStructure(platform, blocks)
+    open fun toImmutableStructure() = ImmutableStructure(platform, blocks)
 
     final override fun contains(key: BlockPos) = key in blocks
     override fun getBlock(pos: BlockPos) = blocks[pos]
-    override fun set(pos: BlockPos, block: PlatformBlock<P>) {
-        blocks[pos] = block
-    }
 
-    fun merge(structure: PlatformStructure<P>, pos: BlockPos) {
-        structure.blocks.forEach { (originalPos, block) ->
-            blocks.compute(pos + originalPos) { _, previous ->
-                (previous ?: platform.airBlock) + block
-            }
+    fun isNotEmpty(): Boolean {
+        return when (blocks.size) {
+            0 -> false
+            1 -> BlockPos.ZERO !in blocks || mainBlock != platform.airBlock
+            else -> true
         }
     }
+
+    fun isEmpty() = !isNotEmpty()
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -68,6 +65,6 @@ abstract class PlatformStructure<P : Platform<P>>(
     }
 
     final override fun toString(): String {
-        return "${platform.name}Structure(blocks=$blocks)"
+        return "${platform.name}Structure$blocks"
     }
 }

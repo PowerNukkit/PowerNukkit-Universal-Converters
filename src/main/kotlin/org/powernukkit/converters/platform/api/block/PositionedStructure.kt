@@ -16,21 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.universal.block
+package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.platform.api.block.PlatformStructure
-import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
- * @since 2020-10-10
+ * @since 2020-10-19
  */
-class UniversalStructure(
-    platform: UniversalPlatform,
-    worldPos: BlockPos,
-    size: Int
-) : PlatformStructure<UniversalPlatform>(
-    platform,
-    worldPos,
+data class PositionedStructure<P : Platform<P>>(
+    val worldPos: BlockPos,
+    val content: ImmutableStructure<P>
 )

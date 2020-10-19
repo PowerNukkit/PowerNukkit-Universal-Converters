@@ -40,7 +40,7 @@ class JavaPlatform(
     BaseConstructors(
         ::JavaBlockState, ::JavaBlockProperty, ::JavaBlockEntityType, ::JavaBlockEntityDataType,
         ::JavaBlockType, ::JavaBlock, ::JavaBlock, ::JavaBlockPropertyValueInt, ::JavaBlockPropertyValueString,
-        ::JavaBlockPropertyValueBoolean, ::JavaStructure
+        ::JavaBlockPropertyValueBoolean
     ),
     universal, name, MinecraftEdition.JAVA
 ) {

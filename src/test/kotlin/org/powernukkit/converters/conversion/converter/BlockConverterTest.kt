@@ -195,11 +195,18 @@ internal class BlockConverterTest {
 
     private open class SimpleContainer<P : Platform<P>> : BlockContainer<P> {
         val content = mutableMapOf<BlockPos, PlatformBlock<P>>()
+        override val mainBlock get() = content[BlockPos.ZERO]!!
         override fun getBlock(pos: BlockPos) = content[pos]
         override fun contains(key: BlockPos) = key in content
     }
 
     private open class MutableSimpleContainer<P : Platform<P>> : SimpleContainer<P>(), MutableBlockContainer<P> {
+        override var mainBlock: PlatformBlock<P>
+            get() = super.mainBlock
+            set(value) {
+                content[BlockPos.ZERO] = value
+            }
+
         override fun set(pos: BlockPos, block: PlatformBlock<P>) {
             content[pos] = block
         }

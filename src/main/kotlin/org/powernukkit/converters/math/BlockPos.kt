@@ -29,6 +29,10 @@ data class BlockPos(val xPos: Int, val yPos: Int, val zPos: Int) {
         zPos + pos.zPos,
     )
 
+    override fun toString(): String {
+        return "[$xPos, $yPos, $zPos]"
+    }
+
     companion object {
         val ZERO = BlockPos(0, 0, 0)
     }

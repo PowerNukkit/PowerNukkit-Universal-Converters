@@ -23,7 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 
 /**
  * @author joserobjr
@@ -34,12 +34,12 @@ abstract class PlatformConverter<FromPlatform : Platform<FromPlatform>, ToPlatfo
     val toPlatform: ToPlatform,
 ) {
     abstract fun convertStructure(
-        from: PlatformStructure<FromPlatform>
-    ): Pair<PlatformStructure<ToPlatform>, List<ConversionProblem>>
+        from: PositionedStructure<FromPlatform>
+    ): Pair<PositionedStructure<ToPlatform>, List<ConversionProblem>>
 
     abstract fun CoroutineScope.convertAllStructures(
-        from: ReceiveChannel<PlatformStructure<FromPlatform>>,
-        to: SendChannel<PlatformStructure<ToPlatform>>,
+        from: ReceiveChannel<PositionedStructure<FromPlatform>>,
+        to: SendChannel<PositionedStructure<ToPlatform>>,
         problems: SendChannel<ConversionProblem>? = null,
     ): Job
 }
