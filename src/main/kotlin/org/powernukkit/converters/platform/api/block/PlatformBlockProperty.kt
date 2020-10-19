@@ -50,7 +50,6 @@ abstract class PlatformBlockProperty<P : Platform<P>>(
 
         if (platform != other.platform) return false
         if (id != other.id) return false
-        if (universal != other.universal) return false
         if (values != other.values) return false
 
         return true
@@ -59,7 +58,6 @@ abstract class PlatformBlockProperty<P : Platform<P>>(
     final override fun hashCode(): Int {
         var result = platform.hashCode()
         result = 31 * result + id.hashCode()
-        result = 31 * result + (universal?.hashCode() ?: 0)
         result = 31 * result + values.hashCode()
         return result
     }

@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 
@@ -28,7 +29,7 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockState
 data class BlockLayersSingleConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromLayer: Int,
     val parentContext: BlockLayersFullConversionContext<FromPlatform, ToPlatform>,
-) {
+) : ProblemHolder {
     var requiresAdapter: Boolean = false
     var toBlockStateLayers: List<PlatformBlockState<ToPlatform>>? = null
 
@@ -58,4 +59,7 @@ data class BlockLayersSingleConversionContext<FromPlatform : Platform<FromPlatfo
         set(value) {
             parentContext.toEntities = value
         }
+
+    override val problems get() = parentContext.problems
+    override operator fun plusAssign(problem: ConversionProblem) = parentContext.plusAssign(problem)
 }

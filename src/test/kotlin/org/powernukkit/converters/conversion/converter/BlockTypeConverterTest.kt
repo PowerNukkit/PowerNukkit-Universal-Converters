@@ -82,7 +82,7 @@ internal class BlockTypeConverterTest {
         firstAdapters += object : BlockTypeAdapter<FromPlatform, ToPlatform> {
             override fun adaptBlockType(context: BlockTypeConversionContext<FromPlatform, ToPlatform>) {
                 if (context.fromBlockType == fromType) {
-                    context.result = toType
+                    context.toMainBlockType = toType
                 }
             }
         }

@@ -30,7 +30,7 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
  */
 class BedrockPlatform(
     universal: UniversalPlatform,
-    name: String
+    name: String = "Bedrock"
 ) : BasePlatform<BedrockPlatform>(
     BaseConstructors(
         ::BedrockBlockState, ::BedrockBlockProperty, ::BedrockBlockEntityType,

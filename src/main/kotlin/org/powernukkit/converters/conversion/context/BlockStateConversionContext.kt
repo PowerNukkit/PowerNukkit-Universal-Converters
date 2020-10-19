@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
@@ -30,9 +31,9 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockType
 data class BlockStateConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromBlockState: PlatformBlockState<FromPlatform>,
     val parentContext: BlockLayersSingleConversionContext<FromPlatform, ToPlatform>,
-) {
-    var toType: PlatformBlockType<ToPlatform>? = null
-    var toPropertyValues: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
+) : ProblemHolder {
+    var toMainBlockType: PlatformBlockType<ToPlatform>? = null
+    var toMainBlockPropertyValues: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
 
     var typeRequiresAdapter: Boolean = false
     var valuesRequiresAdapter: Boolean = false
@@ -73,12 +74,15 @@ data class BlockStateConversionContext<FromPlatform : Platform<FromPlatform>, To
             parentContext.toBlockStateLayers = value
         }
 
+    override val problems get() = parentContext.problems
+    override operator fun plusAssign(problem: ConversionProblem) = parentContext.plusAssign(problem)
+
     fun toCompletedState(): PlatformBlockState<ToPlatform> {
-        val type = requireNotNull(toType) {
+        val type = requireNotNull(toMainBlockType) {
             "The type is not defined"
         }
 
-        val values = requireNotNull(toPropertyValues) {
+        val values = requireNotNull(toMainBlockPropertyValues) {
             "The properties are not defined"
         }
 

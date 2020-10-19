@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.universal.block
 
 import org.powernukkit.converters.internal.enumMapOfNonNullsOrEmpty
+import org.powernukkit.converters.internal.enumSetOfNonNulls
 import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
@@ -44,6 +45,8 @@ class UniversalBlockType(
     val editionId: Map<MinecraftEdition, NamespacedId>,
     val editionBlockProperties: Map<MinecraftEdition, List<UniversalBlockProperty>>,
     val editionBlockEntityType: Map<MinecraftEdition, UniversalBlockEntityType?>,
+
+    val editionRequiresAdapter: Set<MinecraftEdition>,
 
     val extraBlocks: Map<MinecraftEdition, List<ModelExtraBlock>>
 ) : PlatformBlockType<UniversalPlatform>(platform, id) {
@@ -91,6 +94,10 @@ class UniversalBlockType(
             model.java?.let { MinecraftEdition.JAVA to NamespacedId(it) }
         ),
 
+        editionRequiresAdapter = enumSetOfNonNulls(
+            MinecraftEdition.BEDROCK.takeIf { model.bedrockRequiresAdapter },
+            MinecraftEdition.JAVA.takeIf { model.javaRequiresAdapter },
+        ),
 
         editionBlockProperties = model.usesProperties.asSequence()
             .filter { it.onBedrock || it.onJava }
@@ -123,6 +130,11 @@ class UniversalBlockType(
                     .map { it to extraBlock }
             }.toMapOfList()
     )
+
+    fun findPropertyByEditionId(edition: MinecraftEdition, editionId: String): UniversalBlockProperty? {
+        val properties = editionBlockProperties[edition] ?: return null
+        return properties.firstOrNull { it.editionId[edition] == editionId }
+    }
 
     override fun withState(values: Map<String, PlatformBlockPropertyValue<UniversalPlatform>>): UniversalBlockState {
         require(values.keys.containsAll(requiredProperties)) {

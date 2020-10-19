@@ -43,6 +43,8 @@ abstract class Platform<P : Platform<P>>(
         entities: List<PlatformEntity<P>> = emptyList()
     ): PlatformBlock<P>
 
+    abstract fun getBlockType(id: NamespacedId): PlatformBlockType<P>?
+
     override fun toString(): String {
         return "Platform(name='$name', minecraftEdition=$minecraftEdition)"
     }

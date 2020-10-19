@@ -119,7 +119,7 @@ internal class BlockPropertyValuesConverterTest {
         firstAdapters += object : BlockPropertyValuesAdapter<FromPlatform, ToPlatform> {
             override fun adaptBlockPropertyValues(context: BlockPropertyValuesConversionContext<FromPlatform, ToPlatform>) {
                 if (context.fromValues == values && context.toType == toType) {
-                    context.result = okValues
+                    context.toBlockPropertyValues = okValues
                 }
             }
         }

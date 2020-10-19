@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 
@@ -28,7 +29,7 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockState
 data class BlockLayersFullConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromLayers: List<PlatformBlockState<FromPlatform>>,
     val parentContext: BlockConversionContext<FromPlatform, ToPlatform>
-) {
+) : ProblemHolder {
     var layersRequiresAdapter: Boolean = false
     // TODO Commented because BlockConversionContext already has toLayers, seems to be a good idea to use it instead
     //var toLayers: List<PlatformBlockState<ToPlatform>>? = null
@@ -58,4 +59,7 @@ data class BlockLayersFullConversionContext<FromPlatform : Platform<FromPlatform
         set(value) {
             parentContext.toEntities = value
         }
+
+    override val problems get() = parentContext.problems
+    override operator fun plusAssign(problem: ConversionProblem) = parentContext.plusAssign(problem)
 }

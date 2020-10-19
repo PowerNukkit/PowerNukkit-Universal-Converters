@@ -50,11 +50,11 @@ open class BlockTypeConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
 
         adapters.firstAdapters.applyAdapters()
         adapters.fromAdapters[fromType.id]?.applyAdapters()
-        context.result?.let { adapters.toAdapters[it.id]?.applyAdapters() }
+        context.toBlockType?.let { adapters.toAdapters[it.id]?.applyAdapters() }
         adapters.lastAdapters.applyAdapters()
-        context.result?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
+        context.toBlockType?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
 
-        return checkNotNull(context.result) {
+        return checkNotNull(context.toBlockType) {
             "Could not convert the block type $fromType from ${fromPlatform.name} to ${toPlatform.name}"
         }
     }

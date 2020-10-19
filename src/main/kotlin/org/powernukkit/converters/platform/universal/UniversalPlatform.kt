@@ -77,6 +77,8 @@ class UniversalPlatform internal constructor(
     override val airBlockState = UniversalBlockState(airBlockType)
     override val airBlock = UniversalBlock(this, listOf(airBlockState))
 
+    override fun getBlockType(id: NamespacedId) = blockTypesById[id]
+
     fun getBlockPropertyByEditionId(edition: MinecraftEdition, propertyId: String): List<UniversalBlockProperty> {
         return blockPropertiesByEditionId[edition]?.get(propertyId) ?: emptyList()
     }

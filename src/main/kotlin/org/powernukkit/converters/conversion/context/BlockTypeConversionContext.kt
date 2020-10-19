@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 
@@ -28,9 +29,8 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockType
 data class BlockTypeConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromBlockType: PlatformBlockType<FromPlatform>,
     val parentContext: BlockStateConversionContext<FromPlatform, ToPlatform>,
-) {
-    var result: PlatformBlockType<ToPlatform>? = null
-
+) : ProblemHolder {
+    var toBlockType: PlatformBlockType<ToPlatform>? = null
     val fromPlatform get() = parentContext.fromPlatform
     val toPlatform get() = parentContext.toPlatform
     val fromBlock get() = parentContext.fromBlock
@@ -66,16 +66,16 @@ data class BlockTypeConversionContext<FromPlatform : Platform<FromPlatform>, ToP
             parentContext.toBlockStateLayers = value
         }
 
-    var toType
-        get() = parentContext.toType
+    var toMainBlockType
+        get() = parentContext.toMainBlockType
         set(value) {
-            parentContext.toType = value
+            parentContext.toMainBlockType = value
         }
 
-    var toPropertyValues
-        get() = parentContext.toPropertyValues
+    var toMainBlockPropertyValues
+        get() = parentContext.toMainBlockPropertyValues
         set(value) {
-            parentContext.toPropertyValues = value
+            parentContext.toMainBlockPropertyValues = value
         }
 
     var toBlockStates
@@ -83,4 +83,7 @@ data class BlockTypeConversionContext<FromPlatform : Platform<FromPlatform>, ToP
         set(value) {
             parentContext.toBlockStates = value
         }
+
+    override val problems get() = parentContext.problems
+    override operator fun plusAssign(problem: ConversionProblem) = parentContext.plusAssign(problem)
 }

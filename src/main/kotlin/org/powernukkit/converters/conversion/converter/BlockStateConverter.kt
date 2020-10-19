@@ -56,26 +56,26 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
             adapters.fromAdapters[fromState.type.id]?.applyAdapters()
         }
 
-        if (context.toType == null && !context.typeRequiresAdapter) {
-            context.toType = blockTypeConverter.convert(fromState.type, context)
+        if (context.toMainBlockType == null && !context.typeRequiresAdapter) {
+            context.toMainBlockType = blockTypeConverter.convert(fromState.type, context)
         }
 
-        context.toType?.let { toType ->
+        context.toMainBlockType?.let { toType ->
             adapters?.toAdapters?.get(toType.id)?.applyAdapters()
         }
 
-        context.toType?.let { toType ->
-            if (context.toPropertyValues == null && !context.valuesRequiresAdapter) {
-                context.toPropertyValues = blockPropertyValuesConverter.convert(
+        context.toMainBlockType?.let { toType ->
+            if (context.toMainBlockPropertyValues == null && !context.valuesRequiresAdapter) {
+                context.toMainBlockPropertyValues = blockPropertyValuesConverter.convert(
                     fromState.values, toType, context
                 )
             }
         }
 
         if (adapters != null) {
-            context.toType?.let { adapters.toAdapters[it.id]?.applyAdapters() }
+            context.toMainBlockType?.let { adapters.toAdapters[it.id]?.applyAdapters() }
             adapters.lastAdapters.applyAdapters()
-            context.toType?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
+            context.toMainBlockType?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
         }
 
         fun List<BlockStateAdapter<FromPlatform, ToPlatform>>.applyListAdapters() {

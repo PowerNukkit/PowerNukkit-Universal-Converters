@@ -18,7 +18,10 @@
 
 package org.powernukkit.converters.conversion.converter
 
+import org.powernukkit.converters.conversion.adapter.Adapters
+import org.powernukkit.converters.conversion.adapter.BlockEntityAdapter
 import org.powernukkit.converters.conversion.context.BlockConversionContext
+import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 
@@ -29,6 +32,7 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 open class BlockEntityConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromPlatform: FromPlatform,
     val toPlatform: ToPlatform,
+    val adapters: Adapters<NamespacedId, BlockEntityAdapter<FromPlatform, ToPlatform>>?,
 ) {
     open fun convert(
         blockEntity: PlatformBlockEntity<FromPlatform>?,

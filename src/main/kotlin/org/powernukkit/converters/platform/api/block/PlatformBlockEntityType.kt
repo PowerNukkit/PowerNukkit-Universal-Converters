@@ -41,7 +41,6 @@ abstract class PlatformBlockEntityType<P : Platform<P>>(
 
         if (platform != other.platform) return false
         if (id != other.id) return false
-        if (universalType != other.universalType) return false
         if (data != other.data) return false
 
         return true
@@ -50,7 +49,6 @@ abstract class PlatformBlockEntityType<P : Platform<P>>(
     final override fun hashCode(): Int {
         var result = platform.hashCode()
         result = 31 * result + id.hashCode()
-        result = 31 * result + (universalType?.hashCode() ?: 0)
         result = 31 * result + data.hashCode()
         return result
     }

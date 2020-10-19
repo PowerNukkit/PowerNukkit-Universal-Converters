@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.MutableBlockContainer
@@ -38,8 +39,15 @@ data class BlockConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatf
     val fromPos: BlockPos,
     val fromContainer: BlockContainer<FromPlatform>,
     val toContainer: MutableBlockContainer<ToPlatform>,
-) {
+) : ProblemHolder {
     var toLayers: List<PlatformBlockState<ToPlatform>>? = null
     var toBlockEntity: PlatformBlockEntity<ToPlatform>? = null
     var toEntities: List<PlatformEntity<ToPlatform>>? = null
+
+    private val _problems = mutableListOf<ConversionProblem>()
+    override val problems get() = _problems.toList()
+
+    override operator fun plusAssign(problem: ConversionProblem) {
+        _problems += problem
+    }
 }

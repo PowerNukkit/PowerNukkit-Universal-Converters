@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.context
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
@@ -30,8 +31,8 @@ data class BlockPropertyValuesConversionContext<FromPlatform : Platform<FromPlat
     val fromValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
     val toType: PlatformBlockType<ToPlatform>,
     val parentContext: BlockStateConversionContext<FromPlatform, ToPlatform>,
-) {
-    var result: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
+) : ProblemHolder {
+    var toBlockPropertyValues: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null
 
     val fromBlockState get() = parentContext.fromBlockState
     val fromPlatform get() = parentContext.fromPlatform
@@ -68,16 +69,16 @@ data class BlockPropertyValuesConversionContext<FromPlatform : Platform<FromPlat
             parentContext.toBlockStateLayers = value
         }
 
-    var toFinalType
-        get() = parentContext.toType
+    var toMainBlockType
+        get() = parentContext.toMainBlockType
         set(value) {
-            parentContext.toType = value
+            parentContext.toMainBlockType = value
         }
 
-    var toPropertyValues
-        get() = parentContext.toPropertyValues
+    var toMainBlockPropertyValues
+        get() = parentContext.toMainBlockPropertyValues
         set(value) {
-            parentContext.toPropertyValues = value
+            parentContext.toMainBlockPropertyValues = value
         }
 
     var toBlockStates
@@ -85,4 +86,7 @@ data class BlockPropertyValuesConversionContext<FromPlatform : Platform<FromPlat
         set(value) {
             parentContext.toBlockStates = value
         }
+
+    override val problems get() = parentContext.problems
+    override operator fun plusAssign(problem: ConversionProblem) = parentContext.plusAssign(problem)
 }

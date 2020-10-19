@@ -89,6 +89,8 @@ abstract class BasePlatform<P : BasePlatform<P>>(
 
     final override val airBlock = constructors.createBlock(airBlockState)
 
+    override fun getBlockType(id: NamespacedId) = blockTypesById[id]
+
     @Suppress("UNCHECKED_CAST")
     final override fun createPlatformBlock(
         blockLayers: List<PlatformBlockState<P>>,

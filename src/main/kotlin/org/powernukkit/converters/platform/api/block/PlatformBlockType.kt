@@ -49,7 +49,6 @@ abstract class PlatformBlockType<P : Platform<P>>(
         if (id != other.id) return false
         if (blockProperties != other.blockProperties) return false
         if (blockEntityType != other.blockEntityType) return false
-        if (universalType != other.universalType) return false
 
         return true
     }
@@ -59,7 +58,6 @@ abstract class PlatformBlockType<P : Platform<P>>(
         result = 31 * result + id.hashCode()
         result = 31 * result + blockProperties.hashCode()
         result = 31 * result + (blockEntityType?.hashCode() ?: 0)
-        result = 31 * result + (universalType?.hashCode() ?: 0)
         return result
     }
 

@@ -16,26 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.java
+package org.powernukkit.converters.conversion.universal
 
-import org.powernukkit.converters.platform.api.MinecraftEdition
-import org.powernukkit.converters.platform.base.BaseConstructors
-import org.powernukkit.converters.platform.base.BasePlatform
-import org.powernukkit.converters.platform.java.block.*
+import org.powernukkit.converters.conversion.adapter.BlockTypeAdapter
+import org.powernukkit.converters.conversion.context.BlockTypeConversionContext
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-11
+ * @since 2020-10-18
  */
-class JavaPlatform(
-    universal: UniversalPlatform,
-    name: String = "Java"
-) : BasePlatform<JavaPlatform>(
-    BaseConstructors(
-        ::JavaBlockState, ::JavaBlockProperty, ::JavaBlockEntityType, ::JavaBlockEntityDataType,
-        ::JavaBlockType, ::JavaBlock, ::JavaBlock, ::JavaBlockPropertyValueInt, ::JavaBlockPropertyValueString,
-        ::JavaBlockPropertyValueBoolean, ::JavaStructure
-    ),
-    universal, name, MinecraftEdition.JAVA
-)
+interface ToUniversalTypeAdapter<FromPlatform : Platform<FromPlatform>> :
+    BlockTypeAdapter<FromPlatform, UniversalPlatform> {
+
+    override fun adaptBlockType(context: BlockTypeConversionContext<FromPlatform, UniversalPlatform>) {
+        TODO("Not yet implemented")
+    }
+}

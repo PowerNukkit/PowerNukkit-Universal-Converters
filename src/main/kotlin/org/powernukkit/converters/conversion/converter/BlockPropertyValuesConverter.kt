@@ -58,7 +58,7 @@ open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, T
         adapters.lastAdapters.applyAdapters()
         adapters.lastToAdapters[toType.id]?.applyAdapters()
 
-        return checkNotNull(context.result) {
+        return checkNotNull(context.toBlockPropertyValues) {
             "Could not convert the properties from the block state ${context.fromBlockState} to type $toType, from platform ${fromPlatform.name} to ${toPlatform.name}"
         }
     }

@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.converter
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.BlockAdapter
 import org.powernukkit.converters.conversion.context.BlockConversionContext
@@ -51,7 +52,7 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
         fromContainer: BlockContainer<FromPlatform>,
 
         toContainer: MutableBlockContainer<ToPlatform>
-    ) {
+    ): List<ConversionProblem> {
         val context = BlockConversionContext(
             fromPlatform, toPlatform,
             fromBlock, fromPos, fromContainer,
@@ -63,36 +64,43 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
             adapters.fromAdapters[fromBlock.mainState.type.id]?.forEach { it.adaptBlock(context) }
         }
 
-        context.toLayers = blockLayersConverter.convert(fromBlock.blockLayers, context)
-        context.toBlockEntity = blockEntityConverter.convert(fromBlock.blockEntity, context)
-        context.toEntities = entityConverter.convertList(fromBlock.entities, context)
+        try {
+            context.toLayers = blockLayersConverter.convert(fromBlock.blockLayers, context)
+            context.toBlockEntity = blockEntityConverter.convert(fromBlock.blockEntity, context)
+            context.toEntities = entityConverter.convertList(fromBlock.entities, context)
 
-        val toLayers = context.toLayers.takeUnless { it.isNullOrEmpty() }
-            ?: error("Failed to convert the block layers of $context")
+            val toLayers = context.toLayers.takeUnless { it.isNullOrEmpty() }
+                ?: error("Failed to convert the block layers of $context")
 
-        val toBlockEntity = context.toBlockEntity
-        val toEntities = checkNotNull(context.toEntities) { "Failed to convert the entities of $context" }
+            val toBlockEntity = context.toBlockEntity
+            val toEntities = checkNotNull(context.toEntities) { "Failed to convert the entities of $context" }
 
-        if (toEntities.all { it.pos in BoundingBox.SIMPLE_BOX }) {
-            toContainer[fromPos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, toEntities)
-        } else {
-            val sameBlock = toEntities.filter { it.pos in BoundingBox.SIMPLE_BOX }
-            toContainer[fromPos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, sameBlock)
+            if (toEntities.all { it.pos in BoundingBox.SIMPLE_BOX }) {
+                toContainer[fromPos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, toEntities)
+            } else {
+                val sameBlock = toEntities.filter { it.pos in BoundingBox.SIMPLE_BOX }
+                toContainer[fromPos] = toPlatform.createPlatformBlock(toLayers, toBlockEntity, sameBlock)
 
-            val otherBlocks = toEntities.asSequence()
-                .filter { it.pos !in BoundingBox.SIMPLE_BOX }
-                .map {
-                    val blockPos = it.pos.toBlockPos()
-                    blockPos to it.withPos(it.pos - blockPos)
+                val otherBlocks = toEntities.asSequence()
+                    .filter { it.pos !in BoundingBox.SIMPLE_BOX }
+                    .map {
+                        val blockPos = it.pos.toBlockPos()
+                        blockPos to it.withPos(it.pos - blockPos)
+                    }
+                    .toMapOfList()
+
+                otherBlocks.forEach { (blockPos, blockEntities) ->
+                    val currentBlock = toContainer.getBlock(blockPos) ?: toPlatform.airBlock
+                    val blockWithEntities =
+                        toPlatform.createPlatformBlock(toPlatform.airBlockState, entities = blockEntities)
+                    toContainer[blockPos] = currentBlock + blockWithEntities
                 }
-                .toMapOfList()
-
-            otherBlocks.forEach { (blockPos, blockEntities) ->
-                val currentBlock = toContainer.getBlock(blockPos) ?: toPlatform.airBlock
-                val blockWithEntities =
-                    toPlatform.createPlatformBlock(toPlatform.airBlockState, entities = blockEntities)
-                toContainer[blockPos] = currentBlock + blockWithEntities
             }
+            
+            return emptyList()
+        } catch (e: Exception) {
+            context += ConversionProblem("An exception has been caught while converting the block $fromBlock", e)
+            return context.problems
         }
     }
 }
