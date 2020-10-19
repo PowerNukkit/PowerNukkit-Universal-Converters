@@ -34,7 +34,7 @@ interface FromUniversalBlockPropertyValuesAdapter<ToPlatform : Platform<ToPlatfo
     BlockPropertyValuesAdapter<UniversalPlatform, ToPlatform> {
 
     override fun adaptBlockPropertyValues(context: BlockPropertyValuesConversionContext<UniversalPlatform, ToPlatform>) {
-        val universalValues = context.fromBlockPropertyValues.mapValues { it as UniversalBlockPropertyValue }
+        val universalValues = context.fromBlockPropertyValues.mapValues { it.value as UniversalBlockPropertyValue }
 
         val universalType = context.fromBlockState.type as UniversalBlockType
         val toType = context.toBlockType

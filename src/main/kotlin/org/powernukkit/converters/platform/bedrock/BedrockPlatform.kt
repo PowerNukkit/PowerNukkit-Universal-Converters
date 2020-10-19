@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.platform.bedrock
 
-import org.powernukkit.converters.conversion.converter.PlatformAdapters
+import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.MinecraftEdition

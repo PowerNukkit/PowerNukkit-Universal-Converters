@@ -18,9 +18,9 @@
 
 package org.powernukkit.converters.conversion.universal.to
 
+import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.conversion.adapter.addFirst
 import org.powernukkit.converters.conversion.converter.DirectPlatformConverter
-import org.powernukkit.converters.conversion.converter.PlatformAdapters
 import org.powernukkit.converters.conversion.universal.ChainedConverter
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform

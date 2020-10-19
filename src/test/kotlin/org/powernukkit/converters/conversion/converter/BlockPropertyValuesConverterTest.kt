@@ -124,6 +124,6 @@ internal class BlockPropertyValuesConverterTest {
             }
         }
 
-        assertEquals(okValues, converter.convert(values, toType, context))
+        assertEquals(toType to okValues, converter.convert(values, toType, context))
     }
 }

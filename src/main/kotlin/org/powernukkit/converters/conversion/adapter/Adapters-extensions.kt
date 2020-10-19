@@ -18,6 +18,10 @@
 
 package org.powernukkit.converters.conversion.adapter
 
+import org.powernukkit.converters.internal.merge
+import org.powernukkit.converters.internal.toMapOfList
+import org.powernukkit.converters.platform.api.NamespacedId
+
 /**
  * @author joserobjr
  * @since 2020-10-19
@@ -25,6 +29,12 @@ package org.powernukkit.converters.conversion.adapter
 fun <A> Adapters<A>?.addFirst(vararg adapters: A): Adapters<A> {
     return this?.copy(
         firstAdapters = adapters.toList() + firstAdapters
+    ) ?: Adapters(firstAdapters = adapters.toList())
+}
+
+fun <A> Adapters<A>?.addToFirstList(vararg adapters: A): Adapters<A> {
+    return this?.copy(
+        firstAdapters = firstAdapters + adapters.toList()
     ) ?: Adapters(firstAdapters = adapters.toList())
 }
 
@@ -38,4 +48,15 @@ fun <A> Adapters<A>?.addFirstMid(vararg adapters: A): Adapters<A> {
     return this?.copy(
         midAdapters = adapters.toList() + midAdapters
     ) ?: Adapters(midAdapters = adapters.toList())
+}
+
+fun <A> Adapters<A>?.addFromAdapters(vararg pairs: Pair<NamespacedId, A>): Adapters<A> {
+    val toAdd = pairs.asSequence().toMapOfList()
+    if (this == null) {
+        return Adapters(fromAdapters = toAdd)
+    }
+
+    return this.copy(
+        fromAdapters = fromAdapters merge toAdd
+    )
 }

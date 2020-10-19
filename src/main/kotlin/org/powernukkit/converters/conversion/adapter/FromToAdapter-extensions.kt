@@ -16,21 +16,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.conversion.converter
+package org.powernukkit.converters.conversion.adapter
 
-import org.powernukkit.converters.conversion.adapter.*
 import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
  * @since 2020-10-19
  */
-data class PlatformAdapters<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
-    val blockTypeAdapters: Adapters<BlockTypeAdapter<FromPlatform, ToPlatform>>? = null,
-    val blockPropertyValueAdapters: Adapters<BlockPropertyValuesAdapter<FromPlatform, ToPlatform>>? = null,
-    val blockStateAdapters: Adapters<BlockStateAdapter<FromPlatform, ToPlatform>>? = null,
-    val blockLayersAdapters: Adapters<BlockLayersAdapter<FromPlatform, ToPlatform>>? = null,
-    val blockEntityAdapters: Adapters<BlockEntityAdapter<FromPlatform, ToPlatform>>? = null,
-    val entityAdapters: Adapters<EntityAdapter<FromPlatform, ToPlatform>>? = null,
-    val blockAdapters: Adapters<BlockAdapter<FromPlatform, ToPlatform>>? = null,
-)
+@JvmName("plusAB")
+operator fun <A : Platform<A>, B : Platform<B>> FromToAdapter<A, B>.plus(adapters: PlatformAdapters<A, B>) =
+    addToAtoB(adapters)
+
+/**
+ * @author joserobjr
+ * @since 2020-10-19
+ */
+@JvmName("plusBA")
+operator fun <A : Platform<A>, B : Platform<B>> FromToAdapter<A, B>.plus(adapters: PlatformAdapters<B, A>) =
+    addToBtoA(adapters)
+
+/**
+ * @author joserobjr
+ * @since 2020-10-19
+ */
+@JvmName("plusAB")
+operator fun <A : Platform<A>, B : Platform<B>> PlatformAdapters<A, B>.plus(adapter: FromToAdapter<A, B>) =
+    adapter + this
+
+/**
+ * @author joserobjr
+ * @since 2020-10-19
+ */
+@JvmName("plusBA")
+operator fun <A : Platform<A>, B : Platform<B>> PlatformAdapters<A, B>.plus(adapter: FromToAdapter<B, A>) =
+    adapter + this

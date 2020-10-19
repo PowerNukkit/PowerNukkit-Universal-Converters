@@ -29,7 +29,7 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockType
  */
 data class BlockPropertyValuesConversionContext<FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>>(
     val fromBlockPropertyValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
-    val toBlockType: PlatformBlockType<ToPlatform>,
+    var toBlockType: PlatformBlockType<ToPlatform>,
     val parentContext: BlockStateConversionContext<FromPlatform, ToPlatform>,
 ) : ProblemHolder {
     var toBlockPropertyValues: Map<String, PlatformBlockPropertyValue<ToPlatform>>? = null

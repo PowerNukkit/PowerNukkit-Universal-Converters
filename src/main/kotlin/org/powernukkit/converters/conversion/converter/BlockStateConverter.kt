@@ -67,9 +67,11 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
 
         context.toMainBlockType?.let { toType ->
             if (context.toMainBlockPropertyValues == null && !context.valuesRequiresAdapter) {
-                context.toMainBlockPropertyValues = blockPropertyValuesConverter.convert(
+                val (type, values) = blockPropertyValuesConverter.convert(
                     fromState.values, toType, context
                 )
+                context.toMainBlockType = type
+                context.toMainBlockPropertyValues = values
             }
         }
 

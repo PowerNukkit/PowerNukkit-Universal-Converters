@@ -108,7 +108,13 @@ internal class BlockStateConverterTest {
         every { fromState.values } returns fromPropertyValues
 
         every { blockTypeConverter.convert(fromType, any()) } returns toType
-        every { blockPropertyValuesConverter.convert(fromPropertyValues, toType, any()) } returns toPropertyValues
+        every {
+            blockPropertyValuesConverter.convert(
+                fromPropertyValues,
+                toType,
+                any()
+            )
+        } returns (toType to toPropertyValues)
 
         converter = BlockStateConverter(
             fromPlatform, toPlatform,

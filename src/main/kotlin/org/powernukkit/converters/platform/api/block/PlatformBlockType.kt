@@ -39,6 +39,10 @@ abstract class PlatformBlockType<P : Platform<P>>(
 
     abstract fun withState(values: Map<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P>
 
+    fun withState(vararg propertyValues: Pair<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P> {
+        return withState(propertyValues.toMap())
+    }
+
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

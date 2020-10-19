@@ -18,12 +18,14 @@
 
 package org.powernukkit.converters.platform.java
 
-import org.powernukkit.converters.conversion.converter.PlatformAdapters
+import org.powernukkit.converters.conversion.adapter.PlatformAdapters
+import org.powernukkit.converters.conversion.adapter.plus
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.java.adapters.block.JavaStoneAdapter
 import org.powernukkit.converters.platform.java.block.*
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
@@ -43,10 +45,14 @@ class JavaPlatform(
     universal, name, MinecraftEdition.JAVA
 ) {
     override fun convertToUniversal(adapters: PlatformAdapters<JavaPlatform, UniversalPlatform>?): ToUniversalConverter<JavaPlatform> {
-        return ToUniversalConverter(this, universal)
+        var adjustedAdapters = (adapters ?: PlatformAdapters())
+        adjustedAdapters += JavaStoneAdapter()
+        return ToUniversalConverter(this, universal, adjustedAdapters)
     }
 
     override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, JavaPlatform>?): FromUniversalConverter<JavaPlatform> {
-        return FromUniversalConverter(universal, this)
+        var adjustedAdapters = (adapters ?: PlatformAdapters())
+        adjustedAdapters += JavaStoneAdapter()
+        return FromUniversalConverter(universal, this, adjustedAdapters)
     }
 }

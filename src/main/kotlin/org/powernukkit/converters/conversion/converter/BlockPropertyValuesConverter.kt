@@ -40,7 +40,7 @@ open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, T
         fromValues: Map<String, PlatformBlockPropertyValue<FromPlatform>>,
         toType: PlatformBlockType<ToPlatform>,
         context: BlockStateConversionContext<FromPlatform, ToPlatform>,
-    ): Map<String, PlatformBlockPropertyValue<ToPlatform>> {
+    ): Pair<PlatformBlockType<ToPlatform>, Map<String, PlatformBlockPropertyValue<ToPlatform>>> {
         val context = BlockPropertyValuesConversionContext(fromValues, toType, context)
 
         fun List<BlockPropertyValuesAdapter<FromPlatform, ToPlatform>>.applyAdapters() {
@@ -54,11 +54,11 @@ open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, T
         adapters.firstAdapters.applyAdapters()
         adapters.fromAdapters[context.fromBlockState.type.id]?.applyAdapters()
         adapters.midAdapters.applyAdapters()
-        adapters.toAdapters[toType.id]?.applyAdapters()
+        adapters.toAdapters[context.toBlockType.id]?.applyAdapters()
         adapters.lastAdapters.applyAdapters()
-        adapters.lastToAdapters[toType.id]?.applyAdapters()
+        adapters.lastToAdapters[context.toBlockType.id]?.applyAdapters()
 
-        return checkNotNull(context.toBlockPropertyValues) {
+        return context.toBlockType to checkNotNull(context.toBlockPropertyValues) {
             "Could not convert the properties from the block state ${context.fromBlockState} to type $toType, from platform ${fromPlatform.name} to ${toPlatform.name}"
         }
     }
