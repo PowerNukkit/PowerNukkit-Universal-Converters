@@ -31,7 +31,18 @@ interface ToUniversalBlockTypeAdapter<FromPlatform : Platform<FromPlatform>> :
     BlockTypeAdapter<FromPlatform, UniversalPlatform> {
 
     override fun adaptBlockType(context: BlockTypeConversionContext<FromPlatform, UniversalPlatform>) {
-        TODO("Not yet implemented")
+        val fromPlatform = context.fromPlatform
+        val fromEdition = fromPlatform.minecraftEdition
+        val universalPlatform = context.toPlatform
+
+        val fromType = context.fromBlockType
+        val universalType = fromType.universalType
+            ?: universalPlatform.blockTypesByEditionId[fromEdition]?.get(fromType.id)
+            ?: context.addProblem(
+                "Could not find the universal block type of the $fromEdition block type ${fromType.id}"
+            ) ?: return
+
+        context.toBlockType = universalType
     }
 
     companion object {

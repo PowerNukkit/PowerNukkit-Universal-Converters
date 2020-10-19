@@ -59,6 +59,8 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
             context.toMainBlockType = blockTypeConverter.convert(fromState.type, context)
         }
 
+        adapters?.midAdapters?.applyAdapters()
+
         context.toMainBlockType?.let { toType ->
             adapters?.toAdapters?.get(toType.id)?.applyAdapters()
         }
@@ -72,6 +74,7 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
         }
 
         if (adapters != null) {
+            adapters.midAdapters.applyAdapters()
             context.toMainBlockType?.let { adapters.toAdapters[it.id]?.applyAdapters() }
             adapters.lastAdapters.applyAdapters()
             context.toMainBlockType?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }
@@ -86,6 +89,7 @@ open class BlockStateConverter<FromPlatform : Platform<FromPlatform>, ToPlatform
         if (adapters != null) {
             adapters.firstAdapters.applyListAdapters()
             adapters.fromAdapters[fromState.type.id]?.applyListAdapters()
+            adapters.midAdapters.applyListAdapters()
             context.toBlockStates.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let { toId ->
                 adapters.toAdapters[toId]?.applyListAdapters()
             }

@@ -19,6 +19,7 @@
 package org.powernukkit.converters.conversion.universal
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -58,17 +59,29 @@ class ChainedConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platf
         problems: SendChannel<ConversionProblem>?
     ) = launch {
         val universalStructures = Channel<PlatformStructure<UniversalPlatform>>()
+        val toUniversalProblems = problems?.let { Channel<ConversionProblem>() }
         try {
-            listOf(
+            val jobs = mutableListOf(
                 with(toUniversalConverter) {
-                    convertAllStructures(from, universalStructures, problems)
+                    convertAllStructures(from, universalStructures, toUniversalProblems)
                 },
                 with(fromUniversalConverter) {
                     convertAllStructures(universalStructures, to, problems)
+                },
+            )
+            if (toUniversalProblems != null) {
+                jobs += launch {
+                    for (problem in toUniversalProblems) {
+                        problems.send(problem)
+                    }
+                    problems.close()
                 }
-            ).joinAll()
+            }
+            jobs.joinAll()
         } finally {
             universalStructures.close()
+            toUniversalProblems?.close()
+            coroutineContext.cancelChildren()
         }
     }
 }

@@ -49,6 +49,7 @@ open class BlockTypeConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
 
         adapters.firstAdapters.applyAdapters()
         adapters.fromAdapters[fromType.id]?.applyAdapters()
+        adapters.midAdapters.applyAdapters()
         context.toBlockType?.let { adapters.toAdapters[it.id]?.applyAdapters() }
         adapters.lastAdapters.applyAdapters()
         context.toBlockType?.let { adapters.lastToAdapters[it.id]?.applyAdapters() }

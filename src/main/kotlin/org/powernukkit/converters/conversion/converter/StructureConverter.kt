@@ -19,6 +19,7 @@
 package org.powernukkit.converters.conversion.converter
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
@@ -41,15 +42,19 @@ open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
         toStructures: SendChannel<PlatformStructure<ToPlatform>>,
         problems: SendChannel<ConversionProblem>? = null,
     ) = launch {
-        val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>()
-        for (fromStructure in fromStructures) {
-            val (toStructure, conversionProblems) = convert(fromStructure, singleBlockStructureCache)
-            toStructures.send(toStructure)
-            if (problems != null && conversionProblems.isNotEmpty()) {
-                launch {
+        try {
+            val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>()
+            for (fromStructure in fromStructures) {
+                val (toStructure, conversionProblems) = convert(fromStructure, singleBlockStructureCache)
+                //if (toStructure.blocks.isNotEmpty()) {
+                toStructures.send(toStructure)
+                //}*/
+                if (problems != null && conversionProblems.isNotEmpty()) {
                     conversionProblems.forEach { problems.send(it) }
                 }
             }
+        } finally {
+            coroutineContext.cancelChildren()
         }
     }
 

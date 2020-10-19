@@ -20,6 +20,7 @@ package org.powernukkit.converters.conversion.universal.from
 
 import org.powernukkit.converters.conversion.adapter.BlockTypeAdapter
 import org.powernukkit.converters.conversion.context.BlockTypeConversionContext
+import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
@@ -37,19 +38,21 @@ interface FromUniversalBlockTypeAdapter<ToPlatform : Platform<ToPlatform>> :
         val toPlatform = context.toPlatform
         val edition = toPlatform.minecraftEdition
 
-        if (edition in universalType.editionRequiresAdapter) {
-            return
-        }
-
         val editionId = universalType.editionId[edition] ?: universalType.id
 
         val toBlockType = toPlatform.getBlockType(editionId)
-            ?: context.addProblem(
+
+        if (toBlockType != null) {
+            context.toBlockType = toBlockType
+            return
+        }
+
+        if (edition !in universalType.editionRequiresAdapter) {
+            context += ConversionProblem(
                 "The $edition edition don't have the block type $editionId registered but is associated to " +
                         "the universal block type ${universalType.id}"
-            ) ?: return
-
-        context.toBlockType = toBlockType
+            )
+        }
     }
 
     companion object {

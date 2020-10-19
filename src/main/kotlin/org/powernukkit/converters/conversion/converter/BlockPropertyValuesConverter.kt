@@ -53,6 +53,7 @@ open class BlockPropertyValuesConverter<FromPlatform : Platform<FromPlatform>, T
 
         adapters.firstAdapters.applyAdapters()
         adapters.fromAdapters[context.fromBlockState.type.id]?.applyAdapters()
+        adapters.midAdapters.applyAdapters()
         adapters.toAdapters[toType.id]?.applyAdapters()
         adapters.lastAdapters.applyAdapters()
         adapters.lastToAdapters[toType.id]?.applyAdapters()

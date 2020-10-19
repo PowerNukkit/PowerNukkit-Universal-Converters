@@ -19,6 +19,7 @@
 package org.powernukkit.converters.conversion.universal.from
 
 import org.powernukkit.converters.conversion.adapter.addFirst
+import org.powernukkit.converters.conversion.adapter.addFirstMid
 import org.powernukkit.converters.conversion.converter.DirectPlatformConverter
 import org.powernukkit.converters.conversion.converter.PlatformAdapters
 import org.powernukkit.converters.platform.api.Platform
@@ -41,7 +42,10 @@ class FromUniversalConverter<ToPlatform : Platform<ToPlatform>>(
                 .addFirst(FromUniversalBlockTypeAdapter.default()),
 
             blockPropertyValueAdapters = blockPropertyValueAdapters
-                .addFirst(FromUniversalBlockPropertyValuesAdapter.default())
+                .addFirst(FromUniversalBlockPropertyValuesAdapter.default()),
+
+            blockStateAdapters = blockStateAdapters
+                .addFirstMid(FromUniversalBlockStateAdapter.default())
         )
     }
 )

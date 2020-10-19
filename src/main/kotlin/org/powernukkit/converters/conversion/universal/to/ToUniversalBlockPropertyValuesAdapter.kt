@@ -22,6 +22,7 @@ import org.powernukkit.converters.conversion.adapter.BlockPropertyValuesAdapter
 import org.powernukkit.converters.conversion.context.BlockPropertyValuesConversionContext
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.platform.universal.block.UniversalBlockType
 
 /**
  * @author joserobjr
@@ -31,7 +32,48 @@ interface ToUniversalBlockPropertyValuesAdapter<FromPlatform : Platform<FromPlat
     BlockPropertyValuesAdapter<FromPlatform, UniversalPlatform> {
 
     override fun adaptBlockPropertyValues(context: BlockPropertyValuesConversionContext<FromPlatform, UniversalPlatform>) {
-        TODO("Not yet implemented")
+        val fromValues = context.fromBlockPropertyValues
+
+        val fromState = context.fromBlockState
+        val fromType = fromState.type
+
+        val universalBlockType = context.toBlockType as UniversalBlockType
+
+        val fromPlatform = context.fromPlatform
+        val fromEdition = fromPlatform.minecraftEdition
+
+        if (fromEdition in universalBlockType.editionRequiresAdapter) {
+            return
+        }
+
+        val editionBlockProperties = universalBlockType.editionBlockProperties[fromEdition]
+            ?: context.addProblem(
+                "The universal block type ${universalBlockType.id} is missing block property" +
+                        "definitions for the $fromEdition edition"
+            )
+            ?: return
+
+        editionBlockProperties.associate { universalBlockProperty ->
+            val fromPropertyName = universalBlockProperty.getEditionId(fromEdition)
+            val fromValue = fromValues[fromPropertyName]
+                ?: context.addProblem(
+                    "Could not find the $fromEdition property value $fromPropertyName in the values map " +
+                            "of the $fromEdition block type ${fromType.id} while converting to the universal block " +
+                            "property ${universalBlockProperty.id} to the universal block type ${universalBlockType.id}"
+                ) ?: return
+
+
+            val fromValueAsString = fromValue.stringValue
+            val universalPropertyValue = universalBlockProperty.values.firstOrNull { universalBlockPropertyValue ->
+                universalBlockPropertyValue.getEditionValue(fromEdition) == fromValueAsString
+            } ?: context.addProblem(
+                "Could not find the universal block property value $fromValueAsString in the " +
+                        "universal block type ${universalBlockType.id} while converting the $fromEdition " +
+                        "block property $fromPropertyName from the $fromEdition block type ${fromType.id}"
+            ) ?: return
+
+            universalBlockProperty.id to universalPropertyValue
+        }
     }
 
     companion object {

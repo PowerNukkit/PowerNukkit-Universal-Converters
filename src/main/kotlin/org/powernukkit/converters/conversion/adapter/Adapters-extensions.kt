@@ -24,6 +24,18 @@ package org.powernukkit.converters.conversion.adapter
  */
 fun <A> Adapters<A>?.addFirst(vararg adapters: A): Adapters<A> {
     return this?.copy(
-        firstAdapters = listOf(*adapters) + firstAdapters
+        firstAdapters = adapters.toList() + firstAdapters
     ) ?: Adapters(firstAdapters = adapters.toList())
+}
+
+fun <A> Adapters<A>?.addLast(vararg adapters: A): Adapters<A> {
+    return this?.copy(
+        lastAdapters = lastAdapters + adapters.toList()
+    ) ?: Adapters(lastAdapters = adapters.toList())
+}
+
+fun <A> Adapters<A>?.addFirstMid(vararg adapters: A): Adapters<A> {
+    return this?.copy(
+        midAdapters = adapters.toList() + midAdapters
+    ) ?: Adapters(midAdapters = adapters.toList())
 }

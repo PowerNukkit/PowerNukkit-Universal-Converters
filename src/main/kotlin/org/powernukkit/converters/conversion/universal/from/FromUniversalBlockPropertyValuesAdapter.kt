@@ -34,10 +34,10 @@ interface FromUniversalBlockPropertyValuesAdapter<ToPlatform : Platform<ToPlatfo
     BlockPropertyValuesAdapter<UniversalPlatform, ToPlatform> {
 
     override fun adaptBlockPropertyValues(context: BlockPropertyValuesConversionContext<UniversalPlatform, ToPlatform>) {
-        val universalValues = context.fromValues.mapValues { it as UniversalBlockPropertyValue }
+        val universalValues = context.fromBlockPropertyValues.mapValues { it as UniversalBlockPropertyValue }
 
         val universalType = context.fromBlockState.type as UniversalBlockType
-        val toType = context.toType
+        val toType = context.toBlockType
 
         val toPlatform = context.toPlatform
         val toEdition = toPlatform.minecraftEdition
@@ -59,12 +59,12 @@ interface FromUniversalBlockPropertyValuesAdapter<ToPlatform : Platform<ToPlatfo
                     "Could not find the universal property ${universalProperty.id} in the universal values: $universalValues"
                 ) ?: return
 
-            val toValueInString = universalValue.getEditionValue(toEdition)
+            val toValueAsString = universalValue.getEditionValue(toEdition)
             try {
-                toProperty.getPlatformValue(toValueInString)
+                toProperty.getPlatformValue(toValueAsString)
             } catch (e: NoSuchElementException) {
                 context += ConversionProblem(
-                    "Could not find the $toEdition property value $toValueInString in the property ${toProperty.id}" +
+                    "Could not find the $toEdition property value $toValueAsString in the property ${toProperty.id}" +
                             " of the ${toPlatform.name} block type ${toType.id} while converting the property" +
                             " ${universalProperty.id} of the universal type ${universalType.id}",
                     e

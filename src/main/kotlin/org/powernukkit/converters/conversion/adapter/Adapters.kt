@@ -27,6 +27,7 @@ import org.powernukkit.converters.platform.api.NamespacedId
 data class Adapters<A>(
     val firstAdapters: List<A> = emptyList(),
     val fromAdapters: Map<NamespacedId, List<A>> = emptyMap(),
+    val midAdapters: List<A> = emptyList(),
     val toAdapters: Map<NamespacedId, List<A>> = emptyMap(),
     val lastAdapters: List<A> = emptyList(),
     val lastToAdapters: Map<NamespacedId, List<A>> = emptyMap(),

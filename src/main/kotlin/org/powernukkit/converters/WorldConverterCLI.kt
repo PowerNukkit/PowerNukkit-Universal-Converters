@@ -18,13 +18,12 @@
 
 package org.powernukkit.converters
 
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.selects.selectUnbiased
 import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.NamespacedId
@@ -44,6 +43,7 @@ object WorldConverterCLI {
      * The entry point of the command line interface.
      * @param args The arguments that was given in the command line.
      */
+    @ExperimentalCoroutinesApi
     @JvmStatic
     fun main(args: Array<String>) {
         val universalPlatform = DefinitionLoader().loadBuiltin()
@@ -74,22 +74,33 @@ object WorldConverterCLI {
                 convertAllStructures(javaChannel, bedrockChannel, problems)
             }
 
+            val jobs = mutableListOf<Job>()
             repeat(2) {
-                launch {
+                jobs += launch {
                     javaStructures.collect { javaStructure ->
                         javaChannel.send(javaStructure)
                     }
                 }
             }
 
-            select<Unit> {
-                bedrockChannel.onReceive { bedrockStructure ->
-                    println("Got an structure: $bedrockStructure")
-                }
+            launch {
+                jobs.joinAll()
+                javaChannel.close()
+            }
 
-                problems.onReceive { problem ->
-                    println("Got a problem :(")
-                    problem.printStackTrace()
+            val channels = listOf(bedrockChannel, problems)
+            while (channels.any { !it.isClosedForReceive }) {
+                selectUnbiased<Unit> {
+                    bedrockChannel.onReceive { bedrockStructure ->
+                        println("Got an structure: $bedrockStructure")
+                        println()
+                    }
+
+                    problems.onReceive { problem ->
+                        System.err.println("Got a problem :(")
+                        problem.printStackTrace()
+                        System.err.println()
+                    }
                 }
             }
         }

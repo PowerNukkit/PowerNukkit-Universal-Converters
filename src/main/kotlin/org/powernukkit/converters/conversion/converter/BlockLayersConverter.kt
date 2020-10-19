@@ -79,6 +79,8 @@ open class BlockLayersConverter<FromPlatform : Platform<FromPlatform>, ToPlatfor
 
                     adapters.fromAdapters[fromBlockState.type.id]?.applyLayerAdapters(subContext)
 
+                    adapters.midAdapters.applyLayerAdapters(subContext)
+
                     subContext.toBlockStateLayers.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id
                         ?.let { adapters.toAdapters[it]?.applyLayerAdapters(subContext) }
 
@@ -95,6 +97,8 @@ open class BlockLayersConverter<FromPlatform : Platform<FromPlatform>, ToPlatfor
                         ?: blockStateConverter.convert(fromBlockState, subContext)
                 }
         }
+
+        adapters.midAdapters.applyEntireBlockStateLayersAdapters(context)
 
         context.toLayers.takeUnless { it.isNullOrEmpty() }?.first()?.type?.id?.let {
             adapters.toAdapters[it]?.applyEntireBlockStateLayersAdapters(context)
