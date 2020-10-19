@@ -19,6 +19,9 @@
 package org.powernukkit.converters.platform.bedrock.block
 
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.base.BaseConstructors
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
+import org.powernukkit.converters.platform.base.block.BaseBlockProperty
 import org.powernukkit.converters.platform.base.block.BaseBlockType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
@@ -29,22 +32,22 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @since 2020-10-11
  */
 class BedrockBlockType : BaseBlockType<
-        BedrockPlatform, BedrockBlockProperty, BedrockBlockEntityType, BedrockBlockPropertyValue
+        BedrockPlatform
         > {
     constructor(
-        platform: BedrockPlatform,
+        constructors: BaseConstructors<BedrockPlatform>,
         id: NamespacedId,
-        blockProperties: Map<String, BedrockBlockProperty>,
-        blockEntityType: BedrockBlockEntityType? = null,
+        blockProperties: Map<String, BaseBlockProperty<BedrockPlatform>>,
+        blockEntityType: BaseBlockEntityType<BedrockPlatform>? = null,
         universalType: UniversalBlockType?
     ) : super(
-        platform, id, blockProperties, blockEntityType, universalType
+        constructors, id, blockProperties, blockEntityType, universalType
     )
 
     constructor(
-        platform: BedrockPlatform,
+        constructors: BaseConstructors<BedrockPlatform>,
         id: NamespacedId,
         universalType: UniversalBlockType,
         extraBlock: ModelExtraBlock? = null
-    ) : super(platform, id, universalType, extraBlock)
+    ) : super(constructors, id, universalType, extraBlock)
 }

@@ -33,4 +33,6 @@ abstract class PlatformEntity<P : Platform<P>>(
     final override fun toString(): String {
         return "${platform.name}PlatformEntity(pos=$pos)"
     }
+
+    abstract fun withPos(entityPos: EntityPos): PlatformEntity<P>
 }

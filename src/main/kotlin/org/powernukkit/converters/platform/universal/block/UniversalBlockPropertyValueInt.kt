@@ -31,7 +31,7 @@ class UniversalBlockPropertyValueInt(
 ) : UniversalBlockPropertyValue(platform, emptyMap(), false) {
     override val type get() = IPlatformBlockPropertyValue.Type.INT
 
-    override fun stringValue() = value.toString()
+    override val stringValue get() = value.toString()
     override fun intValue() = value
     override fun booleanValue() = value == 0
 }

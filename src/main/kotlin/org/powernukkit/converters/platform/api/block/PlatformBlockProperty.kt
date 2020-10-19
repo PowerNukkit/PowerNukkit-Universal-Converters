@@ -20,6 +20,7 @@ package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
+import org.powernukkit.converters.platform.api.block.IPlatformBlockPropertyValue.Type
 import org.powernukkit.converters.platform.universal.block.UniversalBlockProperty
 
 /**
@@ -33,6 +34,14 @@ abstract class PlatformBlockProperty<P : Platform<P>>(
     abstract val universal: UniversalBlockProperty?
     abstract val values: List<PlatformBlockPropertyValue<P>>
 
+    fun getPlatformValue(value: String) = values.first { it.stringValue == value }
+    fun getPlatformValue(value: Int) = values.first { it.type == Type.INT && it.intValue() == value }
+    fun getPlatformValue(value: Boolean) = values.first { it.type == Type.BOOLEAN && it.booleanValue() == value }
+
+    fun getPlatformValue(propertyValue: PlatformBlockPropertyValue<P>): PlatformBlockPropertyValue<P> {
+        return values.firstOrNull { it === propertyValue } ?: getPlatformValue(propertyValue.stringValue)
+    }
+
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -41,7 +50,6 @@ abstract class PlatformBlockProperty<P : Platform<P>>(
 
         if (platform != other.platform) return false
         if (id != other.id) return false
-        if (universal != other.universal) return false
         if (values != other.values) return false
 
         return true
@@ -50,7 +58,6 @@ abstract class PlatformBlockProperty<P : Platform<P>>(
     final override fun hashCode(): Int {
         var result = platform.hashCode()
         result = 31 * result + id.hashCode()
-        result = 31 * result + (universal?.hashCode() ?: 0)
         result = 31 * result + values.hashCode()
         return result
     }

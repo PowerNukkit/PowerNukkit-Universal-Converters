@@ -22,37 +22,33 @@ import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.TechnicalValues
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityDataType
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.base.block.BaseBlockProperty
-import org.powernukkit.converters.platform.base.block.BaseBlockType
+import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.base.block.BaseBlockEntity
+import org.powernukkit.converters.platform.base.block.BaseBlockState
+import org.powernukkit.converters.platform.base.entity.BaseEntity
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.platform.universal.block.*
-import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BasePlatform<
-        P : BasePlatform<P, BlockProperty, BlockEntityType, BlockType, BlockState, BlockPropertyValue, BlockEntityDataType>,
-        BlockProperty : BaseBlockProperty<P, BlockPropertyValue>,
-        BlockEntityType : PlatformBlockEntityType<P>,
-        BlockType : BaseBlockType<P, BlockProperty, BlockEntityType, BlockPropertyValue>,
-        BlockState : PlatformBlockState<P>,
-        BlockPropertyValue : PlatformBlockPropertyValue<P>,
-        BlockEntityDataType : PlatformBlockEntityDataType<P>,
-        >(
+abstract class BasePlatform<P : BasePlatform<P>>(
+    private val constructors: BaseConstructors<P>,
     val universal: UniversalPlatform,
     name: String,
     minecraftEdition: MinecraftEdition,
+) : Platform<P>(name, minecraftEdition) {
 
-    ) : Platform<P>(name, minecraftEdition) {
+    init {
+        @Suppress("LeakingThis")
+        constructors.assignPlatform(this)
+    }
+
     val blockPropertiesByUniversalId = universal.blockPropertiesById
         .mapValues { (_, universalProperty) ->
-            createBlockProperty(universalProperty.getEditionId(minecraftEdition), universalProperty)
+            constructors.createBlockProperty(universalProperty.getEditionId(minecraftEdition), universalProperty)
         }
 
     val blockEntityTypesById =
@@ -61,16 +57,16 @@ abstract class BasePlatform<
                 val values = universalEntityType.data.values.asSequence()
                     .map { it.getEditionId(minecraftEdition) to it }
                     .filterNot { (id) -> id == TechnicalValues.MISSING }
-                    .associate { (id, universal) -> id to createBlockEntityDataType(universal) }
+                    .associate { (id, universal) -> id to constructors.createBlockEntityDataType(universal) }
 
-                createBlockEntityType(id, universalEntityType, values)
+                constructors.createBlockEntityType(id, universalEntityType, values)
             }
 
     val blockTypesById =
         checkNotNull(universal.blockTypesByEditionId[minecraftEdition]) { "The universal platform is missing block types definitions for $minecraftEdition" }
             .let { universalTypes ->
                 val mainTypes = universalTypes.mapValues { (id, universalBlockType) ->
-                    createBlockType(id, universalBlockType)
+                    constructors.createBlockType(id, universalBlockType)
                 }
 
                 val extraTypes = universalTypes.values.asSequence()
@@ -78,7 +74,7 @@ abstract class BasePlatform<
                         universalType.extraBlocks[minecraftEdition]?.asSequence()
                             ?.map {
                                 val id = NamespacedId(it.id)
-                                id to createBlockType(id, universalType, it)
+                                id to constructors.createBlockType(id, universalType, it)
                             } ?: emptySequence()
                     }.toMap()
 
@@ -89,61 +85,30 @@ abstract class BasePlatform<
         "The minecraft:air block type is not registered"
     }
 
-    @Suppress("LeakingThis")
-    final override val airBlockState = createBlockState(airBlockType)
+    final override val airBlockState = constructors.createBlockState(airBlockType)
 
-    protected abstract fun createBlockProperty(id: String, universal: UniversalBlockProperty): BlockProperty
-    protected abstract fun createBlockEntityType(
-        id: String,
-        universal: UniversalBlockEntityType,
-        values: Map<String, BlockEntityDataType>
-    ): BlockEntityType
+    final override val airBlock = constructors.createBlock(airBlockState)
 
-    protected abstract fun createBlockEntityDataType(universal: UniversalBlockEntityDataType): BlockEntityDataType
+    override fun getBlockType(id: NamespacedId) = blockTypesById[id]
 
-    protected abstract fun createBlockType(
-        id: NamespacedId,
-        universal: UniversalBlockType,
-        extra: ModelExtraBlock? = null
-    ): BlockType
+    @Suppress("UNCHECKED_CAST")
+    final override fun createPlatformBlock(
+        blockLayers: List<PlatformBlockState<P>>,
+        blockEntity: PlatformBlockEntity<P>?,
+        entities: List<PlatformEntity<P>>
+    ) = constructors.createBlock(
+        blockLayers as List<BaseBlockState<P>>,
+        blockEntity as BaseBlockEntity<P>?,
+        entities as List<BaseEntity<P>>
+    )
 
-    protected open fun createBlockState(blockType: BlockType): BlockState {
-        return createBlockState(blockType, blockType.defaultPropertyValues())
-    }
-
-    protected abstract fun createBlockState(blockType: BlockType, values: Map<String, BlockPropertyValue>): BlockState
-
-    protected abstract fun createBlockPropertyValue(
-        int: Int,
-        universalValue: UniversalBlockPropertyValue,
-        default: Boolean,
-    ): BlockPropertyValue
-
-    protected abstract fun createBlockPropertyValue(
-        string: String,
-        universalValue: UniversalBlockPropertyValue,
-        default: Boolean,
-    ): BlockPropertyValue
-
-    protected abstract fun createBlockPropertyValue(
-        boolean: Boolean,
-        universalValue: UniversalBlockPropertyValue,
-        default: Boolean,
-    ): BlockPropertyValue
-
-    protected open fun createBlockPropertyValue(universalValue: UniversalBlockPropertyValue): BlockPropertyValue {
-        val value = universalValue.getEditionValue(minecraftEdition)
-        val int = value.toIntOrNull()
-        if (int != null) {
-            return createBlockPropertyValue(int, universalValue, universalValue.default)
-        }
-        if (value == "true" || value == "false") {
-            return createBlockPropertyValue(value.toBoolean(), universalValue, universalValue.default)
-        }
-        return createBlockPropertyValue(value, universalValue, universalValue.default)
-    }
-    
-    internal fun createBlockPropertyValueList(universal: UniversalBlockProperty): List<BlockPropertyValue> {
-        return universal.values.map(this::createBlockPropertyValue)
-    }
+    @Suppress("UNCHECKED_CAST")
+    final override fun createPlatformBlock(
+        blockState: PlatformBlockState<P>,
+        blockEntity: PlatformBlockEntity<P>?,
+        entities: List<PlatformEntity<P>>
+    ) = constructors.createBlock(
+        blockState as BaseBlockState<P>, blockEntity as BaseBlockEntity<P>?,
+        entities as List<BaseEntity<P>>
+    )
 }

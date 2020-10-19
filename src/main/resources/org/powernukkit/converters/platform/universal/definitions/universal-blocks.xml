@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ PowerNukkit Universal Worlds & Converters for Minecraft
-  ~  Copyright (C) 2020  José Roberto de Araújo Júnior
-  ~  
-  ~  This program is free software: you can redistribute it and/or modify
-  ~  it under the terms of the GNU Affero General Public License as published by
-  ~  the Free Software Foundation, either version 3 of the License, or
-  ~  (at your option) any later version.
-  ~  
-  ~  This program is distributed in the hope that it will be useful,
-  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~  GNU Affero General Public License for more details.
-  ~  
-  ~  You should have received a copy of the GNU Affero General Public License
-  ~  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ Copyright (C) 2020  José Roberto de Araújo Júnior
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <!DOCTYPE universal-blocks SYSTEM "universal-blocks.dtd">
@@ -721,7 +721,7 @@
 
         <block-type id="wall_sign" java="oak_wall_sign" java-requires-adapter="true" bedrock-requires-adapter="true">
             <uses-property named="facing_direction" on-java="false"/>
-            <uses-property named="horizontal_direction" on-bedrock="false"/>
+            <uses-property named="horizontal_direction" on-bedrock="false" on-universal="false"/>
             <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
 
             <extra-block on="both" id="spruce_wall_sign"/>

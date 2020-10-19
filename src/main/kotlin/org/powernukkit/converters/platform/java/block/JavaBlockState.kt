@@ -18,7 +18,10 @@
 
 package org.powernukkit.converters.platform.java.block
 
+import org.powernukkit.converters.platform.base.BaseConstructors
+import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValue
 import org.powernukkit.converters.platform.base.block.BaseBlockState
+import org.powernukkit.converters.platform.base.block.BaseBlockType
 import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
@@ -26,9 +29,7 @@ import org.powernukkit.converters.platform.java.JavaPlatform
  * @since 2020-10-11
  */
 class JavaBlockState(
-    type: JavaBlockType,
-    values: Map<String, JavaBlockPropertyValue>,
-): BaseBlockState<JavaPlatform, JavaBlockType, JavaBlockProperty, JavaBlockPropertyValue>(
-    type,
-    values,
-)
+    constructors: BaseConstructors<JavaPlatform>,
+    type: BaseBlockType<JavaPlatform>,
+    values: Map<String, BaseBlockPropertyValue<JavaPlatform>>,
+) : BaseBlockState<JavaPlatform>(constructors, type, values)

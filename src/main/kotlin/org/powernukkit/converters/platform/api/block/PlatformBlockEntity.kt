@@ -18,7 +18,6 @@
 
 package org.powernukkit.converters.platform.api.block
 
-import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 
@@ -26,9 +25,7 @@ import org.powernukkit.converters.platform.api.PlatformObject
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockEntity<P: Platform<P>>(
-    val pos: BlockPos
-): PlatformObject<P> {
+abstract class PlatformBlockEntity<P : Platform<P>> : PlatformObject<P> {
     abstract val type: PlatformBlockEntityType<P>
     final override val platform get() = type.platform
 
@@ -39,18 +36,15 @@ abstract class PlatformBlockEntity<P: Platform<P>>(
         other as PlatformBlockEntity<*>
 
         if (type != other.type) return false
-        if (pos != other.pos) return false
 
         return true
     }
 
     final override fun hashCode(): Int {
-        var result = type.hashCode()
-        result = 31 * result + pos.hashCode()
-        return result
+        return type.hashCode()
     }
 
     final override fun toString(): String {
-        return "${platform.name}BlockEntity(type=$type, pos=$pos)"
+        return "${platform.name}BlockEntity(type=$type)"
     }
 }

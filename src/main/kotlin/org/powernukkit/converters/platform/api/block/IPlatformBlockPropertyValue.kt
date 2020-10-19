@@ -24,10 +24,10 @@ package org.powernukkit.converters.platform.api.block
  */
 interface IPlatformBlockPropertyValue {
     val type: Type
-    fun stringValue(): String
-    fun intValue() = stringValue().toInt()
+    val stringValue: String
+    fun intValue() = stringValue.toInt()
 
-    fun booleanValue() = when (val value = stringValue()) {
+    fun booleanValue() = when (val value = stringValue) {
         "0" -> false
         "1" -> true
         else -> value.equals("true", true)

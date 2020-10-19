@@ -19,19 +19,38 @@
 package org.powernukkit.converters.platform.api.block
 
 import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.BlockContainer
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 
-abstract class PlatformStructure<P: Platform<P>, B: PlatformBlock<P>>(
-    final override val platform: P
-): PlatformObject<P> {
-    val blocks = mutableMapOf<BlockPos, B>()
+abstract class PlatformStructure<P : Platform<P>>(
+    final override val platform: P,
+) : PlatformObject<P>, BlockContainer<P> {
+    abstract val blocks: Map<BlockPos, PlatformBlock<P>>
+
+    override val mainBlock get() = blocks[BlockPos.ZERO] ?: platform.airBlock
+
+    fun toMutableStructure() = MutableStructure(platform, blocks)
+    open fun toImmutableStructure() = ImmutableStructure(platform, blocks)
+
+    final override fun contains(key: BlockPos) = key in blocks
+    override fun getBlock(pos: BlockPos) = blocks[pos]
+
+    fun isNotEmpty(): Boolean {
+        return when (blocks.size) {
+            0 -> false
+            1 -> BlockPos.ZERO !in blocks || mainBlock != platform.airBlock
+            else -> true
+        }
+    }
+
+    fun isEmpty() = !isNotEmpty()
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PlatformStructure<*, *>
+        other as PlatformStructure<*>
 
         if (platform != other.platform) return false
         if (blocks != other.blocks) return false
@@ -46,6 +65,6 @@ abstract class PlatformStructure<P: Platform<P>, B: PlatformBlock<P>>(
     }
 
     final override fun toString(): String {
-        return "${platform.name}Structure(blocks=$blocks)"
+        return "${platform.name}Structure$blocks"
     }
 }

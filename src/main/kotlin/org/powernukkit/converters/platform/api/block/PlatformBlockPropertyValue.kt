@@ -33,18 +33,18 @@ abstract class PlatformBlockPropertyValue<P : Platform<P>>(
         if (other !is PlatformBlockPropertyValue<*>) return false
 
         if (platform != other.platform) return false
-        if (stringValue() != other.stringValue()) return false
+        if (stringValue != other.stringValue) return false
 
         return true
     }
 
     final override fun hashCode(): Int {
         var result = platform.hashCode()
-        result = 31 * result + stringValue().hashCode()
+        result = 31 * result + stringValue.hashCode()
         return result
     }
 
     final override fun toString(): String {
-        return "${platform.name}BlockPropertyValue(value=${stringValue()})"
+        return "${platform.name}BlockPropertyValue(value=$stringValue)"
     }
 }

@@ -18,12 +18,19 @@
 
 package org.powernukkit.converters.platform.universal
 
+import org.powernukkit.converters.conversion.adapter.PlatformAdapters
+import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
+import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.Platform
+import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.api.entity.PlatformEntity
 import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.ModelDefinitions
+import org.powernukkit.converters.platform.universal.entity.UniversalEntity
 
 /**
  * @author joserobjr
@@ -32,7 +39,7 @@ import org.powernukkit.converters.platform.universal.definitions.model.ModelDefi
 class UniversalPlatform internal constructor(
     definitions: ModelDefinitions
 ) : Platform<UniversalPlatform>("Universal", MinecraftEdition.UNIVERSAL) {
-    val optionalBlockPropertyValue = UniversalBlockPropertyValueEmptyOpt(this)
+    val emptyOptionalBlockPropertyValue = UniversalBlockPropertyValueEmptyOpt(this)
 
     val blockPropertiesById = definitions.blockProperties
         .map { UniversalBlockProperty(this, it) }
@@ -66,16 +73,25 @@ class UniversalPlatform internal constructor(
         UniversalBlockType::editionId,
     )
 
-    override val airBlockType =
-        checkNotNull(blockTypesById[NamespacedId("air")]) { "The minecraft:air block type is not registered" }
+    override val airBlockType = checkNotNull(blockTypesById[NamespacedId("air")]) {
+        "The minecraft:air block type is not registered"
+    }
+
     override val airBlockState = UniversalBlockState(airBlockType)
+    override val airBlock = UniversalBlock(this, listOf(airBlockState))
+
+    override fun convertToUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): ToUniversalConverter<UniversalPlatform> {
+        throw UnsupportedOperationException("Cannot convert an universal platform to an other universal platform")
+    }
+
+    override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): FromUniversalConverter<UniversalPlatform> {
+        throw UnsupportedOperationException("Cannot convert an universal platform to an other universal platform")
+    }
+
+    override fun getBlockType(id: NamespacedId) = blockTypesById[id]
 
     fun getBlockPropertyByEditionId(edition: MinecraftEdition, propertyId: String): List<UniversalBlockProperty> {
         return blockPropertiesByEditionId[edition]?.get(propertyId) ?: emptyList()
-    }
-
-    override fun toString(): String {
-        return "UniversalPlatform(name='$name', minecraftEdition=$minecraftEdition, blockPropertiesById=$blockPropertiesById, blockTypesById=$blockTypesById)"
     }
 
     private fun <K : Any, T> Map<K, T>.createEditionIdMap(
@@ -91,4 +107,30 @@ class UniversalPlatform internal constructor(
             .mapValues { (_, value) ->
                 value.map { it.second }.toMap()
             }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun createPlatformBlock(
+        blockState: PlatformBlockState<UniversalPlatform>,
+        blockEntity: PlatformBlockEntity<UniversalPlatform>?,
+        entities: List<PlatformEntity<UniversalPlatform>>
+    ) = UniversalBlock(this,
+        listOf(blockState as UniversalBlockState),
+        blockEntity as UniversalBlockEntity?,
+        entities.onEach { it as UniversalEntity } as List<UniversalEntity>
+    )
+
+    @Suppress("UNCHECKED_CAST")
+    override fun createPlatformBlock(
+        blockLayers: List<PlatformBlockState<UniversalPlatform>>,
+        blockEntity: PlatformBlockEntity<UniversalPlatform>?,
+        entities: List<PlatformEntity<UniversalPlatform>>
+    ) = UniversalBlock(this,
+        blockLayers.onEach { it as UniversalBlockState } as List<UniversalBlockState>,
+        blockEntity as UniversalBlockEntity?,
+        entities.onEach { it as UniversalEntity } as List<UniversalEntity>
+    )
+
+    override fun toString(): String {
+        return "UniversalPlatform(name='$name', minecraftEdition=$minecraftEdition, blockPropertiesById=$blockPropertiesById, blockTypesById=$blockTypesById)"
+    }
 }

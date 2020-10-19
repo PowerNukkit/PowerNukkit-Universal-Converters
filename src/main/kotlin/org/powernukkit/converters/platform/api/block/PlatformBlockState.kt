@@ -25,7 +25,7 @@ import org.powernukkit.converters.platform.api.PlatformObject
  * @author joserobjr
  * @since 2020-10-11
  */
-abstract class PlatformBlockState<P: Platform<P>>: PlatformObject<P> {
+abstract class PlatformBlockState<P : Platform<P>> : PlatformObject<P> {
     abstract val type: PlatformBlockType<P>
     override val platform: P get() = type.platform
     abstract val values: Map<String, PlatformBlockPropertyValue<P>>
@@ -58,6 +58,21 @@ abstract class PlatformBlockState<P: Platform<P>>: PlatformObject<P> {
     }
 
     final override fun toString(): String {
-        return "${platform.name}BlockState(type=$type, values=$values)"
+        return buildString {
+            append(platform.minecraftEdition.name)
+            append(':')
+            append(type.id)
+            if (values.isNotEmpty()) {
+                append('[')
+                values.forEach { (name, value) ->
+                    append(name)
+                    append('=')
+                    append(value.stringValue)
+                    append(',')
+                }
+                setLength(length - 1)
+                append(']')
+            }
+        }
     }
 }

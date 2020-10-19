@@ -18,13 +18,16 @@
 
 package org.powernukkit.converters.platform.java
 
+import org.powernukkit.converters.conversion.adapter.PlatformAdapters
+import org.powernukkit.converters.conversion.adapter.plus
+import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
+import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.MinecraftEdition
-import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.java.adapters.block.JavaStoneAdapter
 import org.powernukkit.converters.platform.java.block.*
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.platform.universal.block.*
-import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
 /**
  * @author joserobjr
@@ -32,43 +35,24 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  */
 class JavaPlatform(
     universal: UniversalPlatform,
-    name: String
-) : BasePlatform<
-        JavaPlatform, JavaBlockProperty, JavaBlockEntityType, JavaBlockType, JavaBlockState,
-        JavaBlockPropertyValue, JavaBlockEntityDataType
-        >(
+    name: String = "Java"
+) : BasePlatform<JavaPlatform>(
+    BaseConstructors(
+        ::JavaBlockState, ::JavaBlockProperty, ::JavaBlockEntityType, ::JavaBlockEntityDataType,
+        ::JavaBlockType, ::JavaBlock, ::JavaBlock, ::JavaBlockPropertyValueInt, ::JavaBlockPropertyValueString,
+        ::JavaBlockPropertyValueBoolean
+    ),
     universal, name, MinecraftEdition.JAVA
 ) {
-    override fun createBlockProperty(id: String, universal: UniversalBlockProperty) =
-        JavaBlockProperty(this, id, universal)
+    override fun convertToUniversal(adapters: PlatformAdapters<JavaPlatform, UniversalPlatform>?): ToUniversalConverter<JavaPlatform> {
+        var adjustedAdapters = (adapters ?: PlatformAdapters())
+        adjustedAdapters += JavaStoneAdapter()
+        return ToUniversalConverter(this, universal, adjustedAdapters)
+    }
 
-    override fun createBlockEntityType(
-        id: String,
-        universal: UniversalBlockEntityType,
-        values: Map<String, JavaBlockEntityDataType>
-    ) = JavaBlockEntityType(this, id, universal, values)
-
-    override fun createBlockEntityDataType(universal: UniversalBlockEntityDataType) =
-        JavaBlockEntityDataType(this, universal)
-
-    override fun createBlockType(id: NamespacedId, universal: UniversalBlockType, extra: ModelExtraBlock?) =
-        JavaBlockType(this, id, universal, extra)
-
-    override fun createBlockState(blockType: JavaBlockType, values: Map<String, JavaBlockPropertyValue>) =
-        JavaBlockState(blockType, values)
-
-    override fun createBlockPropertyValue(int: Int, universalValue: UniversalBlockPropertyValue, default: Boolean) =
-        JavaBlockPropertyValueInt(this, int, universalValue, default)
-
-    override fun createBlockPropertyValue(
-        string: String,
-        universalValue: UniversalBlockPropertyValue,
-        default: Boolean
-    ) = JavaBlockPropertyValueString(this, string, universalValue, default)
-
-    override fun createBlockPropertyValue(
-        boolean: Boolean,
-        universalValue: UniversalBlockPropertyValue,
-        default: Boolean
-    ) = JavaBlockPropertyValueBoolean(this, boolean, universalValue, default)
+    override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, JavaPlatform>?): FromUniversalConverter<JavaPlatform> {
+        var adjustedAdapters = (adapters ?: PlatformAdapters())
+        adjustedAdapters += JavaStoneAdapter()
+        return FromUniversalConverter(universal, this, adjustedAdapters)
+    }
 }

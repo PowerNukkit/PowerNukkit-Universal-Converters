@@ -18,16 +18,17 @@
 
 package org.powernukkit.converters.platform.base.block
 
-import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.base.BaseConstructors
+import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
 
 /**
  * @author joserobjr
  * @since 2020-10-13
  */
-abstract class BaseBlockPropertyValue<P : Platform<P>>(
-    platform: P,
+abstract class BaseBlockPropertyValue<P : BasePlatform<P>>(
+    constructors: BaseConstructors<P>,
     val universalValue: UniversalBlockPropertyValue?,
     default: Boolean,
-) : PlatformBlockPropertyValue<P>(platform, default)
+) : PlatformBlockPropertyValue<P>(constructors.platform, default)

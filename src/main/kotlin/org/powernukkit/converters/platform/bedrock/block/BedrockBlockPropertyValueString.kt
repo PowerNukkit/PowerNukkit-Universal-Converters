@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
+import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockPropertyValueString
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockPropertyValue
@@ -27,8 +28,8 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockPropert
  * @since 2020-10-13
  */
 class BedrockBlockPropertyValueString(
-    platform: BedrockPlatform,
-    override val value: String,
+    constructors: BaseConstructors<BedrockPlatform>,
+    override val stringValue: String,
     universalValue: UniversalBlockPropertyValue?,
     default: Boolean,
-) : BedrockBlockPropertyValue(platform, universalValue, default), BaseBlockPropertyValueString
+) : BedrockBlockPropertyValue(constructors, universalValue, default), BaseBlockPropertyValueString

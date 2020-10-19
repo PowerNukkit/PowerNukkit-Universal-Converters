@@ -31,7 +31,7 @@ class UniversalBlockPropertyValueEmptyOpt(
     platform: UniversalPlatform
 ) : UniversalBlockPropertyValue(platform, MinecraftEdition.values().associate { it to TechnicalValues.EMPTY }, false) {
     override val type = IPlatformBlockPropertyValue.Type.EMPTY_OPTIONAL
-    override fun stringValue() = TechnicalValues.EMPTY
+    override val stringValue get() = TechnicalValues.EMPTY
     override fun intValue() = error("Empty value")
     override fun booleanValue() = error("Empty value")
 }

@@ -19,6 +19,9 @@
 package org.powernukkit.converters.platform.java.block
 
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.base.BaseConstructors
+import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
+import org.powernukkit.converters.platform.base.block.BaseBlockProperty
 import org.powernukkit.converters.platform.base.block.BaseBlockType
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.block.UniversalBlockType
@@ -28,23 +31,21 @@ import org.powernukkit.converters.platform.universal.definitions.model.block.typ
  * @author joserobjr
  * @since 2020-10-11
  */
-class JavaBlockType : BaseBlockType<
-        JavaPlatform, JavaBlockProperty, JavaBlockEntityType, JavaBlockPropertyValue
-        > {
+class JavaBlockType : BaseBlockType<JavaPlatform> {
     constructor(
-        platform: JavaPlatform,
+        constructors: BaseConstructors<JavaPlatform>,
         id: NamespacedId,
-        blockProperties: Map<String, JavaBlockProperty>,
-        blockEntityType: JavaBlockEntityType? = null,
+        blockProperties: Map<String, BaseBlockProperty<JavaPlatform>>,
+        blockEntityType: BaseBlockEntityType<JavaPlatform>? = null,
         universalType: UniversalBlockType?
     ) : super(
-        platform, id, blockProperties, blockEntityType, universalType
+        constructors, id, blockProperties, blockEntityType, universalType
     )
 
     constructor(
-        platform: JavaPlatform,
+        constructors: BaseConstructors<JavaPlatform>,
         id: NamespacedId,
         universalType: UniversalBlockType,
         extraBlock: ModelExtraBlock? = null
-    ) : super(platform, id, universalType, extraBlock)
+    ) : super(constructors, id, universalType, extraBlock)
 }

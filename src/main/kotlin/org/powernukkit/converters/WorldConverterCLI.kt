@@ -18,6 +18,16 @@
 
 package org.powernukkit.converters
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.selectUnbiased
+import org.powernukkit.converters.conversion.converter.ConversionProblem
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.api.block.ImmutableStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
@@ -33,13 +43,67 @@ object WorldConverterCLI {
      * The entry point of the command line interface.
      * @param args The arguments that was given in the command line.
      */
+    @ExperimentalCoroutinesApi
     @JvmStatic
     fun main(args: Array<String>) {
         val universalPlatform = DefinitionLoader().loadBuiltin()
-        val javaPlatform = JavaPlatform(universalPlatform, "Java")
-        val bedrockPlatform = BedrockPlatform(universalPlatform, "Bedrock")
-        println(universalPlatform.airBlockState)
-        println(bedrockPlatform.airBlockState)
-        println(javaPlatform.airBlockState)
+        val javaPlatform = JavaPlatform(universalPlatform)
+        val bedrockPlatform = BedrockPlatform(universalPlatform)
+
+        val converter = javaPlatform.convertToUniversal().convertToPlatform(bedrockPlatform)
+
+        val javaStone = javaPlatform.getBlockType(NamespacedId("stone"))!!.withDefaultState()
+        val javaGrass = javaPlatform.getBlockType(NamespacedId("grass"))!!.withDefaultState()
+        val javaDirt = javaPlatform.getBlockType(NamespacedId("dirt"))!!.withDefaultState()
+
+        val javaStructures = listOf(
+            BlockPos(1, 2, 3) to javaPlatform.airBlockState,
+            BlockPos(2, 2, 3) to javaStone,                 //2
+            BlockPos(3, 3, 3) to javaGrass,                 //2
+            BlockPos(4, 5, 6) to javaDirt,                  //2
+        ).map { (pos, state) ->
+            val block = javaPlatform.createPlatformBlock(state)
+            PositionedStructure(
+                pos,
+                ImmutableStructure(javaPlatform, mapOf(BlockPos.ZERO to block))
+            )
+        }
+
+        runBlocking {
+            val javaChannel = produce {
+                javaStructures.forEach {
+                    send(it)
+                }
+            }
+
+            val bedrockChannel = Channel<PositionedStructure<BedrockPlatform>>()
+            val problems = Channel<ConversionProblem>()
+            val conversionJob = with(converter) {
+                convertAllStructures(javaChannel, bedrockChannel, problems)
+            }
+
+            val channels = listOf(bedrockChannel, problems)
+            while (channels.any { !it.isClosedForReceive }) {
+                selectUnbiased<Unit> {
+                    bedrockChannel.onReceive { bedrockStructure ->
+                        println("Got an structure: $bedrockStructure")
+                        println()
+                    }
+
+                    problems.onReceive { problem ->
+                        System.err.println("Got a problem :(")
+                        problem.printStackTrace()
+                        System.err.println()
+                    }
+
+                    conversionJob.onJoin {
+                        bedrockChannel.close()
+                        problems.close()
+                    }
+                }
+            }
+        }
+
+        println("Completed.")
     }
 }

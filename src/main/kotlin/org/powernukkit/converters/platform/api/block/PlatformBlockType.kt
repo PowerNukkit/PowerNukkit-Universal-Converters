@@ -29,13 +29,19 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockType
  */
 abstract class PlatformBlockType<P : Platform<P>>(
     final override val platform: P,
-    val id: NamespacedId
-): PlatformObject<P> {
+    val id: NamespacedId,
+) : PlatformObject<P> {
     abstract val blockProperties: Map<String, PlatformBlockProperty<P>>
     abstract val blockEntityType: PlatformBlockEntityType<P>?
     abstract val universalType: UniversalBlockType?
 
     abstract fun defaultPropertyValues(): Map<String, PlatformBlockPropertyValue<P>>
+
+    abstract fun withState(values: Map<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P>
+
+    fun withState(vararg propertyValues: Pair<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P> {
+        return withState(propertyValues.toMap())
+    }
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -47,7 +53,6 @@ abstract class PlatformBlockType<P : Platform<P>>(
         if (id != other.id) return false
         if (blockProperties != other.blockProperties) return false
         if (blockEntityType != other.blockEntityType) return false
-        if (universalType != other.universalType) return false
 
         return true
     }
@@ -57,7 +62,6 @@ abstract class PlatformBlockType<P : Platform<P>>(
         result = 31 * result + id.hashCode()
         result = 31 * result + blockProperties.hashCode()
         result = 31 * result + (blockEntityType?.hashCode() ?: 0)
-        result = 31 * result + (universalType?.hashCode() ?: 0)
         return result
     }
 
