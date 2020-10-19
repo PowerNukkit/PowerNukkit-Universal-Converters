@@ -21,12 +21,14 @@ package org.powernukkit.converters.conversion.converter
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.BlockLayersAdapter
 import org.powernukkit.converters.conversion.context.BlockConversionContext
+import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
@@ -86,9 +88,6 @@ internal class BlockLayersConverterTest {
 
     val fromLayers = mutableListOf<PlatformBlockState<FromPlatform>>()
 
-    @MockK
-    lateinit var context: BlockConversionContext<FromPlatform, ToPlatform>
-
     @BeforeEach
     fun setUp() {
         fromPlatform.commonMocks()
@@ -129,6 +128,11 @@ internal class BlockLayersConverterTest {
 
     @Test
     fun convert() {
+        val context = BlockConversionContext(
+            fromPlatform, toPlatform,
+            mockk(), BlockPos.ZERO, mockk(), mockk()
+        )
+
         assertEquals(
             listOf(toState1, toState2, toState3),
             converter.convert(fromLayers, context)

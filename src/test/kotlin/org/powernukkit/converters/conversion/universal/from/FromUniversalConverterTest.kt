@@ -41,6 +41,8 @@ internal class FromUniversalConverterTest {
 
         val (bedrockStructure, problems) = converter.convertStructure(universalStructure)
 
+        problems.forEach { it.printStackTrace() }
+        
         assertEquals(emptyList(), problems)
         assertEquals(1, bedrockStructure.blocks.size)
         assertEquals(BlockPos.ZERO, bedrockStructure.blocks.keys.first())

@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.conversion.universal.from
 
+import org.powernukkit.converters.conversion.ConversionProblem
 import org.powernukkit.converters.conversion.adapter.BlockPropertyValuesAdapter
 import org.powernukkit.converters.conversion.context.BlockPropertyValuesConversionContext
 import org.powernukkit.converters.platform.api.Platform
@@ -45,7 +46,7 @@ interface FromUniversalBlockPropertyValuesAdapter<ToPlatform : Platform<ToPlatfo
             return
         }
 
-        toType.blockProperties.mapValues { (toName, toProperty) ->
+        context.toBlockPropertyValues = toType.blockProperties.mapValues { (toName, toProperty) ->
             val universalProperty = toProperty.universal
                 ?: universalType.findPropertyByEditionId(toEdition, toName)
                 ?: context.addProblem(
@@ -62,12 +63,13 @@ interface FromUniversalBlockPropertyValuesAdapter<ToPlatform : Platform<ToPlatfo
             try {
                 toProperty.getPlatformValue(toValueInString)
             } catch (e: NoSuchElementException) {
-                context.addProblem(
+                context += ConversionProblem(
                     "Could not find the $toEdition property value $toValueInString in the property ${toProperty.id}" +
                             " of the ${toPlatform.name} block type ${toType.id} while converting the property" +
                             " ${universalProperty.id} of the universal type ${universalType.id}",
                     e
                 )
+                return
             }
         }
     }

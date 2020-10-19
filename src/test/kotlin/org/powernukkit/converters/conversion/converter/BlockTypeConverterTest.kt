@@ -27,9 +27,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.BlockTypeAdapter
+import org.powernukkit.converters.conversion.context.BlockLayersSingleConversionContext
 import org.powernukkit.converters.conversion.context.BlockStateConversionContext
 import org.powernukkit.converters.conversion.context.BlockTypeConversionContext
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -52,6 +54,12 @@ internal class BlockTypeConverterTest {
     val firstAdapters = mutableListOf<BlockTypeAdapter<FromPlatform, ToPlatform>>()
     val lastAdapters = mutableListOf<BlockTypeAdapter<FromPlatform, ToPlatform>>()
 
+    @MockK
+    lateinit var fromState: PlatformBlockState<FromPlatform>
+
+    @MockK
+    lateinit var parentContext: BlockLayersSingleConversionContext<FromPlatform, ToPlatform>
+
     @BeforeEach
     internal fun setUp() {
         fromPlatform.commonMocks()
@@ -73,7 +81,7 @@ internal class BlockTypeConverterTest {
         val fromType = mockk<PlatformBlockType<FromPlatform>>()
         every { fromType.id } returns NamespacedId("from_stone")
 
-        val context = mockk<BlockStateConversionContext<FromPlatform, ToPlatform>>()
+        val context = BlockStateConversionContext(fromState, parentContext)
         assertFails { converter.convert(fromType, context) }
 
         val toType = mockk<PlatformBlockType<ToPlatform>>()
@@ -82,7 +90,7 @@ internal class BlockTypeConverterTest {
         firstAdapters += object : BlockTypeAdapter<FromPlatform, ToPlatform> {
             override fun adaptBlockType(context: BlockTypeConversionContext<FromPlatform, ToPlatform>) {
                 if (context.fromBlockType == fromType) {
-                    context.toMainBlockType = toType
+                    context.toBlockType = toType
                 }
             }
         }

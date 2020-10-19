@@ -41,9 +41,7 @@ interface FromUniversalBlockTypeAdapter<ToPlatform : Platform<ToPlatform>> :
             return
         }
 
-        val editionId = universalType.editionId[edition]
-            ?: context.addProblem("Unknown $edition id for universal block type ${universalType.id}")
-            ?: return
+        val editionId = universalType.editionId[edition] ?: universalType.id
 
         val toBlockType = toPlatform.getBlockType(editionId)
             ?: context.addProblem(

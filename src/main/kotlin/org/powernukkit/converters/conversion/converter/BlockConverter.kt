@@ -99,7 +99,7 @@ open class BlockConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Pl
             
             return emptyList()
         } catch (e: Exception) {
-            context += ConversionProblem("An exception has been caught while converting the block $fromBlock", e)
+            context += ConversionProblem("An exception has been caught while converting the block $fromBlock: $e", e)
             return context.problems
         }
     }
