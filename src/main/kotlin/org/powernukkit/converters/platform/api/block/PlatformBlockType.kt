@@ -39,8 +39,20 @@ abstract class PlatformBlockType<P : Platform<P>>(
 
     abstract fun withState(values: Map<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P>
 
-    fun withState(vararg propertyValues: Pair<String, PlatformBlockPropertyValue<P>>): PlatformBlockState<P> {
-        return withState(propertyValues.toMap())
+    fun withState(vararg propertyValues: Pair<String, String>): PlatformBlockState<P> {
+        return withState(propertyValues.toMap().mapValues { (k, v) ->
+            val property = requireNotNull(blockProperties[k]) {
+                "Property $k not found"
+            }
+
+            try {
+                property.getPlatformValue(v)
+            } catch (e: NoSuchElementException) {
+                throw IllegalArgumentException(
+                    "The property ${platform.minecraftEdition}:$k don't have the value $v in the type $id"
+                )
+            }
+        })
     }
 
     final override fun equals(other: Any?): Boolean {

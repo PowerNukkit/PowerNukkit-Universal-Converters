@@ -32,13 +32,16 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 class BedrockBlock(
     constructors: BaseConstructors<BedrockPlatform>,
     mainState: BaseBlockState<BedrockPlatform>,
-    secondaryState: BaseBlockState<BedrockPlatform> = constructors.platform.airBlockState,
+    secondaryState: BaseBlockState<BedrockPlatform>? = null,
     blockEntity: BaseBlockEntity<BedrockPlatform>? = null,
     entities: List<BaseEntity<BedrockPlatform>> = emptyList(),
 ) : BaseBlock<BedrockPlatform>(
     constructors, blockEntity, entities
 ) {
-    override val blockLayers = listOf(mainState, secondaryState)
+    override val blockLayers = secondaryState
+        ?.takeUnless { it == platform.airBlock }
+        ?.let { listOf(mainState, secondaryState) }
+        ?: listOf(mainState)
 
     constructor(
         constructors: BaseConstructors<BedrockPlatform>,
@@ -47,7 +50,7 @@ class BedrockBlock(
         entities: List<BaseEntity<BedrockPlatform>> = emptyList(),
     ) : this(
         constructors, mainState,
-        secondaryState = constructors.platform.airBlockState,
+        secondaryState = null,
         blockEntity = blockEntity,
         entities = entities
     )
@@ -59,7 +62,7 @@ class BedrockBlock(
         entities: List<BaseEntity<BedrockPlatform>> = emptyList(),
     ) : this(
         constructors, layers.first(),
-        secondaryState = layers.getOrNull(1) ?: constructors.platform.airBlockState,
+        secondaryState = layers.getOrNull(1),
         blockEntity = blockEntity,
         entities = entities
     )

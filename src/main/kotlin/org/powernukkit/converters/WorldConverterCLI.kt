@@ -55,12 +55,18 @@ object WorldConverterCLI {
         val javaStone = javaPlatform.getBlockType(NamespacedId("stone"))!!.withDefaultState()
         val javaGrass = javaPlatform.getBlockType(NamespacedId("grass"))!!.withDefaultState()
         val javaDirt = javaPlatform.getBlockType(NamespacedId("dirt"))!!.withDefaultState()
+        val javaBamboo = javaPlatform.getBlockType(NamespacedId("bamboo"))!!.withState(
+            "age" to "1",
+            "leaves" to "small",
+            "stage" to "1"
+        )
 
         val javaStructures = listOf(
             BlockPos(1, 2, 3) to javaPlatform.airBlockState,
-            BlockPos(2, 2, 3) to javaStone,                 //2
-            BlockPos(3, 3, 3) to javaGrass,                 //2
-            BlockPos(4, 5, 6) to javaDirt,                  //2
+            BlockPos(2, 2, 3) to javaStone,
+            BlockPos(3, 3, 3) to javaGrass,
+            BlockPos(4, 5, 6) to javaDirt,
+            BlockPos(10, 20, 30) to javaBamboo
         ).map { (pos, state) ->
             val block = javaPlatform.createPlatformBlock(state)
             PositionedStructure(
