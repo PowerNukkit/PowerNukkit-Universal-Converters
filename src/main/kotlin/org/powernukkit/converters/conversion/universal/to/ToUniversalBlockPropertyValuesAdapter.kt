@@ -47,13 +47,9 @@ interface ToUniversalBlockPropertyValuesAdapter<FromPlatform : Platform<FromPlat
         }
 
         val editionBlockProperties = universalBlockType.editionBlockProperties[fromEdition]
-            ?: context.addProblem(
-                "The universal block type ${universalBlockType.id} is missing block property" +
-                        "definitions for the $fromEdition edition"
-            )
-            ?: return
+            ?: emptyList()
 
-        editionBlockProperties.associate { universalBlockProperty ->
+        context.toBlockPropertyValues = editionBlockProperties.associate { universalBlockProperty ->
             val fromPropertyName = universalBlockProperty.getEditionId(fromEdition)
             val fromValue = fromValues[fromPropertyName]
                 ?: context.addProblem(
