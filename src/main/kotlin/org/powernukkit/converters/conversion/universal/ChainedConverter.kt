@@ -23,7 +23,6 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.conversion.converter.PlatformConverter
@@ -61,26 +60,29 @@ class ChainedConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platf
         val universalStructures = Channel<PlatformStructure<UniversalPlatform>>()
         val toUniversalProblems = problems?.let { Channel<ConversionProblem>() }
         try {
-            val jobs = mutableListOf(
-                with(toUniversalConverter) {
-                    convertAllStructures(from, universalStructures, toUniversalProblems)
-                },
-                with(fromUniversalConverter) {
-                    convertAllStructures(universalStructures, to, problems)
-                },
-            )
-            if (toUniversalProblems != null) {
-                jobs += launch {
+            val toUniversalJob = with(toUniversalConverter) {
+                convertAllStructures(from, universalStructures, toUniversalProblems)
+            }
+
+            val fromUniversalJob = with(fromUniversalConverter) {
+                convertAllStructures(universalStructures, to, problems)
+            }
+
+            val conversionProblemsJob = toUniversalProblems?.let { _ ->
+                launch {
                     for (problem in toUniversalProblems) {
                         problems.send(problem)
                     }
-                    problems.close()
                 }
             }
-            jobs.joinAll()
-        } finally {
+
+            toUniversalJob.join()
             universalStructures.close()
             toUniversalProblems?.close()
+
+            fromUniversalJob.join()
+            conversionProblemsJob?.join()
+        } finally {
             coroutineContext.cancelChildren()
         }
     }

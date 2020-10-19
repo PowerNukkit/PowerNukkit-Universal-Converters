@@ -70,13 +70,13 @@ object WorldConverterCLI {
             val javaChannel = Channel<PlatformStructure<JavaPlatform>>()
             val bedrockChannel = Channel<PlatformStructure<BedrockPlatform>>()
             val problems = Channel<ConversionProblem>()
-            with(converter) {
+            val conversionJob = with(converter) {
                 convertAllStructures(javaChannel, bedrockChannel, problems)
             }
 
-            val jobs = mutableListOf<Job>()
+            val sendingJobs = mutableListOf<Job>()
             repeat(2) {
-                jobs += launch {
+                sendingJobs += launch {
                     javaStructures.collect { javaStructure ->
                         javaChannel.send(javaStructure)
                     }
@@ -84,7 +84,7 @@ object WorldConverterCLI {
             }
 
             launch {
-                jobs.joinAll()
+                sendingJobs.joinAll()
                 javaChannel.close()
             }
 
@@ -100,6 +100,11 @@ object WorldConverterCLI {
                         System.err.println("Got a problem :(")
                         problem.printStackTrace()
                         System.err.println()
+                    }
+
+                    conversionJob.onJoin {
+                        bedrockChannel.close()
+                        problems.close()
                     }
                 }
             }

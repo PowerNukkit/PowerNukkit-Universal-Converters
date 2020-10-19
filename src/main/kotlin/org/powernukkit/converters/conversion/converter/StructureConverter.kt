@@ -46,9 +46,9 @@ open class StructureConverter<FromPlatform : Platform<FromPlatform>, ToPlatform 
             val singleBlockStructureCache = mutableMapOf<PlatformBlock<FromPlatform>, PlatformStructure<ToPlatform>>()
             for (fromStructure in fromStructures) {
                 val (toStructure, conversionProblems) = convert(fromStructure, singleBlockStructureCache)
-                //if (toStructure.blocks.isNotEmpty()) {
-                toStructures.send(toStructure)
-                //}*/
+                if (toStructure.blocks.isNotEmpty()) {
+                    toStructures.send(toStructure)
+                }
                 if (problems != null && conversionProblems.isNotEmpty()) {
                     conversionProblems.forEach { problems.send(it) }
                 }
