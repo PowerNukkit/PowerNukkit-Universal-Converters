@@ -18,11 +18,10 @@
 
 package org.powernukkit.converters
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
 import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.math.BlockPos
@@ -57,7 +56,7 @@ object WorldConverterCLI {
         val javaGrass = javaPlatform.getBlockType(NamespacedId("grass"))!!.withDefaultState()
         val javaDirt = javaPlatform.getBlockType(NamespacedId("dirt"))!!.withDefaultState()
 
-        val javaStructures = flowOf(
+        val javaStructures = listOf(
             BlockPos(1, 2, 3) to javaPlatform.airBlockState,
             BlockPos(2, 2, 3) to javaStone,                 //2
             BlockPos(3, 3, 3) to javaGrass,                 //2
@@ -71,25 +70,16 @@ object WorldConverterCLI {
         }
 
         runBlocking {
-            val javaChannel = Channel<PositionedStructure<JavaPlatform>>()
+            val javaChannel = produce {
+                javaStructures.forEach {
+                    send(it)
+                }
+            }
+
             val bedrockChannel = Channel<PositionedStructure<BedrockPlatform>>()
             val problems = Channel<ConversionProblem>()
             val conversionJob = with(converter) {
                 convertAllStructures(javaChannel, bedrockChannel, problems)
-            }
-
-            val sendingJobs = mutableListOf<Job>()
-            repeat(2) {
-                sendingJobs += launch {
-                    javaStructures.collect { javaStructure ->
-                        javaChannel.send(javaStructure)
-                    }
-                }
-            }
-
-            launch {
-                sendingJobs.joinAll()
-                javaChannel.close()
             }
 
             val channels = listOf(bedrockChannel, problems)
