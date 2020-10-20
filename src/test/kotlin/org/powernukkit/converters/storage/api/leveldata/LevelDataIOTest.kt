@@ -16,27 +16,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api.leveldata.model
+package org.powernukkit.converters.storage.api.leveldata
 
-import org.powernukkit.converters.platform.api.MinecraftEdition
-import org.powernukkit.version.Version
+import org.junit.jupiter.api.Test
+import java.io.File
 
 /**
  * @author joserobjr
  * @since 2020-10-20
  */
-data class LevelVersionData(
-    val minecraftEdition: MinecraftEdition?,
+internal class LevelDataIOTest {
+    @Test
+    fun testJavaEdition() {
+        val levelFile = File("sample-worlds/Fresh default worlds/Java Edition/1.16.3/level.dat")
+        println(LevelDataIO.readLevelDataBlocking(levelFile))
+    }
 
-    val minecraftVersionId: Int?,
-    val isSnapshot: Boolean?,
-    val nbtVersion: Int?,
+    @Test
+    fun testWindows10Edition() {
+        val levelFile = File("sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0/level.dat")
+        println(LevelDataIO.readLevelDataBlocking(levelFile))
+    }
 
-    val lastOpenedWithVersion: Version?,
-    val minimumCompatibleClientVersion: Version?,
-    val baseGameVersion: String?,
-    val inventoryVersion: String?,
-
-    val platform: Int?,
-    val networkVersion: Int?,
-)
+    @Test
+    fun testPowerNukkit() {
+        val levelFile = File("sample-worlds/Fresh default worlds/PowerNukkit/1.3.1.5-PN/level.dat")
+        println(LevelDataIO.readLevelDataBlocking(levelFile))
+    }
+}

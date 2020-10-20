@@ -19,7 +19,6 @@
 package org.powernukkit.converters.storage.api.leveldata.model
 
 import br.com.gamemods.nbtmanipulator.NbtFile
-import br.com.gamemods.nbtmanipulator.NbtTag
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
@@ -53,90 +52,89 @@ import java.time.Instant
  */
 data class LevelData(
     // Internal data
-    val dataFile: NbtFile?,
-    val storageEngine: StorageEngine,
-    val minecraftEdition: MinecraftEdition,
-    val minecraftVersion: Version,
-    val folder: Path,
+    val dataFile: NbtFile? = null,
+    val storageEngine: StorageEngine? = null,
+    val minecraftEdition: MinecraftEdition? = null,
+    val minecraftVersion: Version? = null,
+    val folder: Path? = null,
 
     // Since JE inf-dev
-    val spawn: BlockPos?,
-    val randomSeed: Long?, // Position changed in JE 1.16+
-    val lastPlayed: Instant?,
+    val spawn: BlockPos? = null,
+    val randomSeed: Long? = null, // Position changed in JE 1.16+
+    val lastPlayed: Instant? = null,
     val time: Long?,
-    val sizeOnDisk: Long?, // Removed in JE 1.16+
+    val sizeOnDisk: Long? = null, // Removed in JE 1.16+
 
     // Since Alpha
-    val snowCovered: Boolean?, // Removed in JE Beta 1.3
+    val snowCovered: Boolean? = null, // Removed in JE Beta 1.3
 
     // Since JE Beta 1.3
-    val version: Int?,
-    val name: String?,
+    val version: Int? = null,
+    val name: String? = null,
 
     // Since JE Beta 1.5
-    val raining: Boolean?,
-    val thundering: Boolean?,
-    val rainTime: Int?,
-    val thunderTime: Int?,
+    val raining: Boolean? = null,
+    val thundering: Boolean? = null,
+    val rainTime: Int? = null,
+    val thunderTime: Int? = null,
 
     // Since JE Beta 1.8
     val gameType: Int?,
-    val mapFeatures: Boolean?,
+    val mapFeatures: Boolean? = null,
 
     // Since JE 1.0
-    val hardcore: Boolean?,
+    val hardcore: Boolean? = null,
 
     // Since JE 1.1
-    val generatorName: String?, //Removed in JE 1.16+
+    val generatorName: String? = null, //Removed in JE 1.16+
 
     // Since JE 1.2
-    val generatorVersion: Int?, //Removed in JE 1.16+
+    val generatorVersion: Int? = null, //Removed in JE 1.16+
 
     // Since JE 1.3
-    val allowCommands: Boolean?,
-    val initialized: Boolean?,
+    val allowCommands: Boolean? = null,
+    val initialized: Boolean? = null,
 
     // Since JE 1.4
-    val gameRules: Map<String, String>?,
-    val generatorOptions: String?, //Removed in JE 1.13+
+    val gameRules: Map<String, String>? = null,
+    val generatorOptions: String? = null, //Removed in JE 1.13+
 
     // Since JE 1.8
-    val difficultyLocked: Boolean?,
-    val difficulty: Int?,
-    val clearWeatherTime: Int,
-    val borderSizeLerpTime: Long?,
-    val borderCenter: EntityPos?,
-    val borderDamageperBlock: Double?,
-    val borderSafeZone: Double?,
-    val borderSize: Double?,
-    val borderSizeLerpTarget: Double?,
-    val borderWarningBlocks: Double?,
-    val borderWarningTime: Double?,
+    val difficultyLocked: Boolean? = null,
+    val difficulty: Int? = null,
+    val clearWeatherTime: Int? = null,
+    val borderSizeLerpTime: Long? = null,
+    val borderCenter: EntityPos? = null,
+    val borderDamageperBlock: Double? = null,
+    val borderSafeZone: Double? = null,
+    val borderSize: Double? = null,
+    val borderSizeLerpTarget: Double? = null,
+    val borderWarningBlocks: Double? = null,
+    val borderWarningTime: Double? = null,
 
     // Since JE 1.9
-    val endDimensionData: EndDimensionData?, // Path changed in JE 1.16
-    val versionData: LevelVersionData?,
-    val dataVersion: Int?,
+    val endDimensionData: EndDimensionData? = null, // Path changed in JE 1.16
+    val versionData: LevelVersionData? = null,
 
     // Since JE 1.13
-    val enabledDataPacks: List<String>?,
-    val disabledDataPacks: List<String>?,
-    val customBosses: Map<NamespacedId, CustomBossData>?,
+    val enabledDataPacks: List<String>? = null,
+    val disabledDataPacks: List<String>? = null,
+    val customBosses: Map<NamespacedId, CustomBossData>? = null,
 
     // Since JE 1.14
-    val scheduledEvents: List<NbtTag>?, // TODO Find details about this data
-    val wanderingTraderSpawnChance: Int?,
-    val wanderingTraderSpawnDelay: Int?,
+    val scheduledEvents: List<*>? = null, // TODO Find details about this data
+    val wanderingTraderSpawnChance: Int? = null,
+    val wanderingTraderSpawnDelay: Int? = null,
 
     // Since JE 1.16
-    val serverBrands: List<String>?,
-    val wasModded: Boolean?,
-    val dayTime: Long?,
+    val serverBrands: List<String>? = null,
+    val wasModded: Boolean? = null,
+    val dayTime: Long? = null,
+    val bonusChest: Boolean? = null,
+    val dimensionGeneratorSettings: Map<NamespacedId, DimensionGeneratorData>? = null,
 
     // Since JE 1.16.3
-    val spawnAngle: Double?,
-    val bonusChest: Boolean?,
-    val dimensionGeneratorSettings: Map<NamespacedId, DimensionGeneratorData>?,
+    val spawnAngle: Double? = null,
 
     val icon: BufferedImage? = null
 )

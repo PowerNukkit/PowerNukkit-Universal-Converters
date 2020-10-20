@@ -16,27 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api.leveldata.model
-
-import org.powernukkit.converters.platform.api.MinecraftEdition
-import org.powernukkit.version.Version
+package org.powernukkit.converters
 
 /**
  * @author joserobjr
  * @since 2020-10-20
  */
-data class LevelVersionData(
-    val minecraftEdition: MinecraftEdition?,
-
-    val minecraftVersionId: Int?,
-    val isSnapshot: Boolean?,
-    val nbtVersion: Int?,
-
-    val lastOpenedWithVersion: Version?,
-    val minimumCompatibleClientVersion: Version?,
-    val baseGameVersion: String?,
-    val inventoryVersion: String?,
-
-    val platform: Int?,
-    val networkVersion: Int?,
-)
+data class JavaJsonText(
+    val json: String
+) : Text
