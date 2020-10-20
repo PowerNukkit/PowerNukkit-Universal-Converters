@@ -140,6 +140,16 @@
             <version>2.11.3</version>
         </dependency>
         <dependency>
+            <groupId>com.michael-bull.kotlin-inline-logger</groupId>
+            <artifactId>kotlin-inline-logger-jvm</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powernukkit</groupId>
+            <artifactId>version-library</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit5</artifactId>
             <version>${kotlin.version}</version>

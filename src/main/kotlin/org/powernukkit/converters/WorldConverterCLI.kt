@@ -92,7 +92,7 @@ object WorldConverterCLI {
             while (channels.any { !it.isClosedForReceive }) {
                 selectUnbiased<Unit> {
                     bedrockChannel.onReceive { bedrockStructure ->
-                        println("Got an structure: $bedrockStructure")
+                        println("Got a structure: $bedrockStructure")
                         println()
                     }
 
