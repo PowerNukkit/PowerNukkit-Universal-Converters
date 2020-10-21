@@ -18,7 +18,10 @@
 
 package org.powernukkit.converters.storage.api.leveldata
 
-import br.com.gamemods.nbtmanipulator.*
+import br.com.gamemods.nbtmanipulator.NbtCompound
+import br.com.gamemods.nbtmanipulator.NbtIO
+import br.com.gamemods.nbtmanipulator.NbtInt
+import br.com.gamemods.nbtmanipulator.NbtList
 import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.*
 import org.powernukkit.converters.JavaJsonText
@@ -33,10 +36,11 @@ import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import org.powernukkit.converters.storage.api.leveldata.model.LevelVersionData
 import org.powernukkit.version.Version
 import java.awt.image.BufferedImage
-import java.io.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.time.Instant
 import java.util.*
-import java.util.zip.ZipException
 import javax.imageio.ImageIO
 
 /**
@@ -308,43 +312,6 @@ object LevelDataIO {
             readLevelData(levelDataFile).await()
         }
 
-    private fun tryToRead(file: File): NbtFile {
-        try {
-            return NbtIO.readNbtFile(file)
-        } catch (e: ZipException) {
-            if (e.message != "Not in GZIP format") {
-                throw e
-            } // else: Possible Bedrock Edition, it has an extra header
-        }
-
-        // New method to make easier to identify issues in stack trace
-        return file.inputStream().buffered().use(this::tryToReadBedrockLevelData)
-    }
-
-    private fun tryToReadBedrockLevelData(input: InputStream): NbtFile {
-        /* val inflater = Inflater(true)
-         var bos = ByteArrayOutputStream()
-         input.copyTo(bos)
-         inflater.setInput(bos.toByteArray())
-         inflater.finished()
-         bos = ByteArrayOutputStream()
-         val buffer = ByteArray(512)
-         while (!inflater.finished()) {
-             val written = inflater.inflate(buffer)
-             check(written > 0)
-             bos.write(buffer, 0, written)
-         }
-         inflater.end()
-         val dataIn = DataInputStream(ByteArrayInputStream(bos.toByteArray()))*/
-        val dataIn = DataInputStream(input)
-        val fileType = dataIn.readInt()
-        val fileLength = dataIn.readInt()
-        return NbtIO.readNbtFile(dataIn, compressed = false).also {
-            it.tag.compoundOrNull?.set("LevelDataIO-FileType", fileType)
-            it.tag.compoundOrNull?.set("LevelDataIO-FileLength", fileLength)
-        }
-    }
-
     /**
      * @throws FileNotFoundException If the levelDataFile is not a file.
      * @throws InvalidLevelDataException If an error occurred while attempting to load or parse the file.
@@ -362,13 +329,17 @@ object LevelDataIO {
                 ).firstOrNull { it.await() != null }?.await()
             }
 
-            val nbtData = try {
-                val nbtFile = withTimeout(timeout) {
+            val nbtFile = try {
+                withTimeout(timeout) {
                     runInterruptible {
-                        tryToRead(levelDataFile)
+                        NbtIO.readNbtFileDetectingSettings(levelDataFile).also {
+                            check(it.tag is NbtCompound) {
+                                "The root tag of the NBT structure in $levelDataFile is not a compound, " +
+                                        "it is a ${it.tag::class.java.simpleName}"
+                            }
+                        }
                     }
                 }
-                nbtFile.compound.getCompound("Data")
             } catch (cause: Exception) {
                 coroutineContext.cancelChildren()
                 throw InvalidLevelDataException(
@@ -379,6 +350,17 @@ object LevelDataIO {
                         "Failed to load the level.dat file: $levelDataFile"
                     }
                 }
+            }
+
+            val nbtData = nbtFile.compound.let { root ->
+                root["Data"].compoundOrNull ?: root
+            }
+
+            if ("Time" !in nbtData && "SpawnX" !in nbtData) {
+                coroutineContext.cancelChildren()
+                throw InvalidLevelDataException(
+                    "The level.dat file is a NBT file but the internal structure don't looks like from a level.dat file. "
+                )
             }
 
             parseLevelData(nbtData)

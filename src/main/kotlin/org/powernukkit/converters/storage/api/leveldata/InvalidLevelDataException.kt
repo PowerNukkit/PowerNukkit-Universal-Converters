@@ -22,4 +22,4 @@ package org.powernukkit.converters.storage.api.leveldata
  * @author joserobjr
  * @since 2020-10-20
  */
-class InvalidLevelDataException(message: String?, cause: Throwable?) : Exception(message, cause)
+class InvalidLevelDataException(message: String?, cause: Throwable? = null) : Exception(message, cause)
