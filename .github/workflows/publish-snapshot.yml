@@ -36,8 +36,10 @@ jobs:
           server-id: powernukkit-snapshots
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+      - name: Environment info
+        run: pwd && ls
       - name: Install NBT-Manipulator
-        run: ./gradlew install
+        run: cd nbt-manipulators && ./gradlew install -PbinariesOnly
       - name: Publish snapshot
         run: cd ../pn-universal-converters && mvn -B deploy
         env:

@@ -32,8 +32,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Environment info
+        run: pwd && ls
       - name: Install NBT-Manipulator
-        run: ./gradlew install
+        run: cd nbt-manipulators && ./gradlew install -PbinariesOnly
       - name: Build PowerNukkit Universal World Converters
         run: cd ../pn-universal-converters && mvn -B package -Darguments="-Dmaven.javadoc.skip=true"
       #- name: Rename artifacts
