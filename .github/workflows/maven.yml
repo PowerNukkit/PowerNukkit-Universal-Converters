@@ -1,0 +1,44 @@
+name: Build and Test
+
+on: [ push,pull_request ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+
+    steps:
+      - uses: actions/checkout@v1
+        name: Checkout PowerNukkit Universal World Converters
+        with:
+          submodules: true
+          path: pn-universal-converters
+      - name: Checkout latest NBT Manipulator
+        uses: actions/checkout@v2
+        with:
+          repository: PowerNukkit/NBT-Manipulator
+          path: nbt-manipulators
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Install NBT-Manipulator
+        run: cd nbt-manipulators && mvn -B install -Darguments="-Dmaven.javadoc.skip=true"
+      - name: Build PowerNukkit Universal World Converters
+        run: cd ../pn-universal-converters && mvn -B package -Darguments="-Dmaven.javadoc.skip=true"
+      #- name: Rename artifacts
+      #  run: mv target/powernukkit-*-shaded.jar target/powernukkit.jar
+      #- name: Archive artifacts
+      #  uses: actions/upload-artifact@v1
+      #  if: success()
+      #  with:
+      #    name: PowerNukkit
+      #    path: target/powernukkit.jar

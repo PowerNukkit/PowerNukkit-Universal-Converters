@@ -1,0 +1,43 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Publish snapshot
+
+on:
+  push:
+    branches:
+      - master
+      - simple-storage
+      - bleeding
+      - bleeding-*
+
+jobs:
+  publish-snapshot:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+        name: Checkout PowerNukkit Universal World Converters
+        with:
+          submodules: true
+          path: pn-universal-converters
+      - name: Checkout latest NBT Manipulator
+        uses: actions/checkout@v2
+        with:
+          repository: PowerNukkit/NBT-Manipulator
+          path: nbt-manipulators
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          server-id: powernukkit-snapshots
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Install NBT-Manipulator
+        run: cd nbt-manipulators && mvn -B install -Darguments="-Dmaven.javadoc.skip=true"
+      - name: Publish snapshot
+        run: cd ../pn-universal-converters && mvn -B deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.POWERNUKKIT_SNAPSHOT_USER }}
+          MAVEN_PASSWORD: ${{ secrets.POWERNUKKIT_SNAPSHOT_PASSWORD }}
