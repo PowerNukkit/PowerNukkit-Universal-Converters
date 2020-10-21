@@ -23,7 +23,7 @@ jobs:
           submodules: true
           path: pn-universal-converters
       - name: Adjust current path
-          run: cd ..
+        run: cd ..
       - name: Checkout latest NBT Manipulator
         uses: actions/checkout@v2
         with:
@@ -37,7 +37,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Install NBT-Manipulator
-        run: gradlew install
+        run: ./gradlew install
       - name: Publish snapshot
         run: cd ../pn-universal-converters && mvn -B deploy
         env:
