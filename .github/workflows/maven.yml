@@ -15,6 +15,8 @@ jobs:
         with:
           submodules: true
           path: pn-universal-converters
+      - name: Adjust current path
+        run: cd ..
       - name: Checkout latest NBT Manipulator
         uses: actions/checkout@v2
         with:
@@ -31,7 +33,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Install NBT-Manipulator
-        run: cd nbt-manipulators && mvn -B install -Darguments="-Dmaven.javadoc.skip=true"
+        run: gradlew install
       - name: Build PowerNukkit Universal World Converters
         run: cd ../pn-universal-converters && mvn -B package -Darguments="-Dmaven.javadoc.skip=true"
       #- name: Rename artifacts
