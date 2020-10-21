@@ -18,10 +18,7 @@
 
 package org.powernukkit.converters.storage.api.leveldata
 
-import br.com.gamemods.nbtmanipulator.NbtCompound
-import br.com.gamemods.nbtmanipulator.NbtIO
-import br.com.gamemods.nbtmanipulator.NbtInt
-import br.com.gamemods.nbtmanipulator.NbtList
+import br.com.gamemods.nbtmanipulator.*
 import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.*
 import org.powernukkit.converters.JavaJsonText
@@ -30,6 +27,7 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.storage.api.StorageEngine
 import org.powernukkit.converters.storage.api.leveldata.model.CustomBossData
 import org.powernukkit.converters.storage.api.leveldata.model.EndDimensionData
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
@@ -40,6 +38,8 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.util.*
 import javax.imageio.ImageIO
 
@@ -49,6 +49,7 @@ import javax.imageio.ImageIO
  */
 object LevelDataIO {
     private val log = InlineLogger()
+    private val yearOneMillion get() = OffsetDateTime.of(1_000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant()
 
     private fun parseCommonLevelDataProperties(levelData: NbtCompound): LevelData {
         return LevelData(
@@ -61,7 +62,7 @@ object LevelDataIO {
             time = levelData["Time"].longOrNull,
 
             // Since JE Beta 1.3
-            name = levelData["LevelName"].stringOrNull,
+            levelName = levelData["LevelName"].stringOrNull,
 
             // Since JE Beta 1.5
             rainTime = levelData["rainTime"].intOrNull,
@@ -74,19 +75,58 @@ object LevelDataIO {
         )
     }
 
-    private fun parseUndefinedEditionLevelData(levelData: NbtCompound): LevelData {
-        return with(parseCommonLevelDataProperties(levelData)) {
-            copy(
-                // TODO Detect if it is a PowerNukkit or an old JavaEdition levelData somehow
-            )
+    private fun parseUndefinedEditionLevelData(
+        levelData: NbtCompound, versionData: LevelVersionData?, nbtFile: NbtFile?
+    ): LevelData {
+        val javaParse = parseJavaEditionLevelData(levelData, versionData).copy(dataFile = nbtFile)
+
+        // Attempting to detect PocketMine's level.dat
+        // It saves LastPlayed with milliseconds and uses different NBT types
+        // for some data
+        with(javaParse) {
+            if (version == -1 &&
+                difficulty == null && levelData["Difficulty"].uByteOrNull != null &&
+                dayTime == null && levelData["DayTime"].intOrNull != null &&
+                lastPlayed != null && lastPlayed > yearOneMillion
+            ) {
+                return parsePocketMineLevelData(levelData, javaParse)
+            }
         }
+
+        return parseBedrockEditionLevelData(levelData, javaParse.versionData, javaParse)
     }
 
-    private fun parseJavaEditionLevelData(levelData: NbtCompound, versionData: LevelVersionData): LevelData {
+    private fun parsePocketMineLevelData(levelData: NbtCompound, current: LevelData) = with(current) {
+        copy(
+            storageEngine = storageEngine
+                ?: StorageEngine.POCKET_MINE,
+
+            versionData = with(versionData ?: LevelVersionData()) {
+                copy(
+                    minecraftEdition = minecraftEdition
+                        ?: MinecraftEdition.BEDROCK,
+                )
+            },
+
+            difficulty = difficulty
+                ?: levelData["Difficulty"]?.uByteOrNull,
+
+            dayTime = dayTime
+                ?: levelData["DayTime"].intOrNull?.toLong(),
+
+            lastPlayed = lastPlayed?.takeUnless { it > yearOneMillion }
+                ?: levelData["LastPlayed"].longOrNull?.let(Instant::ofEpochMilli),
+        )
+    }
+
+    private fun parseJavaEditionLevelData(
+        levelData: NbtCompound, versionData: LevelVersionData?,
+        current: LevelData = parseCommonLevelDataProperties(levelData)
+    ): LevelData {
 
         val endDimensionRootCompound = levelData["DragonFight"] ?: levelData["DimensionData"]["1"]
 
-        return with(parseCommonLevelDataProperties(levelData)) {
+        return with(current) {
             copy(
                 // Since JE inf-dev
                 randomSeed = randomSeed
@@ -96,7 +136,11 @@ object LevelDataIO {
 
                 // Since Alpha
                 snowCovered = snowCovered
-                    ?: levelData["SnowCovered"]?.booleanOrNull,
+                    ?: levelData["SnowCovered"].booleanOrNull,
+
+                // Since JE Beta 1.3
+                version = version
+                    ?: levelData["version"].intOrNull,
 
                 // Since JE Beta 1.5
                 raining = raining
@@ -223,9 +267,24 @@ object LevelDataIO {
         }
     }
 
-    private fun parseBedrockEditionLevelData(levelData: NbtCompound, versionData: LevelVersionData): LevelData {
-        return with(parseCommonLevelDataProperties(levelData)) {
+    private fun parseBedrockEditionLevelData(
+        levelData: NbtCompound, versionData: LevelVersionData?,
+        current: LevelData = parseCommonLevelDataProperties(levelData)
+    ): LevelData {
+        return with(current) {
             copy(
+                storageEngine = storageEngine
+                    ?: StorageEngine.LEVELDB.takeIf {
+                        (versionData?.nbtVersion ?: 0) > 0
+                    },
+
+                versionData = with((versionData ?: LevelVersionData())) {
+                    copy(
+                        minecraftEdition = minecraftEdition
+                            ?: MinecraftEdition.BEDROCK
+                    )
+                },
+
                 thunderTime = thunderTime ?: levelData["lightningTime"].intOrNull,
 
                 allowCommands = levelData["commandsEnabled"].booleanOrNull,
@@ -253,13 +312,13 @@ object LevelDataIO {
         })
     }
 
-    private fun detectMinecraftEditionVersion(levelData: NbtCompound): LevelVersionData? {
+    private fun detectMinecraftEditionVersion(levelData: NbtCompound, nbtFile: NbtFile?): LevelVersionData? {
         val minVersion = levelData["MinimumCompatibleClientVersion"].nbtIntListOrNull?.takeUnless { it.isEmpty() }
         val lastOpened = levelData["lastOpenedWithVersion"].nbtIntListOrNull?.takeUnless { it.isEmpty() }
         val platform = levelData["Platform"].intOrNull
         val networkVersion = levelData["NetworkVersion"].intOrNull
 
-        val nbtVersion = levelData["version"].intOrNull
+        val nbtVersion = nbtFile?.version
         val version = levelData["Version"].compoundOrNull
         val versionName = version["Name"].stringOrNull
         val versionId = version["Id"].intOrNull
@@ -270,6 +329,8 @@ object LevelDataIO {
             minecraftEdition = MinecraftEdition.BEDROCK
         } else if (versionId != null || versionName != null) {
             minecraftEdition = MinecraftEdition.JAVA
+        } else if (nbtFile?.isLittleEndian == true && nbtFile.isCompressed == false && (nbtFile.version ?: 0) > 0) {
+            minecraftEdition = MinecraftEdition.BEDROCK
         }
 
         val minClientVersion = minVersion?.let { bedrockVersion(it) }
@@ -297,14 +358,21 @@ object LevelDataIO {
         )
     }
 
-    fun parseLevelData(levelData: NbtCompound): LevelData {
-        val version = detectMinecraftEditionVersion(levelData)
+    fun parseLevelData(levelData: NbtCompound, nbtFile: NbtFile? = null): LevelData {
+        val version = detectMinecraftEditionVersion(levelData, nbtFile)
         return when (version?.minecraftEdition) {
             MinecraftEdition.BEDROCK -> parseBedrockEditionLevelData(levelData, version)
             MinecraftEdition.JAVA -> parseJavaEditionLevelData(levelData, version)
-            null -> parseUndefinedEditionLevelData(levelData)
+            null -> parseUndefinedEditionLevelData(levelData, version, nbtFile)
             MinecraftEdition.UNIVERSAL -> throw UnsupportedOperationException("Universal don't persist files")
+        }.copy(dataFile = nbtFile)
+    }
+
+    fun parseLevelData(nbtFile: NbtFile): LevelData {
+        val nbtData = nbtFile.compound.let { root ->
+            root["Data"].compoundOrNull ?: root
         }
+        return parseLevelData(nbtData, nbtFile)
     }
 
     fun readLevelDataBlocking(levelDataFile: File) =
@@ -363,8 +431,10 @@ object LevelDataIO {
                 )
             }
 
-            parseLevelData(nbtData)
-                .copy(icon = icon.await())
+            parseLevelData(nbtFile).copy(
+                folder = levelDataFile.parentFile.absoluteFile.toPath(),
+                icon = icon.await()
+            )
         }
 
     suspend fun loadIcon(iconFile: File, timeout: Long = 10_000): BufferedImage? {

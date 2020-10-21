@@ -26,17 +26,17 @@ import org.powernukkit.version.Version
  * @since 2020-10-20
  */
 data class LevelVersionData(
-    val minecraftEdition: MinecraftEdition?,
+    val minecraftEdition: MinecraftEdition? = null,
 
-    val minecraftVersionId: Int?,
-    val isSnapshot: Boolean?,
-    val nbtVersion: Int?,
+    val minecraftVersionId: Int? = null,
+    val isSnapshot: Boolean? = null,
+    val nbtVersion: Int? = null,
 
-    val lastOpenedWithVersion: Version?,
-    val minimumCompatibleClientVersion: Version?,
-    val baseGameVersion: String?,
-    val inventoryVersion: String?,
+    val lastOpenedWithVersion: Version? = null,
+    val minimumCompatibleClientVersion: Version? = null,
+    val baseGameVersion: String? = null,
+    val inventoryVersion: String? = null,
 
-    val platform: Int?,
-    val networkVersion: Int?,
+    val platform: Int? = null,
+    val networkVersion: Int? = null,
 )

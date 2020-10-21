@@ -26,5 +26,6 @@ enum class StorageEngine {
     ALPHA,
     REGIONS,
     ANVIL,
+    POCKET_MINE,
     LEVELDB
 }

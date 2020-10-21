@@ -29,7 +29,7 @@ enum class VanillaGameRule(
     val isBoolean: Boolean = true,
     val inJava: Boolean = true,
     val inBedrock: Boolean = true,
-    val bedrockName: String = toString().toLowerCase()
+    bedrockName: String? = null
 ) {
     announceAdvancements(inBedrock = false),
     commandBlocksEnabled(inJava = false),
@@ -54,7 +54,7 @@ enum class VanillaGameRule(
     forgiveDeadPlayers(inBedrock = false),
     keepInventory(defaultValue = 0),
     logAdminCommands(inBedrock = false),
-    maxCommandChainLength(defaultValue = 65536, isBoolean = false),
+    maxCommandChainLength(defaultValue = 65536, defaultBedrockValue = 65535, isBoolean = false),
     maxEntityCramming(defaultValue = 24, isBoolean = false, inBedrock = false),
     mobGriefing,
     naturalRegeneration,
@@ -69,4 +69,20 @@ enum class VanillaGameRule(
     tntExplodes(inJava = false),
     universalAnger(defaultValue = 0, inBedrock = false),
     showTags(inJava = false),
+    functionCommandLimit(defaultValue = 10_000, inJava = false, isBoolean = false),
+    ;
+
+    val bedrockName = bedrockName ?: name.toLowerCase()
+
+    val defaultBedrockStringValue = if (isBoolean) {
+        if (defaultBedrockValue == 1) "true" else "false"
+    } else {
+        defaultBedrockValue.toString()
+    }
+
+    val defaultJavaStringValue = if (isBoolean) {
+        if (defaultValue == 1) "true" else "false"
+    } else {
+        defaultValue.toString()
+    }
 }

@@ -24,13 +24,14 @@ import br.com.gamemods.nbtmanipulator.*
  * @author joserobjr
  * @since 2020-10-20
  */
+internal val NbtTag?.uByteOrNull get() = (this as? NbtByte)?.unsigned
 internal val NbtTag?.intOrNull get() = (this as? NbtInt)?.value
 internal val NbtTag?.longOrNull get() = (this as? NbtLong)?.value
 internal val NbtTag?.doubleOrNull get() = (this as? NbtDouble)?.value
 internal val NbtTag?.floatOrNull get() = (this as? NbtFloat)?.value
 internal val NbtTag?.stringOrNull get() = (this as? NbtString)?.value
 internal val NbtTag?.compoundOrNull get() = this as? NbtCompound
-internal val NbtTag?.booleanOrNull get() = if (this !is NbtByte) null else value == 1.toByte()
+internal val NbtTag?.booleanOrNull get() = if (this !is NbtByte) null else signed == 1.toByte()
 
 internal val NbtTag?.nbtIntListOrNull get() = (this as? NbtList<*>)?.castNullable<NbtInt>()
 internal val NbtTag?.nbtStringListOrNull get() = (this as? NbtList<*>)?.castNullable<NbtString>()
@@ -39,6 +40,7 @@ internal val NbtTag?.compoundListOrNull get() = (this as? NbtList<*>)?.castNulla
 internal val NbtTag?.intListOrNull get() = nbtIntListOrNull?.map { it.value }
 internal val NbtTag?.stringListOrNull get() = nbtStringListOrNull?.map { it.value }
 
+internal val NbtTag?.uByte get() = checkNotNull(uByteOrNull)
 internal val NbtTag?.int get() = checkNotNull(intOrNull)
 internal val NbtTag?.long get() = checkNotNull(longOrNull)
 internal val NbtTag?.double get() = checkNotNull(doubleOrNull)

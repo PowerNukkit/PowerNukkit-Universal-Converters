@@ -73,7 +73,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <junit.jupiter.version>5.3.2</junit.jupiter.version>
         <junit.platform.version>1.1.0</junit.platform.version>
-        <log4j2.version>2.13.3</log4j2.version>
+        <log4j2.version>1.7.30</log4j2.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -148,6 +148,17 @@
             <groupId>com.michael-bull.kotlin-inline-logger</groupId>
             <artifactId>kotlin-inline-logger-jvm</artifactId>
             <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${log4j2.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.powernukkit</groupId>

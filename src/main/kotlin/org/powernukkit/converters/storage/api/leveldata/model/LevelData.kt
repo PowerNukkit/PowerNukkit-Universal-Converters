@@ -21,10 +21,8 @@ package org.powernukkit.converters.storage.api.leveldata.model
 import br.com.gamemods.nbtmanipulator.NbtFile
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.storage.api.StorageEngine
-import org.powernukkit.version.Version
 import java.awt.image.BufferedImage
 import java.nio.file.Path
 import java.time.Instant
@@ -54,8 +52,6 @@ data class LevelData(
     // Internal data
     val dataFile: NbtFile? = null,
     val storageEngine: StorageEngine? = null,
-    val minecraftEdition: MinecraftEdition? = null,
-    val minecraftVersion: Version? = null,
     val folder: Path? = null,
 
     // Since JE inf-dev
@@ -70,7 +66,7 @@ data class LevelData(
 
     // Since JE Beta 1.3
     val version: Int? = null,
-    val name: String? = null,
+    val levelName: String? = null,
 
     // Since JE Beta 1.5
     val raining: Boolean? = null,
@@ -135,6 +131,47 @@ data class LevelData(
 
     // Since JE 1.16.3
     val spawnAngle: Double? = null,
+
+    // Windows 10 Edition
+    val bonusChestSpawned: Boolean? = null,
+    val centerMapsToOrigin: Boolean? = null,
+    val confirmedPlatformLockedContent: Boolean? = null,
+    val educationFeaturesEnabled: Boolean? = null,
+    val experimentalGameplay: Boolean? = null,
+    val forceGameType: Boolean? = null,
+    val hasBeenLoadedInCreative: Boolean? = null,
+    val hasLockedBehaviorPack: Boolean? = null,
+    val hasLockedResourcePack: Boolean? = null,
+    val immutableWorld: Boolean? = null,
+    val isFromLockedTemplate: Boolean? = null,
+    val isFromWorldTemplate: Boolean? = null,
+    val isSingleUseWorld: Boolean? = null,
+    val isWorldTemplateOptionLocked: Boolean? = null,
+    val lanBroadcast: Boolean? = null,
+    val lanBroadcastIntent: Boolean? = null,
+    val multiplayerGame: Boolean? = null,
+    val multiplayerGameIntent: Boolean? = null,
+    val requiresCopiedPackRemovalCheck: Boolean? = null,
+    val spawnMobs: Boolean? = null,
+    val spawnV1Villagers: Boolean? = null,
+    val startWithMap: Boolean? = null,
+    val texturePacksRequired: Boolean? = null,
+    val useMsaGamerTagsOnly: Boolean? = null,
+    val eduOffer: Int? = null,
+    val generator: Int? = null,
+    val limitedWorldDepth: Int? = null,
+    val limitedWorldWidth: Int? = null,
+    val netherScale: Int? = null,
+    val platformBroadcastIntent: Boolean? = null,
+    val serverChunkTickRange: Int? = null,
+    val xBoxLiveBroadcastIntent: Int? = null,
+    val currentTick: Long? = null,
+    val worldStartCount: Long? = null,
+    val lightningLevel: Float? = null,
+    val rainLevel: Float? = null,
+    val biomeOverride: String? = null,
+    val flatWorldLayers: String? = null,
+    val prid: String? = null,
 
     val icon: BufferedImage? = null
 )
