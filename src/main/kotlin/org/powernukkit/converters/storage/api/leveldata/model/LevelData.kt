@@ -22,6 +22,7 @@ import br.com.gamemods.nbtmanipulator.NbtFile
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.storage.api.Dialect
 import org.powernukkit.converters.storage.api.StorageEngine
 import java.awt.image.BufferedImage
 import java.nio.file.Path
@@ -52,6 +53,7 @@ data class LevelData(
     // Internal data
     val dataFile: NbtFile? = null,
     val storageEngine: StorageEngine? = null,
+    val dialect: Dialect? = null,
     val folder: Path? = null,
 
     // Since JE inf-dev
@@ -65,7 +67,7 @@ data class LevelData(
     val snowCovered: Boolean? = null, // Removed in JE Beta 1.3
 
     // Since JE Beta 1.3
-    val version: Int? = null,
+    //val version: Int? = null, Moved to the LevelVersionData
     val levelName: String? = null,
 
     // Since JE Beta 1.5
@@ -137,7 +139,6 @@ data class LevelData(
     val centerMapsToOrigin: Boolean? = null,
     val confirmedPlatformLockedContent: Boolean? = null,
     val educationFeaturesEnabled: Boolean? = null,
-    val experimentalGameplay: Boolean? = null,
     val forceGameType: Boolean? = null,
     val hasBeenLoadedInCreative: Boolean? = null,
     val hasLockedBehaviorPack: Boolean? = null,

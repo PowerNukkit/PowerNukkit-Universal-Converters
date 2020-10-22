@@ -16,29 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api.leveldata.model
-
-import org.powernukkit.converters.platform.api.MinecraftEdition
-import org.powernukkit.version.Version
+package org.powernukkit.converters.storage.api
 
 /**
  * @author joserobjr
- * @since 2020-10-20
+ * @since 2020-10-21
  */
-data class LevelVersionData(
-    val minecraftEdition: MinecraftEdition? = null,
-
-    val minecraftVersionId: Int? = null,
-    val isSnapshot: Boolean? = null,
-    val nbtVersionHeader: Int? = null,
-    val nbtVersionTag: Int? = null, // Since JE Beta 1.3
-
-    val lastOpenedWithVersion: Version? = null,
-    val minimumCompatibleClientVersion: Version? = null,
-    val baseGameVersion: Version? = null,
-    val inventoryVersion: Version? = null,
-    val storageVersion: Int? = null,
-
-    val platform: Int? = null,
-    val networkVersion: Int? = null,
-)
+enum class Dialect {
+    VANILLA_BEDROCK_EDITION,
+    VANILLA_JAVA_EDITION,
+    MODDED_JAVA_EDITION,
+    NUKKIT,
+    POWER_NUKKIT,
+    CLOUDBURST_SERVER,
+    POCKET_MINE,
+}

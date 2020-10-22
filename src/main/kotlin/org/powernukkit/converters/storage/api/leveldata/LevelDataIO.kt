@@ -27,6 +27,7 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.storage.api.Dialect
 import org.powernukkit.converters.storage.api.StorageEngine
 import org.powernukkit.converters.storage.api.leveldata.model.CustomBossData
 import org.powernukkit.converters.storage.api.leveldata.model.EndDimensionData
@@ -75,6 +76,14 @@ object LevelDataIO {
         )
     }
 
+    private fun findUniqueGameRules(gameRules: Map<String, String>): Set<VanillaGameRule>? {
+        return gameRules.keys.asSequence()
+            .mapNotNull(VanillaGameRule::withName)
+            .filter { it.inBedrock != it.inJava }
+            .toSet()
+            .takeUnless { it.isEmpty() }
+    }
+
     private fun parseUndefinedEditionLevelData(
         levelData: NbtCompound, versionData: LevelVersionData?, nbtFile: NbtFile?
     ): LevelData {
@@ -84,7 +93,7 @@ object LevelDataIO {
         // It saves LastPlayed with milliseconds and uses different NBT types
         // for some data
         with(javaParse) {
-            if (version == -1 &&
+            if (versionData?.nbtVersionTag == -1 &&
                 difficulty == null && levelData["Difficulty"].uByteOrNull != null &&
                 dayTime == null && levelData["DayTime"].intOrNull != null &&
                 lastPlayed != null && lastPlayed > yearOneMillion
@@ -93,13 +102,63 @@ object LevelDataIO {
             }
         }
 
-        return parseBedrockEditionLevelData(levelData, javaParse.versionData, javaParse)
+        var completedData = javaParse
+        fun detectByGameRule(setStorage: StorageEngine): Boolean {
+            val uniqueGameRules = completedData.gameRules?.let(this::findUniqueGameRules)
+
+            val detectedEdition = when {
+                uniqueGameRules?.all { it.inJava } == true -> {
+                    MinecraftEdition.JAVA
+                }
+                uniqueGameRules?.all { it.inBedrock } == true -> {
+                    MinecraftEdition.BEDROCK
+                }
+                else -> {
+                    return false
+                }
+            }
+
+            completedData = with(completedData) {
+                copy(
+                    storageEngine = storageEngine ?: setStorage,
+                    versionData = with(versionData ?: LevelVersionData()) {
+                        copy(
+                            minecraftEdition = minecraftEdition ?: detectedEdition
+                        )
+                    }
+                )
+            }
+
+            return true
+        }
+
+        if (detectByGameRule(StorageEngine.ANVIL)) {
+
+            if (completedData.versionData?.minecraftEdition == MinecraftEdition.BEDROCK
+                && completedData.sizeOnDisk == null && levelData["SizeOnDisk"].longOrNull != null
+            ) {
+                // We have found PowerNukkit!
+                completedData = completedData.copy(
+                    dialect = completedData.dialect ?: Dialect.POWER_NUKKIT,
+                    sizeOnDisk = levelData["SizeOnDisk"].longOrNull,
+                )
+            }
+
+            return completedData
+        }
+
+        completedData = parseBedrockEditionLevelData(levelData, javaParse.versionData, javaParse, false)
+        detectByGameRule(StorageEngine.LEVELDB)
+        return completedData
     }
 
     private fun parsePocketMineLevelData(levelData: NbtCompound, current: LevelData) = with(current) {
         copy(
             storageEngine = storageEngine
                 ?: StorageEngine.POCKET_MINE,
+
+            dialect = dialect
+                ?: Dialect.POCKET_MINE,
 
             versionData = with(versionData ?: LevelVersionData()) {
                 copy(
@@ -137,10 +196,6 @@ object LevelDataIO {
                 // Since Alpha
                 snowCovered = snowCovered
                     ?: levelData["SnowCovered"].booleanOrNull,
-
-                // Since JE Beta 1.3
-                version = version
-                    ?: levelData["version"].intOrNull,
 
                 // Since JE Beta 1.5
                 raining = raining
@@ -269,27 +324,33 @@ object LevelDataIO {
 
     private fun parseBedrockEditionLevelData(
         levelData: NbtCompound, versionData: LevelVersionData?,
-        current: LevelData = parseCommonLevelDataProperties(levelData)
+        current: LevelData = parseCommonLevelDataProperties(levelData),
+        forSure: Boolean,
     ): LevelData {
         return with(current) {
             copy(
                 storageEngine = storageEngine
                     ?: StorageEngine.LEVELDB.takeIf {
-                        (versionData?.nbtVersion ?: 0) > 0
+                        (versionData?.nbtVersionHeader ?: 0) > 0
                     },
+
+                dialect = dialect
+                    ?: Dialect.VANILLA_BEDROCK_EDITION.takeIf { forSure },
 
                 versionData = with((versionData ?: LevelVersionData())) {
                     copy(
                         minecraftEdition = minecraftEdition
-                            ?: MinecraftEdition.BEDROCK
+                            ?: MinecraftEdition.BEDROCK.takeIf { forSure }
                     )
                 },
 
-                thunderTime = thunderTime ?: levelData["lightningTime"].intOrNull,
+                thunderTime = thunderTime
+                    ?: levelData["lightningTime"].intOrNull,
 
-                allowCommands = levelData["commandsEnabled"].booleanOrNull,
+                allowCommands = allowCommands
+                    ?: levelData["commandsEnabled"].booleanOrNull,
 
-                gameRules = VanillaGameRule.values().asSequence()
+                gameRules = gameRules ?: VanillaGameRule.values().asSequence()
                     .filter { it.inBedrock }
                     .filter { it.bedrockName in levelData }
                     .associate {
@@ -300,35 +361,62 @@ object LevelDataIO {
                         }
                     },
 
-                bonusChest = levelData["bonusChestEnabled"].booleanOrNull,
-                bonusChestSpawned = levelData["bonusChestSpawned"].booleanOrNull,
-                centerMapsToOrigin = levelData["CenterMapsToOrigin"].booleanOrNull,
-                confirmedPlatformLockedContent = levelData["ConfirmedPlatformLockedContent"].booleanOrNull,
-                educationFeaturesEnabled = levelData["educationFeaturesEnabled"].booleanOrNull,
-                experimentalGameplay = levelData["experimentalgameplay"].booleanOrNull,
-                forceGameType = levelData["ForceGameType"].booleanOrNull,
-                hasBeenLoadedInCreative = levelData["hasBeenLoadedInCreative"].booleanOrNull,
-                hasLockedBehaviorPack = levelData["hasLockedBehaviorPack"].booleanOrNull,
-                hasLockedResourcePack = levelData["hasLockedResourcePack"].booleanOrNull,
-                immutableWorld = levelData["immutableWorld"].booleanOrNull,
-                isFromLockedTemplate = levelData["isFromLockedTemplate"].booleanOrNull,
-                isFromWorldTemplate = levelData["isFromWorldTemplate"].booleanOrNull,
-                isSingleUseWorld = levelData["isSingleUseWorld"].booleanOrNull,
-                isWorldTemplateOptionLocked = levelData["isWorldTemplateOptionLocked"].booleanOrNull,
-                lanBroadcast = levelData["LANBroadcast"].booleanOrNull,
-                lanBroadcastIntent = levelData["LANBroadcastIntent"].booleanOrNull,
-                multiplayerGame = levelData["MultiplayerGame"].booleanOrNull,
-                multiplayerGameIntent = levelData["MultiplayerGameIntent"].booleanOrNull,
-                requiresCopiedPackRemovalCheck = levelData["requiresCopiedPackRemovalCheck"].booleanOrNull,
-                spawnMobs = levelData["spawnMobs"].booleanOrNull,
-                spawnV1Villagers = levelData["SpawnV1Villagers"].booleanOrNull,
-                startWithMap = levelData["startWithMapEnabled"].booleanOrNull,
-                texturePacksRequired = levelData["texturePacksRequired"].booleanOrNull,
-                useMsaGamerTagsOnly = levelData["useMsaGamertagsOnly"].booleanOrNull,
-                eduOffer = levelData["eduOffer"].intOrNull,
-                generator = levelData["Generator"].intOrNull,
-                limitedWorldDepth = levelData["limitedWorldDepth"].intOrNull,
-                limitedWorldWidth = levelData["limitedWorldWidth"].intOrNull,
+                bonusChest = bonusChest
+                    ?: levelData["bonusChestEnabled"].booleanOrNull,
+                bonusChestSpawned = bonusChestSpawned
+                    ?: levelData["bonusChestSpawned"].booleanOrNull,
+                centerMapsToOrigin = centerMapsToOrigin
+                    ?: levelData["CenterMapsToOrigin"].booleanOrNull,
+                confirmedPlatformLockedContent = confirmedPlatformLockedContent
+                    ?: levelData["ConfirmedPlatformLockedContent"].booleanOrNull,
+                educationFeaturesEnabled = educationFeaturesEnabled
+                    ?: levelData["educationFeaturesEnabled"].booleanOrNull,
+                forceGameType = forceGameType
+                    ?: levelData["ForceGameType"].booleanOrNull,
+                hasBeenLoadedInCreative = hasBeenLoadedInCreative
+                    ?: levelData["hasBeenLoadedInCreative"].booleanOrNull,
+                hasLockedBehaviorPack = hasLockedBehaviorPack
+                    ?: levelData["hasLockedBehaviorPack"].booleanOrNull,
+                hasLockedResourcePack = hasLockedResourcePack
+                    ?: levelData["hasLockedResourcePack"].booleanOrNull,
+                immutableWorld = immutableWorld
+                    ?: levelData["immutableWorld"].booleanOrNull,
+                isFromLockedTemplate = isFromLockedTemplate
+                    ?: levelData["isFromLockedTemplate"].booleanOrNull,
+                isFromWorldTemplate = isFromWorldTemplate
+                    ?: levelData["isFromWorldTemplate"].booleanOrNull,
+                isSingleUseWorld = isSingleUseWorld
+                    ?: levelData["isSingleUseWorld"].booleanOrNull,
+                isWorldTemplateOptionLocked = isWorldTemplateOptionLocked
+                    ?: levelData["isWorldTemplateOptionLocked"].booleanOrNull,
+                lanBroadcast = lanBroadcast
+                    ?: levelData["LANBroadcast"].booleanOrNull,
+                lanBroadcastIntent = lanBroadcastIntent
+                    ?: levelData["LANBroadcastIntent"].booleanOrNull,
+                multiplayerGame = multiplayerGame
+                    ?: levelData["MultiplayerGame"].booleanOrNull,
+                multiplayerGameIntent = multiplayerGameIntent
+                    ?: levelData["MultiplayerGameIntent"].booleanOrNull,
+                requiresCopiedPackRemovalCheck = requiresCopiedPackRemovalCheck
+                    ?: levelData["requiresCopiedPackRemovalCheck"].booleanOrNull,
+                spawnMobs = spawnMobs
+                    ?: levelData["spawnMobs"].booleanOrNull,
+                spawnV1Villagers = spawnV1Villagers
+                    ?: levelData["SpawnV1Villagers"].booleanOrNull,
+                startWithMap = startWithMap
+                    ?: levelData["startWithMapEnabled"].booleanOrNull,
+                texturePacksRequired = texturePacksRequired
+                    ?: levelData["texturePacksRequired"].booleanOrNull,
+                useMsaGamerTagsOnly = useMsaGamerTagsOnly
+                    ?: levelData["useMsaGamertagsOnly"].booleanOrNull,
+                eduOffer = eduOffer
+                    ?: levelData["eduOffer"].intOrNull,
+                generator = generator
+                    ?: levelData["Generator"].intOrNull,
+                limitedWorldDepth = limitedWorldDepth
+                    ?: levelData["limitedWorldDepth"].intOrNull,
+                limitedWorldWidth = limitedWorldWidth
+                    ?: levelData["limitedWorldWidth"].intOrNull,
                 limitedWorldOrigin = limitedWorldOrigin
                     ?: takeIf { listOf("X", "Y", "Z").all { "LimitedWorldOrigin$it" in levelData } }
                         ?.let {
@@ -338,17 +426,28 @@ object LevelDataIO {
                                 levelData["LimitedWorldOriginZ"].int
                             )
                         },
-                netherScale = levelData["NetherScale"].intOrNull,
-                platformBroadcastIntent = levelData["PlatformBroadcastIntent"].intOrNull,
-                serverChunkTickRange = levelData["serverChunkTickRange"].intOrNull,
-                xBoxLiveBroadcastIntent = levelData["XBLBroadcastIntent"].intOrNull,
-                currentTick = levelData["currentTick"].longOrNull,
-                worldStartCount = levelData["worldStartCount"].longOrNull,
-                lightningLevel = levelData["lightningLevel"].floatOrNull,
-                rainLevel = levelData["rainLevel"].floatOrNull,
-                biomeOverride = levelData["BiomeOverride"].stringOrNull,
-                flatWorldLayers = levelData["FlatWorldLayers"].stringOrNull,
-                prid = levelData["prid"].stringOrNull,
+                netherScale = netherScale
+                    ?: levelData["NetherScale"].intOrNull,
+                platformBroadcastIntent = platformBroadcastIntent
+                    ?: levelData["PlatformBroadcastIntent"].intOrNull,
+                serverChunkTickRange = serverChunkTickRange
+                    ?: levelData["serverChunkTickRange"].intOrNull,
+                xBoxLiveBroadcastIntent = xBoxLiveBroadcastIntent
+                    ?: levelData["XBLBroadcastIntent"].intOrNull,
+                currentTick = currentTick
+                    ?: levelData["currentTick"].longOrNull,
+                worldStartCount = worldStartCount
+                    ?: levelData["worldStartCount"].longOrNull,
+                lightningLevel = lightningLevel
+                    ?: levelData["lightningLevel"].floatOrNull,
+                rainLevel = rainLevel
+                    ?: levelData["rainLevel"].floatOrNull,
+                biomeOverride = biomeOverride
+                    ?: levelData["BiomeOverride"].stringOrNull,
+                flatWorldLayers = flatWorldLayers
+                    ?: levelData["FlatWorldLayers"].stringOrNull,
+                prid = prid
+                    ?: levelData["prid"].stringOrNull,
             )
         }
     }
@@ -396,7 +495,8 @@ object LevelDataIO {
 
             minecraftVersionId = versionId,
             isSnapshot = versionSnapshot,
-            nbtVersion = nbtVersion,
+            nbtVersionHeader = nbtVersion,
+            nbtVersionTag = levelData["version"]?.intOrNull,
 
             lastOpenedWithVersion = lastOpenedVersion,
             minimumCompatibleClientVersion = minClientVersion,
@@ -412,8 +512,10 @@ object LevelDataIO {
     fun parseLevelData(levelData: NbtCompound, nbtFile: NbtFile? = null): LevelData {
         val version = detectMinecraftEditionVersion(levelData, nbtFile)
         return when (version?.minecraftEdition) {
-            MinecraftEdition.BEDROCK -> parseBedrockEditionLevelData(levelData, version)
-            MinecraftEdition.JAVA -> parseJavaEditionLevelData(levelData, version)
+            MinecraftEdition.BEDROCK -> parseBedrockEditionLevelData(levelData, version, forSure = true)
+            MinecraftEdition.JAVA -> with(parseJavaEditionLevelData(levelData, version)) {
+                copy(dialect = dialect ?: Dialect.VANILLA_JAVA_EDITION)
+            }
             null -> parseUndefinedEditionLevelData(levelData, version, nbtFile)
             MinecraftEdition.UNIVERSAL -> throw UnsupportedOperationException("Universal don't persist files")
         }.copy(dataFile = nbtFile)

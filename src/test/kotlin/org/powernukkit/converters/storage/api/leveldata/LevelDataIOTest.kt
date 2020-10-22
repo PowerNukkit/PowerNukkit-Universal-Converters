@@ -21,6 +21,7 @@ package org.powernukkit.converters.storage.api.leveldata
 import org.junit.jupiter.api.Test
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
+import org.powernukkit.converters.storage.api.Dialect
 import org.powernukkit.converters.storage.api.StorageEngine
 import org.powernukkit.version.Version
 import java.io.File
@@ -34,20 +35,26 @@ import kotlin.test.assertEquals
 internal class LevelDataIOTest {
     @Test
     fun testJavaEdition() {
-        val levelFile = File("sample-worlds/Fresh default worlds/Java Edition/1.16.3/level.dat")
-        println(LevelDataIO.readLevelDataBlocking(levelFile))
+        val folder = "sample-worlds/Fresh default worlds/Java Edition/1.16.3"
+        val levelFile = File("$folder/level.dat")
+        val java = LevelDataIO.readLevelDataBlocking(levelFile)
+        assertEquals(MinecraftEdition.JAVA, java.versionData?.minecraftEdition)
+        assertEquals(Dialect.VANILLA_JAVA_EDITION, java.dialect)
     }
 
     @Test
     fun testWindows10Edition() {
-        val levelFile = File("sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0/level.dat")
+        val folder = "sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0"
+        val levelFile = File("$folder/level.dat")
         val win10 = LevelDataIO.readLevelDataBlocking(levelFile)
         assertEquals(StorageEngine.LEVELDB, win10.storageEngine)
         assertEquals(MinecraftEdition.BEDROCK, win10.versionData?.minecraftEdition)
+        assertEquals(Dialect.VANILLA_BEDROCK_EDITION, win10.dialect)
+        assert(win10.folder?.endsWith(folder) == true)
         assertEquals(false, win10.dataFile?.isCompressed)
         assertEquals(true, win10.dataFile?.isLittleEndian)
         assertEquals(8, win10.dataFile?.version)
-        assertEquals(8, win10.versionData?.nbtVersion)
+        assertEquals(8, win10.versionData?.nbtVersionHeader)
         assertEquals(Version("1.16.40.2.0"), win10.versionData?.lastOpenedWithVersion)
         assertEquals(Version("1.16.0.0.0"), win10.versionData?.minimumCompatibleClientVersion)
         assertEquals(
@@ -62,7 +69,6 @@ internal class LevelDataIOTest {
         assertEquals(true, win10.allowCommands)
         assertEquals(false, win10.confirmedPlatformLockedContent)
         assertEquals(false, win10.educationFeaturesEnabled)
-        assertEquals(false, win10.experimentalGameplay)
         assertEquals(false, win10.forceGameType)
         assertEquals(true, win10.hasBeenLoadedInCreative)
         assertEquals(false, win10.hasLockedBehaviorPack)
@@ -116,16 +122,76 @@ internal class LevelDataIOTest {
 
     @Test
     fun testPowerNukkit() {
-        val levelFile = File("sample-worlds/Fresh default worlds/PowerNukkit/1.3.1.5-PN/level.dat")
-        println(LevelDataIO.readLevelDataBlocking(levelFile))
+        val folder = "sample-worlds/Fresh default worlds/PowerNukkit/1.3.1.5-PN"
+        val levelFile = File("$folder/level.dat")
+        val powerNukkit = LevelDataIO.readLevelDataBlocking(levelFile)
+
+        assert(powerNukkit.folder?.endsWith(folder) == true)
+        assertEquals(MinecraftEdition.BEDROCK, powerNukkit.versionData?.minecraftEdition)
+        assertEquals(StorageEngine.ANVIL, powerNukkit.storageEngine)
+        assertEquals(Dialect.POWER_NUKKIT, powerNukkit.dialect)
+        assertEquals(
+            mapOf(
+                "commandBlockOutput" to "true",
+                "commandBlocksEnabled" to "true",
+                "doDaylightCycle" to "false",
+                "doEntityDrops" to "true",
+                "doFireTick" to "true",
+                "doImmediateRespawn" to "false",
+                "doInsomnia" to "true",
+                "doMobLoot" to "true",
+                "doMobSpawning" to "true",
+                "doTileDrops" to "true",
+                "doWeatherCycle" to "false",
+                "drowningDamage" to "true",
+                "experimentalGameplay" to "false",
+                "fallDamage" to "true",
+                "fireDamage" to "true",
+                "functionCommandLimit" to "20000",
+                "keepInventory" to "false",
+                "maxCommandChainLength" to "131070",
+                "mobGriefing" to "true",
+                "naturalRegeneration" to "true",
+                "pvp" to "true",
+                "randomTickSpeed" to "3",
+                "sendCommandFeedback" to "true",
+                "showCoordinates" to "false",
+                "showDeathMessages" to "true",
+                "showTags" to "true",
+                "spawnRadius" to "5",
+                "tntExplodes" to "true",
+            ),
+            powerNukkit.gameRules
+        )
+        assertEquals(false, powerNukkit.hardcore)
+        assertEquals(true, powerNukkit.initialized)
+        assertEquals(false, powerNukkit.raining)
+        assertEquals(false, powerNukkit.thundering)
+        assertEquals(0, powerNukkit.gameType)
+        assertEquals(1, powerNukkit.generatorVersion)
+        assertEquals(239815, powerNukkit.rainTime)
+        assertEquals(BlockPos(128, 70, 128), powerNukkit.spawn)
+        assertEquals(239815, powerNukkit.thunderTime)
+        assertEquals(19133, powerNukkit.versionData?.nbtVersionTag)
+        assertEquals(80352L, powerNukkit.dayTime)
+        assertEquals(Instant.ofEpochSecond(1599862221), powerNukkit.lastPlayed)
+        assertEquals(1599862221905L, powerNukkit.randomSeed)
+        assertEquals(0L, powerNukkit.sizeOnDisk)
+        assertEquals(1585787L, powerNukkit.time)
+        assertEquals("normal", powerNukkit.generatorName)
+        assertEquals("", powerNukkit.generatorOptions)
+        assertEquals("world", powerNukkit.levelName)
     }
 
     @Test
     fun testPocketMine() {
-        val levelFile = File("sample-worlds/Fresh default worlds/PocketMine-MP/1.16.20-3.15.2/level.dat")
+        val folder = "sample-worlds/Fresh default worlds/PocketMine-MP/1.16.20-3.15.2"
+        val levelFile = File("$folder/level.dat")
         val pocketMine = LevelDataIO.readLevelDataBlocking(levelFile)
         assertEquals(StorageEngine.POCKET_MINE, pocketMine.storageEngine)
         assertEquals(MinecraftEdition.BEDROCK, pocketMine.versionData?.minecraftEdition)
+        assertEquals(Dialect.POCKET_MINE, pocketMine.dialect)
+        assert(pocketMine.folder?.endsWith(folder) == true)
         assertEquals(true, pocketMine.dataFile?.isCompressed)
         assertEquals(false, pocketMine.dataFile?.isLittleEndian)
         assertEquals(null, pocketMine.dataFile?.version)
@@ -137,7 +203,7 @@ internal class LevelDataIOTest {
         assertEquals(0, pocketMine.gameType)
         assertEquals(1, pocketMine.generatorVersion)
         assertEquals(BlockPos(256, 70, 256), pocketMine.spawn)
-        assertEquals(-1, pocketMine.version)
+        assertEquals(-1, pocketMine.versionData?.nbtVersionTag)
         assertEquals(Instant.ofEpochMilli(1603287284042), pocketMine.lastPlayed)
         assertEquals(1138960654L, pocketMine.randomSeed)
         assertEquals(3524, pocketMine.time)

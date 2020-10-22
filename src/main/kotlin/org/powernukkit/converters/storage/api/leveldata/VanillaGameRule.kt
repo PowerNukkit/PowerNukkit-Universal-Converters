@@ -70,6 +70,7 @@ enum class VanillaGameRule(
     universalAnger(defaultValue = 0, inBedrock = false),
     showTags(inJava = false),
     functionCommandLimit(defaultValue = 10_000, inJava = false, isBoolean = false),
+    experimentalGameplay(defaultValue = 0, inJava = false),
     ;
 
     val bedrockName = bedrockName ?: name.toLowerCase()
@@ -84,5 +85,10 @@ enum class VanillaGameRule(
         if (defaultValue == 1) "true" else "false"
     } else {
         defaultValue.toString()
+    }
+
+    companion object {
+        private val byName = values().associateBy { it.bedrockName }
+        fun withName(name: String) = byName[name]
     }
 }
