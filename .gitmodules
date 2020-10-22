@@ -1,4 +1,4 @@
 [submodule "sample-worlds"]
 	path = sample-worlds
 	url = https://github.com/PowerNukkit/Minecraft-World-Samples.git
-	branch = master
+	branch = main

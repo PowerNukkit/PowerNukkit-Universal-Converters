@@ -298,7 +298,57 @@ object LevelDataIO {
                         } else {
                             levelData[it.bedrockName].int.toString()
                         }
-                    }
+                    },
+
+                bonusChest = levelData["bonusChestEnabled"].booleanOrNull,
+                bonusChestSpawned = levelData["bonusChestSpawned"].booleanOrNull,
+                centerMapsToOrigin = levelData["CenterMapsToOrigin"].booleanOrNull,
+                confirmedPlatformLockedContent = levelData["ConfirmedPlatformLockedContent"].booleanOrNull,
+                educationFeaturesEnabled = levelData["educationFeaturesEnabled"].booleanOrNull,
+                experimentalGameplay = levelData["experimentalgameplay"].booleanOrNull,
+                forceGameType = levelData["ForceGameType"].booleanOrNull,
+                hasBeenLoadedInCreative = levelData["hasBeenLoadedInCreative"].booleanOrNull,
+                hasLockedBehaviorPack = levelData["hasLockedBehaviorPack"].booleanOrNull,
+                hasLockedResourcePack = levelData["hasLockedResourcePack"].booleanOrNull,
+                immutableWorld = levelData["immutableWorld"].booleanOrNull,
+                isFromLockedTemplate = levelData["isFromLockedTemplate"].booleanOrNull,
+                isFromWorldTemplate = levelData["isFromWorldTemplate"].booleanOrNull,
+                isSingleUseWorld = levelData["isSingleUseWorld"].booleanOrNull,
+                isWorldTemplateOptionLocked = levelData["isWorldTemplateOptionLocked"].booleanOrNull,
+                lanBroadcast = levelData["LANBroadcast"].booleanOrNull,
+                lanBroadcastIntent = levelData["LANBroadcastIntent"].booleanOrNull,
+                multiplayerGame = levelData["MultiplayerGame"].booleanOrNull,
+                multiplayerGameIntent = levelData["MultiplayerGameIntent"].booleanOrNull,
+                requiresCopiedPackRemovalCheck = levelData["requiresCopiedPackRemovalCheck"].booleanOrNull,
+                spawnMobs = levelData["spawnMobs"].booleanOrNull,
+                spawnV1Villagers = levelData["SpawnV1Villagers"].booleanOrNull,
+                startWithMap = levelData["startWithMapEnabled"].booleanOrNull,
+                texturePacksRequired = levelData["texturePacksRequired"].booleanOrNull,
+                useMsaGamerTagsOnly = levelData["useMsaGamertagsOnly"].booleanOrNull,
+                eduOffer = levelData["eduOffer"].intOrNull,
+                generator = levelData["Generator"].intOrNull,
+                limitedWorldDepth = levelData["limitedWorldDepth"].intOrNull,
+                limitedWorldWidth = levelData["limitedWorldWidth"].intOrNull,
+                limitedWorldOrigin = limitedWorldOrigin
+                    ?: takeIf { listOf("X", "Y", "Z").all { "LimitedWorldOrigin$it" in levelData } }
+                        ?.let {
+                            BlockPos(
+                                levelData["LimitedWorldOriginX"].int,
+                                levelData["LimitedWorldOriginY"].int,
+                                levelData["LimitedWorldOriginZ"].int
+                            )
+                        },
+                netherScale = levelData["NetherScale"].intOrNull,
+                platformBroadcastIntent = levelData["PlatformBroadcastIntent"].intOrNull,
+                serverChunkTickRange = levelData["serverChunkTickRange"].intOrNull,
+                xBoxLiveBroadcastIntent = levelData["XBLBroadcastIntent"].intOrNull,
+                currentTick = levelData["currentTick"].longOrNull,
+                worldStartCount = levelData["worldStartCount"].longOrNull,
+                lightningLevel = levelData["lightningLevel"].floatOrNull,
+                rainLevel = levelData["rainLevel"].floatOrNull,
+                biomeOverride = levelData["BiomeOverride"].stringOrNull,
+                flatWorldLayers = levelData["FlatWorldLayers"].stringOrNull,
+                prid = levelData["prid"].stringOrNull,
             )
         }
     }
@@ -350,8 +400,9 @@ object LevelDataIO {
 
             lastOpenedWithVersion = lastOpenedVersion,
             minimumCompatibleClientVersion = minClientVersion,
-            baseGameVersion = levelData["baseGameVersion"]?.stringOrNull,
-            inventoryVersion = levelData["InventoryVersion"]?.stringOrNull,
+            baseGameVersion = levelData["baseGameVersion"]?.stringOrNull?.let(::Version),
+            inventoryVersion = levelData["InventoryVersion"]?.stringOrNull?.let(::Version),
+            storageVersion = levelData["StorageVersion"]?.intOrNull,
 
             platform = platform,
             networkVersion = networkVersion,

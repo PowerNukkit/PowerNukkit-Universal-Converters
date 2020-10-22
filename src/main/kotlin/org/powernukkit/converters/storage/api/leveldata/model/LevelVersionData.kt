@@ -34,8 +34,9 @@ data class LevelVersionData(
 
     val lastOpenedWithVersion: Version? = null,
     val minimumCompatibleClientVersion: Version? = null,
-    val baseGameVersion: String? = null,
-    val inventoryVersion: String? = null,
+    val baseGameVersion: Version? = null,
+    val inventoryVersion: Version? = null,
+    val storageVersion: Int? = null,
 
     val platform: Int? = null,
     val networkVersion: Int? = null,
