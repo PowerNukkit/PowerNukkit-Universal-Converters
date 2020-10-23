@@ -145,6 +145,8 @@ object LevelDataIO {
             )
         ) {
             StorageEngine.ALPHA
+        } else if (initialized == null) {
+            StorageEngine.REGIONS
         } else {
             StorageEngine.ANVIL
         }
