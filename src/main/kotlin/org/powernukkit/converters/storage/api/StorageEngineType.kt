@@ -22,7 +22,7 @@ package org.powernukkit.converters.storage.api
  * @author joserobjr
  * @since 2020-10-19
  */
-enum class StorageEngine {
+enum class StorageEngineType {
     ALPHA,
     REGIONS,
     ANVIL,

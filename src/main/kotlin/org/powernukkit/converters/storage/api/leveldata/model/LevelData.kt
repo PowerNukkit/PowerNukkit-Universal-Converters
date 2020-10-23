@@ -23,14 +23,14 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.storage.api.Dialect
-import org.powernukkit.converters.storage.api.StorageEngine
+import org.powernukkit.converters.storage.api.StorageEngineType
 import java.awt.image.BufferedImage
 import java.nio.file.Path
 import java.time.Instant
 
 /**
  * @property dataFile The original NBT file structure where the data were extracted
- * @property storageEngine The detected storage engine used to extract the data
+ * @property storageEngineType The detected storage engine used to extract the data
  * @property minecraftEdition The detected minecraft edition based on the folder contents
  * @property minecraftVersion The detected version of the minecraft edition
  * @property folder The root folder of the level
@@ -52,7 +52,7 @@ import java.time.Instant
 data class LevelData(
     // Internal data
     val dataFile: NbtFile? = null,
-    val storageEngine: StorageEngine? = null,
+    val storageEngineType: StorageEngineType? = null,
     val dialect: Dialect? = null,
     val folder: Path? = null,
 

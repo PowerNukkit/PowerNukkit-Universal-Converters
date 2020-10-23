@@ -28,7 +28,7 @@ import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.storage.api.Dialect
-import org.powernukkit.converters.storage.api.StorageEngine
+import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.converters.storage.api.leveldata.model.*
 import org.powernukkit.version.Version
 import java.awt.image.BufferedImage
@@ -96,7 +96,7 @@ object LevelDataIO {
         }
 
         var completedData = javaParse
-        fun detectByGameRule(setStorage: StorageEngine): Boolean {
+        fun detectByGameRule(setStorageType: StorageEngineType): Boolean {
             val uniqueGameRules = completedData.gameRules?.let(this::findUniqueGameRules)
 
             val detectedEdition = when {
@@ -113,7 +113,7 @@ object LevelDataIO {
 
             completedData = with(completedData) {
                 copy(
-                    storageEngine = storageEngine ?: setStorage,
+                    storageEngineType = storageEngineType ?: setStorageType,
                     versionData = with(versionData ?: LevelVersionData()) {
                         copy(
                             minecraftEdition = minecraftEdition ?: detectedEdition
@@ -131,31 +131,31 @@ object LevelDataIO {
         }
 
         completedData = parseBedrockEditionLevelData(levelData, javaParse.versionData, javaParse, false)
-        detectByGameRule(StorageEngine.LEVELDB)
+        detectByGameRule(StorageEngineType.LEVELDB)
         return completedData
     }
 
     private fun detectJavaStorageEngine(currentLevelData: LevelData) = with(currentLevelData) {
         if (levelName == null && sizeOnDisk?.let { it > 0 } == true && versionData?.nbtVersionTag == null
             && copy(
-                versionData = null, dataFile = null, storageEngine = null, dialect = null, folder = null
+                versionData = null, dataFile = null, storageEngineType = null, dialect = null, folder = null
             ) == LevelData(
                 spawn = spawn, lastPlayed = lastPlayed, randomSeed = randomSeed, sizeOnDisk = sizeOnDisk,
                 time = time
             )
         ) {
-            StorageEngine.ALPHA
+            StorageEngineType.ALPHA
         } else if (initialized == null) {
-            StorageEngine.REGIONS
+            StorageEngineType.REGIONS
         } else {
-            StorageEngine.ANVIL
+            StorageEngineType.ANVIL
         }
     }
 
     private fun parsePocketMineLevelData(levelData: NbtCompound, current: LevelData) = with(current) {
         copy(
-            storageEngine = storageEngine
-                ?: StorageEngine.POCKET_MINE,
+            storageEngineType = storageEngineType
+                ?: StorageEngineType.POCKET_MINE,
 
             dialect = dialect
                 ?: Dialect.POCKET_MINE,
@@ -332,8 +332,8 @@ object LevelDataIO {
     ): LevelData {
         return with(current) {
             copy(
-                storageEngine = storageEngine
-                    ?: StorageEngine.LEVELDB.takeIf {
+                storageEngineType = storageEngineType
+                    ?: StorageEngineType.LEVELDB.takeIf {
                         (versionData?.nbtVersionHeader ?: 0) > 0
                     },
 
@@ -569,7 +569,7 @@ object LevelDataIO {
             MinecraftEdition.JAVA -> with(parseJavaEditionLevelData(levelData, version)) {
                 copy(
                     dialect = dialect ?: Dialect.VANILLA_JAVA_EDITION,
-                    storageEngine = storageEngine ?: detectJavaStorageEngine(this)
+                    storageEngineType = storageEngineType ?: detectJavaStorageEngine(this)
                 )
             }
             null -> parseUndefinedEditionLevelData(levelData, version, nbtFile)

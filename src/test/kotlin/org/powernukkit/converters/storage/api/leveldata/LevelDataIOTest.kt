@@ -24,7 +24,7 @@ import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.storage.api.Dialect
-import org.powernukkit.converters.storage.api.StorageEngine
+import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.version.Version
 import java.io.File
 import java.time.Instant
@@ -45,7 +45,7 @@ internal class LevelDataIOTest {
         with(java) {
             assertEquals(MinecraftEdition.JAVA, versionData?.minecraftEdition)
             assertEquals(Dialect.VANILLA_JAVA_EDITION, dialect)
-            assertEquals(StorageEngine.ANVIL, storageEngine)
+            assertEquals(StorageEngineType.ANVIL, storageEngineType)
             assertEquals(emptyList<Any>(), scheduledEvents)
             assertEquals(listOf("vanilla"), serverBrands)
             assertEquals(false, allowCommands)
@@ -153,7 +153,7 @@ internal class LevelDataIOTest {
         val levelFile = File("$sampleFolder/level.dat")
         val win10 = LevelDataIO.readLevelDataBlocking(levelFile)
         with(win10) {
-            assertEquals(StorageEngine.LEVELDB, storageEngine)
+            assertEquals(StorageEngineType.LEVELDB, storageEngineType)
             assertEquals(MinecraftEdition.BEDROCK, versionData?.minecraftEdition)
             assertEquals(Dialect.VANILLA_BEDROCK_EDITION, dialect)
             assert(folder?.endsWith(sampleFolder) == true)
@@ -236,7 +236,7 @@ internal class LevelDataIOTest {
         with(powerNukkit) {
             assert(folder?.endsWith(sampleFolder) == true)
             assertEquals(MinecraftEdition.BEDROCK, versionData?.minecraftEdition)
-            assertEquals(StorageEngine.ANVIL, storageEngine)
+            assertEquals(StorageEngineType.ANVIL, storageEngineType)
             //assertEquals(Dialect.POWER_NUKKIT, dialect)
             assertNull(dialect) // PowerNukkit and Nukkit is writting level.dat perfectly, we need to diver it later
             assertEquals(
@@ -299,7 +299,7 @@ internal class LevelDataIOTest {
         val levelFile = File("$sampleFolder/level.dat")
         val pocketMine = LevelDataIO.readLevelDataBlocking(levelFile)
         with(pocketMine) {
-            assertEquals(StorageEngine.POCKET_MINE, storageEngine)
+            assertEquals(StorageEngineType.POCKET_MINE, storageEngineType)
             assertEquals(MinecraftEdition.BEDROCK, versionData?.minecraftEdition)
             assertEquals(Dialect.POCKET_MINE, dialect)
             assert(folder?.endsWith(sampleFolder) == true)
