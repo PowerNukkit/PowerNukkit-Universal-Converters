@@ -50,7 +50,7 @@ import javax.imageio.ImageIO
  */
 object LevelDataIO {
     private val log = InlineLogger()
-    private val yearOneMillion get() = OffsetDateTime.of(1_000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant()
+    private val yearFifthThousand get() = OffsetDateTime.of(50_000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant()
 
     private fun parseCommonLevelDataProperties(levelData: NbtCompound): LevelData {
         return LevelData(
@@ -93,11 +93,7 @@ object LevelDataIO {
         // It saves LastPlayed with milliseconds and uses different NBT types
         // for some data
         with(javaParse) {
-            if (versionData?.nbtVersionTag == -1 &&
-                difficulty == null && levelData["Difficulty"].uByteOrNull != null &&
-                dayTime == null && levelData["DayTime"].intOrNull != null &&
-                lastPlayed != null && lastPlayed > yearOneMillion
-            ) {
+            if (versionData?.nbtVersionTag == -1 && dayTime == null && levelData["DayTime"].intOrNull != null) {
                 return parsePocketMineLevelData(levelData, javaParse)
             }
         }
@@ -133,17 +129,6 @@ object LevelDataIO {
         }
 
         if (detectByGameRule(StorageEngine.ANVIL)) {
-
-            if (completedData.versionData?.minecraftEdition == MinecraftEdition.BEDROCK
-                && completedData.sizeOnDisk == null && levelData["SizeOnDisk"].longOrNull != null
-            ) {
-                // We have found PowerNukkit!
-                completedData = completedData.copy(
-                    dialect = completedData.dialect ?: Dialect.POWER_NUKKIT,
-                    sizeOnDisk = levelData["SizeOnDisk"].longOrNull,
-                )
-            }
-
             return completedData
         }
 
@@ -167,14 +152,8 @@ object LevelDataIO {
                 )
             },
 
-            difficulty = difficulty
-                ?: levelData["Difficulty"]?.uByteOrNull,
-
             dayTime = dayTime
                 ?: levelData["DayTime"].intOrNull?.toLong(),
-
-            lastPlayed = lastPlayed?.takeUnless { it > yearOneMillion }
-                ?: levelData["LastPlayed"].longOrNull?.let(Instant::ofEpochMilli),
         )
     }
 
@@ -188,10 +167,12 @@ object LevelDataIO {
         return with(current) {
             copy(
                 // Since JE inf-dev
+                lastPlayed = lastPlayed?.takeUnless { it > yearFifthThousand }
+                    ?: levelData["LastPlayed"].longOrNull?.let(Instant::ofEpochMilli),
                 randomSeed = randomSeed
                     ?: levelData["WorldGenSettings"]["seed"].longOrNull,
                 sizeOnDisk = sizeOnDisk
-                    ?: levelData["SizeOnDisk"].longOrNull?.takeUnless { it == 0L },
+                    ?: levelData["SizeOnDisk"].longOrNull,
 
                 // Since Alpha
                 snowCovered = snowCovered
@@ -228,6 +209,8 @@ object LevelDataIO {
                     ?: levelData["allowCommands"].booleanOrNull,
                 initialized = initialized
                     ?: levelData["initialized"].booleanOrNull,
+                dayTime = dayTime
+                    ?: levelData["DayTime"].longOrNull,
 
                 // Since JE 1.4
                 gameRules = gameRules
@@ -236,6 +219,8 @@ object LevelDataIO {
                     ?: levelData["generatorOptions"].stringOrNull,
 
                 // Since JE 1.8
+                difficulty = difficulty
+                    ?: levelData["Difficulty"].uByteOrNull,
                 difficultyLocked = difficultyLocked
                     ?: levelData["DifficultyLocked"].booleanOrNull,
                 clearWeatherTime = clearWeatherTime
@@ -254,6 +239,10 @@ object LevelDataIO {
                     ?: levelData["BorderSize"].doubleOrNull,
                 borderSizeLerpTarget = borderSizeLerpTarget
                     ?: levelData["BorderSizeLerpTarget"].doubleOrNull,
+                borderWarningBlocks = borderWarningBlocks
+                    ?: levelData["BorderWarningBlocks"].doubleOrNull,
+                borderWarningTime = borderWarningTime
+                    ?: levelData["BorderWarningTime"].doubleOrNull,
 
                 // Since JE 1.9
                 versionData = versionData,
@@ -308,8 +297,6 @@ object LevelDataIO {
                     ?: levelData["ServerBrands"].stringListOrNull,
                 wasModded = wasModded
                     ?: levelData["WasModded"].booleanOrNull,
-                dayTime = dayTime
-                    ?: levelData["DayTime"].longOrNull,
 
                 bonusChest = bonusChest
                     ?: levelData["WorldGenSettings"]["bonus_chest"].booleanOrNull,
@@ -496,13 +483,14 @@ object LevelDataIO {
             minecraftVersionId = versionId,
             isSnapshot = versionSnapshot,
             nbtVersionHeader = nbtVersion,
-            nbtVersionTag = levelData["version"]?.intOrNull,
+            nbtVersionTag = levelData["version"].intOrNull,
+            worldVersion = levelData["DataVersion"].intOrNull,
 
             lastOpenedWithVersion = lastOpenedVersion,
             minimumCompatibleClientVersion = minClientVersion,
-            baseGameVersion = levelData["baseGameVersion"]?.stringOrNull?.let(::Version),
-            inventoryVersion = levelData["InventoryVersion"]?.stringOrNull?.let(::Version),
-            storageVersion = levelData["StorageVersion"]?.intOrNull,
+            baseGameVersion = levelData["baseGameVersion"].stringOrNull?.let(::Version),
+            inventoryVersion = levelData["InventoryVersion"].stringOrNull?.let(::Version),
+            storageVersion = levelData["StorageVersion"].intOrNull,
 
             platform = platform,
             networkVersion = networkVersion,

@@ -32,6 +32,7 @@ data class LevelVersionData(
     val isSnapshot: Boolean? = null,
     val nbtVersionHeader: Int? = null,
     val nbtVersionTag: Int? = null, // Since JE Beta 1.3
+    val worldVersion: Int? = null,
 
     val lastOpenedWithVersion: Version? = null,
     val minimumCompatibleClientVersion: Version? = null,

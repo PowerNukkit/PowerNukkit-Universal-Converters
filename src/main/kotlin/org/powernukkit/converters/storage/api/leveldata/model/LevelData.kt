@@ -94,6 +94,7 @@ data class LevelData(
     val initialized: Boolean? = null,
 
     // Since JE 1.4
+    val dayTime: Long? = null,
     val gameRules: Map<String, String>? = null,
     val generatorOptions: String? = null, //Removed in JE 1.13+
 
@@ -127,7 +128,6 @@ data class LevelData(
     // Since JE 1.16
     val serverBrands: List<String>? = null,
     val wasModded: Boolean? = null,
-    val dayTime: Long? = null,
     val bonusChest: Boolean? = null,
     val dimensionGeneratorSettings: Map<NamespacedId, DimensionGeneratorData>? = null,
 
