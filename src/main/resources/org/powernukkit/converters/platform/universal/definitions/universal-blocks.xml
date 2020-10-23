@@ -493,11 +493,41 @@
         <block-property id="chorus_plant_west">
             <boolean/>
         </block-property>
-        <block-property id="dirt_type">
+        <block-property id="dirt_type" java-requires-adapter="true">
             <value default="true">normal</value>
             <value>coarse</value>
         </block-property>
         <block-property id="stained">
+            <boolean/>
+        </block-property>
+        <block-property id="prismarine_block_type" java-requires-adapter="true">
+            <value default="true">default</value>
+            <value>dark</value>
+            <value>bricks</value>
+        </block-property>
+        <block-property id="ice_type" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <value default="true">ice</value>
+            <value>packed</value>
+            <value>blue</value>
+        </block-property>
+        <block-property id="coral_color" java-requires-adapter="true">
+            <value default="true">blue</value>
+            <value>pink</value>
+            <value>purple</value>
+            <value>red</value>
+            <value>yellow</value>
+        </block-property>
+        <block-property id="coral_dead" java-requires-adapter="true" bedrock="dead_bit">
+            <boolean/>
+        </block-property>
+        <block-property id="coral_fan_direction" java-requires-adapter="true">
+            <value bedrock="0" default="true">east_west</value>
+            <value bedrock="1">north_south</value>
+        </block-property>
+        <block-property id="coral_direction" java="facing">
+            <copy-values from="horizontal_direction"/>
+        </block-property>
+        <block-property id="coral_hang_type_bit">
             <boolean/>
         </block-property>
     </block-properties>
@@ -1172,18 +1202,13 @@
         <block-type id="blast_furnace"/>
         <block-type id="blue_bed"/>
         <block-type id="blue_glazed_terracotta"/>
-        <block-type id="blue_ice"/>
         <block-type id="blue_shulker_box"/>
         <block-type id="blue_stained_glass"/>
         <block-type id="blue_stained_glass_pane"/>
         <block-type id="bone_block"/>
         <block-type id="bookshelf"/>
-        <block-type id="brain_coral"/>
-        <block-type id="brain_coral_block"/>
-        <block-type id="brain_coral_fan"/>
-        <block-type id="brain_coral_wall_fan"/>
         <block-type id="brewing_stand"/>
-        <block-type id="bricks"/>
+        <block-type id="bricks" bedrock="brick_block"/>
         <block-type id="brown_bed"/>
         <block-type id="brown_glazed_terracotta"/>
         <block-type id="brown_mushroom_block"/>
@@ -1192,15 +1217,11 @@
         <block-type id="brown_stained_glass"/>
         <block-type id="brown_stained_glass_pane"/>
         <block-type id="bubble_column"/>
-        <block-type id="bubble_coral"/>
-        <block-type id="bubble_coral_block"/>
-        <block-type id="bubble_coral_fan"/>
-        <block-type id="bubble_coral_wall_fan"/>
         <block-type id="cactus">
             <uses-property named="age15"/>
         </block-type>
         <block-type id="chain">
-            <uses-property named="waterlogged" on-bedrock="false"/>
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
             <uses-property named="axis" on-bedrock="false"/>
         </block-type>
         <block-type id="cake">
@@ -1210,7 +1231,7 @@
             <uses-property named="horizontal_direction"/>
             <uses-property named="lit"/>
             <uses-property named="signal_fire" on-bedrock="false"/>
-            <uses-property named="waterlogged" on-bedrock="false"/>
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
 
             <uses-block-entity named="campfire_data"/>
         </block-type>
@@ -1280,29 +1301,8 @@
         <block-type id="cyan_stained_glass_pane"/>
         <block-type id="damaged_anvil"/>
         <block-type id="dandelion" bedrock="yellow_flower" />
-        <block-type id="dark_prismarine"/>
         <block-type id="daylight_detector"/>
-        <block-type id="dead_brain_coral"/>
-        <block-type id="dead_brain_coral_block"/>
-        <block-type id="dead_brain_coral_fan"/>
-        <block-type id="dead_brain_coral_wall_fan"/>
-        <block-type id="dead_bubble_coral"/>
-        <block-type id="dead_bubble_coral_block"/>
-        <block-type id="dead_bubble_coral_fan"/>
-        <block-type id="dead_bubble_coral_wall_fan"/>
         <block-type id="dead_bush"/>
-        <block-type id="dead_fire_coral"/>
-        <block-type id="dead_fire_coral_block"/>
-        <block-type id="dead_fire_coral_fan"/>
-        <block-type id="dead_fire_coral_wall_fan"/>
-        <block-type id="dead_horn_coral"/>
-        <block-type id="dead_horn_coral_block"/>
-        <block-type id="dead_horn_coral_fan"/>
-        <block-type id="dead_horn_coral_wall_fan"/>
-        <block-type id="dead_tube_coral"/>
-        <block-type id="dead_tube_coral_block"/>
-        <block-type id="dead_tube_coral_fan"/>
-        <block-type id="dead_tube_coral_wall_fan"/>
         
         <block-type id="detector_rail">
             <uses-property named="rail_active"/>
@@ -1314,7 +1314,7 @@
         <block-type id="dirt" java-requires-adapter="true">
             <uses-property named="dirt_type" on-java="false"/>
 
-            <extra-block on="java" id="coarse_dirt"/>
+            <extra-block on="java" id="coarse_dirt" inherit-properties="false"/>
         </block-type>
         <block-type id="dispenser"/>
         <block-type id="dragon_egg"/>
@@ -1335,10 +1335,6 @@
         <block-type id="farmland"/>
         <block-type id="fern"/>
         <block-type id="fire"/>
-        <block-type id="fire_coral"/>
-        <block-type id="fire_coral_block"/>
-        <block-type id="fire_coral_fan"/>
-        <block-type id="fire_coral_wall_fan"/>
         <block-type id="fletching_table"/>
         <block-type id="flower_pot"/>
         <block-type id="frosted_ice"/>
@@ -1368,11 +1364,12 @@
         <block-type id="hopper"/>
         <block-type id="honey_block"/>
         <block-type id="honeycomb_block"/>
-        <block-type id="horn_coral"/>
-        <block-type id="horn_coral_block"/>
-        <block-type id="horn_coral_fan"/>
-        <block-type id="horn_coral_wall_fan"/>
-        <block-type id="ice"/>
+        <block-type id="ice" bedrock-requires-adapter="true" java-requires-adapter="true">
+            <uses-property named="ice_type" on-java="false" on-bedrock="false"/>
+
+            <extra-block on="both" id="packed_ice" inherit-properties="false"/>
+            <extra-block on="both" id="blue_ice"   inherit-properties="false"/>
+        </block-type>
         <block-type id="infested_chiseled_stone_bricks"/>
         <block-type id="infested_cobblestone"/>
         <block-type id="infested_cracked_stone_bricks"/>
@@ -1444,7 +1441,6 @@
         <block-type id="orange_shulker_box"/>
         <block-type id="orange_stained_glass"/>
         <block-type id="orange_stained_glass_pane"/>
-        <block-type id="packed_ice"/>
         <block-type id="peony"/>
         <block-type id="pink_bed"/>
         <block-type id="pink_glazed_terracotta"/>
@@ -1499,8 +1495,12 @@
             <uses-property named="powered_rail_shape"/>
         </block-type>
         
-        <block-type id="prismarine"/>
-        <block-type id="prismarine_bricks"/>
+        <block-type id="prismarine" java-requires-adapter="true">
+            <uses-property named="prismarine_block_type" on-java="false"/>
+
+            <extra-block on="java" id="dark_prismarine"/>
+            <extra-block on="java" id="prismarine_bricks"/>
+        </block-type>
         <block-type id="pumpkin"/>
         <block-type id="purple_bed"/>
         <block-type id="purple_glazed_terracotta"/>
@@ -1579,35 +1579,31 @@
         <block-type id="terracotta" bedrock="hardened_clay" bedrock-requires-adapter="true" java-requires-adapter="true">
             <uses-property named="stained" on-java="false" on-bedrock="false"/>
             
-            <extra-block on="bedrock" id="stained_hardened_clay">
+            <extra-block on="bedrock" id="stained_hardened_clay" inherit-properties="false">
                 <uses-property named="dye_color" on-java="false"/>
             </extra-block>
-            <extra-block on="java" id="white_terracotta"/>
-            <extra-block on="java" id="orange_terracotta"/>
-            <extra-block on="java" id="magenta_terracotta"/>
-            <extra-block on="java" id="light_blue_terracotta"/>
-            <extra-block on="java" id="yellow_terracotta"/>
-            <extra-block on="java" id="lime_terracotta"/>
-            <extra-block on="java" id="pink_terracotta"/>
-            <extra-block on="java" id="gray_terracotta"/>
-            <extra-block on="java" id="light_gray_terracotta"/>
-            <extra-block on="java" id="cyan_terracotta"/>
-            <extra-block on="java" id="purple_terracotta"/>
-            <extra-block on="java" id="blue_terracotta"/>
-            <extra-block on="java" id="brown_terracotta"/>
-            <extra-block on="java" id="green_terracotta"/>
-            <extra-block on="java" id="red_terracotta"/>
-            <extra-block on="java" id="black_terracotta"/>
+            <extra-block on="java" id="white_terracotta"      inherit-properties="false"/>
+            <extra-block on="java" id="orange_terracotta"     inherit-properties="false"/>
+            <extra-block on="java" id="magenta_terracotta"    inherit-properties="false"/>
+            <extra-block on="java" id="light_blue_terracotta" inherit-properties="false"/>
+            <extra-block on="java" id="yellow_terracotta"     inherit-properties="false"/>
+            <extra-block on="java" id="lime_terracotta"       inherit-properties="false"/>
+            <extra-block on="java" id="pink_terracotta"       inherit-properties="false"/>
+            <extra-block on="java" id="gray_terracotta"       inherit-properties="false"/>
+            <extra-block on="java" id="light_gray_terracotta" inherit-properties="false"/>
+            <extra-block on="java" id="cyan_terracotta"       inherit-properties="false"/>
+            <extra-block on="java" id="purple_terracotta"     inherit-properties="false"/>
+            <extra-block on="java" id="blue_terracotta"       inherit-properties="false"/>
+            <extra-block on="java" id="brown_terracotta"      inherit-properties="false"/>
+            <extra-block on="java" id="green_terracotta"      inherit-properties="false"/>
+            <extra-block on="java" id="red_terracotta"        inherit-properties="false"/>
+            <extra-block on="java" id="black_terracotta"      inherit-properties="false"/>
         </block-type>
         <block-type id="tnt"/>
         <block-type id="torch"/>
         <block-type id="trapped_chest"/>
         <block-type id="tripwire_hook"/>
         <block-type id="tripwire"/>
-        <block-type id="tube_coral"/>
-        <block-type id="tube_coral_block"/>
-        <block-type id="tube_coral_fan"/>
-        <block-type id="tube_coral_wall_fan"/>
         <block-type id="turtle_egg"/>
         <block-type id="twisting_vines"/>
         <block-type id="twisting_vines_plant"/>
@@ -1651,21 +1647,21 @@
         <block-type id="wool" java="white_wool" java-requires-adapter="true">
             <uses-property named="dye_color" on-java="false"/>
 
-            <extra-block on="java" id="orange_wool"/>
-            <extra-block on="java" id="magenta_wool"/>
-            <extra-block on="java" id="light_blue_wool"/>
-            <extra-block on="java" id="yellow_wool"/>
-            <extra-block on="java" id="lime_wool"/>
-            <extra-block on="java" id="pink_wool"/>
-            <extra-block on="java" id="gray_wool"/>
-            <extra-block on="java" id="light_gray_wool"/>
-            <extra-block on="java" id="cyan_wool"/>
-            <extra-block on="java" id="purple_wool"/>
-            <extra-block on="java" id="blue_wool"/>
-            <extra-block on="java" id="brown_wool"/>
-            <extra-block on="java" id="green_wool"/>
-            <extra-block on="java" id="red_wool"/>
-            <extra-block on="java" id="black_wool"/>
+            <extra-block on="java" id="orange_wool"     inherit-properties="false"/>
+            <extra-block on="java" id="magenta_wool"    inherit-properties="false"/>
+            <extra-block on="java" id="light_blue_wool" inherit-properties="false"/>
+            <extra-block on="java" id="yellow_wool"     inherit-properties="false"/>
+            <extra-block on="java" id="lime_wool"       inherit-properties="false"/>
+            <extra-block on="java" id="pink_wool"       inherit-properties="false"/>
+            <extra-block on="java" id="gray_wool"       inherit-properties="false"/>
+            <extra-block on="java" id="light_gray_wool" inherit-properties="false"/>
+            <extra-block on="java" id="cyan_wool"       inherit-properties="false"/>
+            <extra-block on="java" id="purple_wool"     inherit-properties="false"/>
+            <extra-block on="java" id="blue_wool"       inherit-properties="false"/>
+            <extra-block on="java" id="brown_wool"      inherit-properties="false"/>
+            <extra-block on="java" id="green_wool"      inherit-properties="false"/>
+            <extra-block on="java" id="red_wool"        inherit-properties="false"/>
+            <extra-block on="java" id="black_wool"      inherit-properties="false"/>
         </block-type>
         <block-type id="yellow_flower" />
         <block-type id="red_flower" />
@@ -1700,21 +1696,21 @@
         <block-type id="carpet" java="white_carpet" java-requires-adapter="true">
             <uses-property named="dye_color" on-java="false"/>
 
-            <extra-block on="java" id="orange_carpet"/>
-            <extra-block on="java" id="magenta_carpet"/>
-            <extra-block on="java" id="light_blue_carpet"/>
-            <extra-block on="java" id="yellow_carpet"/>
-            <extra-block on="java" id="lime_carpet"/>
-            <extra-block on="java" id="pink_carpet"/>
-            <extra-block on="java" id="gray_carpet"/>
-            <extra-block on="java" id="light_gray_carpet"/>
-            <extra-block on="java" id="cyan_carpet"/>
-            <extra-block on="java" id="purple_carpet"/>
-            <extra-block on="java" id="blue_carpet"/>
-            <extra-block on="java" id="brown_carpet"/>
-            <extra-block on="java" id="green_carpet"/>
-            <extra-block on="java" id="red_carpet"/>
-            <extra-block on="java" id="black_carpet"/>
+            <extra-block on="java" id="orange_carpet"     inherit-properties="false"/>
+            <extra-block on="java" id="magenta_carpet"    inherit-properties="false"/>
+            <extra-block on="java" id="light_blue_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="yellow_carpet"     inherit-properties="false"/>
+            <extra-block on="java" id="lime_carpet"       inherit-properties="false"/>
+            <extra-block on="java" id="pink_carpet"       inherit-properties="false"/>
+            <extra-block on="java" id="gray_carpet"       inherit-properties="false"/>
+            <extra-block on="java" id="light_gray_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="cyan_carpet"       inherit-properties="false"/>
+            <extra-block on="java" id="purple_carpet"     inherit-properties="false"/>
+            <extra-block on="java" id="blue_carpet"       inherit-properties="false"/>
+            <extra-block on="java" id="brown_carpet"      inherit-properties="false"/>
+            <extra-block on="java" id="green_carpet"      inherit-properties="false"/>
+            <extra-block on="java" id="red_carpet"        inherit-properties="false"/>
+            <extra-block on="java" id="black_carpet"      inherit-properties="false"/>
         </block-type>
         <block-type id="double_plant" />
         <block-type id="daylight_detector_inverted" />
@@ -1737,40 +1733,40 @@
         <block-type id="concrete" java="white_concrete" java-requires-adapter="true">
             <uses-property named="dye_color" on-java="false"/>
 
-            <extra-block on="java" id="orange_concrete"/>
-            <extra-block on="java" id="magenta_concrete"/>
-            <extra-block on="java" id="light_blue_concrete"/>
-            <extra-block on="java" id="yellow_concrete"/>
-            <extra-block on="java" id="lime_concrete"/>
-            <extra-block on="java" id="pink_concrete"/>
-            <extra-block on="java" id="gray_concrete"/>
-            <extra-block on="java" id="light_gray_concrete"/>
-            <extra-block on="java" id="cyan_concrete"/>
-            <extra-block on="java" id="purple_concrete"/>
-            <extra-block on="java" id="blue_concrete"/>
-            <extra-block on="java" id="brown_concrete"/>
-            <extra-block on="java" id="green_concrete"/>
-            <extra-block on="java" id="red_concrete"/>
-            <extra-block on="java" id="black_concrete"/>
+            <extra-block on="java" id="orange_concrete"     inherit-properties="false"/>
+            <extra-block on="java" id="magenta_concrete"    inherit-properties="false"/>
+            <extra-block on="java" id="light_blue_concrete" inherit-properties="false"/>
+            <extra-block on="java" id="yellow_concrete"     inherit-properties="false"/>
+            <extra-block on="java" id="lime_concrete"       inherit-properties="false"/>
+            <extra-block on="java" id="pink_concrete"       inherit-properties="false"/>
+            <extra-block on="java" id="gray_concrete"       inherit-properties="false"/>
+            <extra-block on="java" id="light_gray_concrete" inherit-properties="false"/>
+            <extra-block on="java" id="cyan_concrete"       inherit-properties="false"/>
+            <extra-block on="java" id="purple_concrete"     inherit-properties="false"/>
+            <extra-block on="java" id="blue_concrete"       inherit-properties="false"/>
+            <extra-block on="java" id="brown_concrete"      inherit-properties="false"/>
+            <extra-block on="java" id="green_concrete"      inherit-properties="false"/>
+            <extra-block on="java" id="red_concrete"        inherit-properties="false"/>
+            <extra-block on="java" id="black_concrete"      inherit-properties="false"/>
         </block-type>
         <block-type id="concretepowder" java="white_concrete_powder" java-requires-adapter="true">
             <uses-property named="dye_color" on-java="false"/>
 
-            <extra-block on="java" id="orange_concrete_powder"/>
-            <extra-block on="java" id="magenta_concrete_powder"/>
-            <extra-block on="java" id="light_blue_concrete_powder"/>
-            <extra-block on="java" id="yellow_concrete_powder"/>
-            <extra-block on="java" id="lime_concrete_powder"/>
-            <extra-block on="java" id="pink_concrete_powder"/>
-            <extra-block on="java" id="gray_concrete_powder"/>
-            <extra-block on="java" id="light_gray_concrete_powder"/>
-            <extra-block on="java" id="cyan_concrete_powder"/>
-            <extra-block on="java" id="purple_concrete_powder"/>
-            <extra-block on="java" id="blue_concrete_powder"/>
-            <extra-block on="java" id="brown_concrete_powder"/>
-            <extra-block on="java" id="green_concrete_powder"/>
-            <extra-block on="java" id="red_concrete_powder"/>
-            <extra-block on="java" id="black_concrete_powder"/>
+            <extra-block on="java" id="orange_concrete_powder"     inherit-properties="false"/>
+            <extra-block on="java" id="magenta_concrete_powder"    inherit-properties="false"/>
+            <extra-block on="java" id="light_blue_concrete_powder" inherit-properties="false"/>
+            <extra-block on="java" id="yellow_concrete_powder"     inherit-properties="false"/>
+            <extra-block on="java" id="lime_concrete_powder"       inherit-properties="false"/>
+            <extra-block on="java" id="pink_concrete_powder"       inherit-properties="false"/>
+            <extra-block on="java" id="gray_concrete_powder"       inherit-properties="false"/>
+            <extra-block on="java" id="light_gray_concrete_powder" inherit-properties="false"/>
+            <extra-block on="java" id="cyan_concrete_powder"       inherit-properties="false"/>
+            <extra-block on="java" id="purple_concrete_powder"     inherit-properties="false"/>
+            <extra-block on="java" id="blue_concrete_powder"       inherit-properties="false"/>
+            <extra-block on="java" id="brown_concrete_powder"      inherit-properties="false"/>
+            <extra-block on="java" id="green_concrete_powder"      inherit-properties="false"/>
+            <extra-block on="java" id="red_concrete_powder"        inherit-properties="false"/>
+            <extra-block on="java" id="black_concrete_powder"      inherit-properties="false"/>
         </block-type>
         <block-type id="chemistry_table" />
         <block-type id="underwater_torch" />
@@ -1906,13 +1902,77 @@
             <extra-block on="bedrock" id="element_117" inherit-properties="false" />
             <extra-block on="bedrock" id="element_118" inherit-properties="false" />
         </block-type>
-        <block-type id="coral" />
-        <block-type id="coral_block" />
-        <block-type id="coral_fan" />
-        <block-type id="coral_fan_dead" />
-        <block-type id="coral_fan_hang" />
-        <block-type id="coral_fan_hang2" />
-        <block-type id="coral_fan_hang3" />
+        <block-type id="coral" java-requires-adapter="true" bedrock-requires-adapter="true" java="tube_coral">
+            <uses-property named="coral_color" on-java="false"/>
+            <uses-property named="coral_dead"  on-java="false"/>
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false"/>
+
+            <extra-block on="java" id="tube_coral"       />
+            <extra-block on="java" id="brain_coral"      />
+            <extra-block on="java" id="bubble_coral"     />
+            <extra-block on="java" id="fire_coral"       />
+            <extra-block on="java" id="horn_coral"       />
+            <extra-block on="java" id="dead_tube_coral"  />
+            <extra-block on="java" id="dead_brain_coral" />
+            <extra-block on="java" id="dead_bubble_coral"/>
+            <extra-block on="java" id="dead_fire_coral"  />
+            <extra-block on="java" id="dead_horn_coral"  />
+        </block-type>
+        <block-type id="coral_block" java-requires-adapter="true" java="tube_coral_block">
+            <uses-property named="coral_color" on-java="false"/>
+            <uses-property named="coral_dead"  on-java="false"/>
+
+            <extra-block on="java" id="tube_coral_block"       />
+            <extra-block on="java" id="brain_coral_block"      />
+            <extra-block on="java" id="bubble_coral_block"     />
+            <extra-block on="java" id="fire_coral_block"       />
+            <extra-block on="java" id="horn_coral_block"       />
+            <extra-block on="java" id="dead_tube_coral_block"  />
+            <extra-block on="java" id="dead_brain_coral_block" />
+            <extra-block on="java" id="dead_bubble_coral_block"/>
+            <extra-block on="java" id="dead_fire_coral_block"  />
+            <extra-block on="java" id="dead_horn_coral_block"  />
+        </block-type>
+        <block-type id="coral_fan" java-requires-adapter="true" bedrock-requires-adapter="true" java="tube_coral_fan">
+            <uses-property named="coral_color"         on-java="false"/>
+            <uses-property named="coral_dead"          on-java="false" on-bedrock="false"/>
+            <uses-property named="coral_fan_direction" on-java="false"/>
+            <uses-property named="waterlogged"         on-bedrock="false" on-universal="false"/>
+
+            <extra-block on="bedrock" id="coral_fan_dead" inherit-properties="false"/>
+
+            <extra-block on="java" id="tube_coral_fan"       />
+            <extra-block on="java" id="brain_coral_fan"      />
+            <extra-block on="java" id="bubble_coral_fan"     />
+            <extra-block on="java" id="fire_coral_fan"       />
+            <extra-block on="java" id="horn_coral_fan"       />
+            <extra-block on="java" id="dead_tube_coral_fan"  />
+            <extra-block on="java" id="dead_brain_coral_fan" />
+            <extra-block on="java" id="dead_bubble_coral_fan"/>
+            <extra-block on="java" id="dead_fire_coral_fan"  />
+            <extra-block on="java" id="dead_horn_coral_fan"  />
+        </block-type>
+        <block-type id="coral_wall_fan" java-requires-adapter="true" bedrock-requires-adapter="true" java="tube_coral_wall_fan" bedrock="coral_fan_hang">
+            <uses-property named="coral_direction"/>
+            <uses-property named="coral_color"         on-java="false" on-bedrock="false"/>
+            <uses-property named="coral_dead"          on-java="false"/>
+            <uses-property named="coral_hang_type_bit" on-java="false" on-universal="false"/>
+            <uses-property named="waterlogged"         on-bedrock="false" on-universal="false"/>
+
+            <extra-block on="bedrock" id="coral_fan_hang2"/>
+            <extra-block on="bedrock" id="coral_fan_hang3"/>
+            
+            <extra-block on="java" id="tube_coral_wall_fan"       />
+            <extra-block on="java" id="brain_coral_wall_fan"      />
+            <extra-block on="java" id="bubble_coral_wall_fan"     />
+            <extra-block on="java" id="fire_coral_wall_fan"       />
+            <extra-block on="java" id="horn_coral_wall_fan"       />
+            <extra-block on="java" id="dead_tube_coral_wall_fan"  />
+            <extra-block on="java" id="dead_brain_coral_wall_fan" />
+            <extra-block on="java" id="dead_bubble_coral_wall_fan"/>
+            <extra-block on="java" id="dead_fire_coral_wall_fan"  />
+            <extra-block on="java" id="dead_horn_coral_wall_fan"  />
+        </block-type>
         <block-type id="stone_slab3" />
         <block-type id="stone_slab4" />
         <block-type id="double_stone_slab3" />
