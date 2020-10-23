@@ -34,10 +34,12 @@ internal val NbtTag?.compoundOrNull get() = this as? NbtCompound
 internal val NbtTag?.booleanOrNull get() = if (this !is NbtByte) null else signed == 1.toByte()
 
 internal val NbtTag?.nbtIntListOrNull get() = (this as? NbtList<*>)?.castNullable<NbtInt>()
+internal val NbtTag?.nbtDoubleListOrNull get() = (this as? NbtList<*>)?.castNullable<NbtDouble>()
 internal val NbtTag?.nbtStringListOrNull get() = (this as? NbtList<*>)?.castNullable<NbtString>()
 internal val NbtTag?.compoundListOrNull get() = (this as? NbtList<*>)?.castNullable<NbtCompound>()
 
 internal val NbtTag?.intListOrNull get() = nbtIntListOrNull?.map { it.value }
+internal val NbtTag?.doubleListOrNull get() = nbtDoubleListOrNull?.map { it.value }
 internal val NbtTag?.stringListOrNull get() = nbtStringListOrNull?.map { it.value }
 
 internal val NbtTag?.uByte get() = checkNotNull(uByteOrNull)

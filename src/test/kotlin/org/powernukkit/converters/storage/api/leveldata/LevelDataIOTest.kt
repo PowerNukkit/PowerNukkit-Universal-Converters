@@ -22,12 +22,14 @@ import org.junit.jupiter.api.Test
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
+import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.storage.api.Dialect
 import org.powernukkit.converters.storage.api.StorageEngine
 import org.powernukkit.version.Version
 import java.io.File
 import java.time.Instant
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 /**
@@ -74,6 +76,73 @@ internal class LevelDataIOTest {
             assertEquals(5.0, borderWarningBlocks)
             assertEquals(15.0, borderWarningTime)
             assertEquals("Novo mundo", levelName)
+
+            assertEquals(true, endDimensionData?.dragonKilled)
+            assertEquals(true, endDimensionData?.dragonPreviouslyKilled)
+            assertEquals(
+                listOf(13, 15, 0, 17, 12, 11, 7, 19, 2, 4, 1, 14, 16, 6, 10, 9, 18, 8, 3, 5),
+                endDimensionData?.gateways
+            )
+
+            assertEquals(
+                VanillaGameRule.values()
+                    .filter { it.inJava }
+                    .associate { it.name to it.defaultJavaStringValue },
+                gameRules
+            )
+
+            assertEquals(emptyList(), disabledDataPacks)
+            assertEquals(listOf("vanilla"), enabledDataPacks)
+
+            assertEquals(Version("1.16.3"), versionData?.lastOpenedWithVersion)
+            assertEquals(false, versionData?.isSnapshot)
+            assertEquals(2580, versionData?.minecraftVersionId)
+
+            assertEquals(7717606393361711299L, randomSeed)
+            assertEquals(true, mapFeatures)
+            assertEquals(false, bonusChest)
+
+            val overworldId = NamespacedId("minecraft:overworld")
+            val netherId = NamespacedId("minecraft:the_nether")
+            val endId = NamespacedId("minecraft:the_end")
+
+            val dims = assertNotNull(dimensionGeneratorSettings)
+            assertEquals(setOf(overworldId, netherId, endId), dims.keys)
+
+            with(assertNotNull(dims[overworldId])) {
+                assertEquals(overworldId, dimensionType)
+
+                assertEquals(NamespacedId("minecraft:noise"), generatorType)
+                assertEquals(overworldId.toString(), settingsPreset)
+                assertEquals(7717606393361711299L, generatorSeed)
+
+                assertEquals(NamespacedId("minecraft:vanilla_layered"), biomeSource?.biomeSourceType)
+                assertEquals(7717606393361711299L, biomeSource?.biomeSeed)
+                assertEquals(false, biomeSource?.largeBiomes)
+            }
+
+            with(assertNotNull(dims[endId])) {
+                assertEquals(endId, dimensionType)
+
+                assertEquals(NamespacedId("minecraft:noise"), generatorType)
+                assertEquals("minecraft:end", settingsPreset)
+                assertEquals(7717606393361711299L, generatorSeed)
+
+                assertEquals(endId, biomeSource?.biomeSourceType)
+                assertEquals(7717606393361711299L, biomeSource?.biomeSeed)
+            }
+
+            with(assertNotNull(dims[netherId])) {
+                assertEquals(netherId, dimensionType)
+
+                assertEquals(NamespacedId("minecraft:noise"), generatorType)
+                assertEquals("minecraft:nether", settingsPreset)
+                assertEquals(7717606393361711299L, generatorSeed)
+
+                assertEquals(NamespacedId("minecraft:multi_noise"), biomeSource?.biomeSourceType)
+                assertEquals(NamespacedId("minecraft:nether"), biomeSource?.biomePreset)
+                assertEquals(7717606393361711299L, biomeSource?.biomeSeed)
+            }
         }
     }
 

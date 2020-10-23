@@ -23,6 +23,7 @@ package org.powernukkit.converters.storage.api.leveldata.model
  * @since 2020-10-20
  */
 data class BiomeParametersData(
+    val biome: String?,
     val altitude: Float?,
     val humidity: Float?,
     val offset: Float?,

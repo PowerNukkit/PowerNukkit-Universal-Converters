@@ -29,10 +29,7 @@ import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.storage.api.Dialect
 import org.powernukkit.converters.storage.api.StorageEngine
-import org.powernukkit.converters.storage.api.leveldata.model.CustomBossData
-import org.powernukkit.converters.storage.api.leveldata.model.EndDimensionData
-import org.powernukkit.converters.storage.api.leveldata.model.LevelData
-import org.powernukkit.converters.storage.api.leveldata.model.LevelVersionData
+import org.powernukkit.converters.storage.api.leveldata.model.*
 import org.powernukkit.version.Version
 import java.awt.image.BufferedImage
 import java.io.File
@@ -300,7 +297,8 @@ object LevelDataIO {
 
                 bonusChest = bonusChest
                     ?: levelData["WorldGenSettings"]["bonus_chest"].booleanOrNull,
-                //TODO dimensionGeneratorSettings
+                dimensionGeneratorSettings = dimensionGeneratorSettings
+                    ?: levelData["WorldGenSettings"]["dimensions"].compoundOrNull?.let(::parseJavaWorldGenSettings),
 
                 // Since JE 1.16.3
                 spawnAngle = spawnAngle
@@ -438,6 +436,55 @@ object LevelDataIO {
             )
         }
     }
+
+    private fun parseJavaWorldGenSettings(dimensions: NbtCompound): Map<NamespacedId, DimensionGeneratorData> {
+        return dimensions.entries.asSequence()
+            .filter { (_, genTag) ->
+                genTag is NbtCompound && genTag["generator"] is NbtCompound
+            }
+            .associate { (name, genTag) ->
+                NamespacedId(name) to parseJavaGenTag(genTag["generator"].compound, genTag["type"].stringOrNull)
+            }
+    }
+
+    private fun parseJavaGenTag(genTag: NbtCompound, dimType: String?) = DimensionGeneratorData(
+        generatorType = genTag["type"].stringOrNull?.let(::NamespacedId),
+        settingsPreset = genTag["settings"].stringOrNull,
+        generatorSeed = genTag["seed"].longOrNull,
+        customSettings = genTag["settings"].compoundOrNull,
+        biomeSource = genTag["biome_source"].compoundOrNull?.let(::parseJavaBiomeSource),
+        dimensionType = dimType?.let(::NamespacedId)
+    )
+
+    private fun parseJavaBiomeSource(source: NbtCompound) = BiomeGeneratorData(
+        biomeSourceType = source["type"].stringOrNull?.let(::NamespacedId),
+        biomeSeed = source["seed"].longOrNull,
+        largeBiomes = source["large_biomes"].booleanOrNull,
+        biomePreset = source["preset"].stringOrNull?.let(::NamespacedId),
+        legacyBiomeInitLayer = source["legacy_biome_init_layer "].booleanOrNull,
+        biomesList = source["biomes"].stringListOrNull?.map(::NamespacedId),
+        biomeParameters = source["biomes"].compoundListOrNull?.map(::parseJavaBiomeMultiNoiseParam),
+        altitudeNoise = source["altitude_noise"].compoundOrNull?.let(::parseJavaNoiseParam),
+        humidityNoise = source["humidity_noise"].compoundOrNull?.let(::parseJavaNoiseParam),
+        temperatureNoise = source["temperature_noise"].compoundOrNull?.let(::parseJavaNoiseParam),
+        weirdnessNoise = source["weirdness_noise"].compoundOrNull?.let(::parseJavaNoiseParam),
+        scale = source["scale"].intOrNull,
+        fixedBiomeId = source["biome"].stringOrNull?.let(::NamespacedId)
+    )
+
+    private fun parseJavaBiomeMultiNoiseParam(params: NbtCompound) = BiomeParametersData(
+        biome = params["biome"].stringOrNull,
+        altitude = params["params"]["altitude"].floatOrNull,
+        humidity = params["params"]["humidity"].floatOrNull,
+        offset = params["params"]["offset"].floatOrNull,
+        temperature = params["params"]["temperature"].floatOrNull,
+        weirdness = params["params"]["weirdness"].floatOrNull,
+    )
+
+    private fun parseJavaNoiseParam(noise: NbtCompound) = NoiseSettingsData(
+        firstOctave = noise["firstOctave"].intOrNull,
+        amplitudes = noise["amplitudes"].doubleListOrNull,
+    )
 
     private fun bedrockVersion(version: NbtList<NbtInt>): Version {
         return Version(buildString {
