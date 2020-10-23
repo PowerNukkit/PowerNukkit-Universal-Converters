@@ -125,13 +125,29 @@ object LevelDataIO {
             return true
         }
 
-        if (detectByGameRule(StorageEngine.ANVIL)) {
+        val suspectingStorageEngine = detectJavaStorageEngine(completedData)
+        if (detectByGameRule(suspectingStorageEngine)) {
             return completedData
         }
 
         completedData = parseBedrockEditionLevelData(levelData, javaParse.versionData, javaParse, false)
         detectByGameRule(StorageEngine.LEVELDB)
         return completedData
+    }
+
+    private fun detectJavaStorageEngine(currentLevelData: LevelData) = with(currentLevelData) {
+        if (levelName == null && sizeOnDisk?.let { it > 0 } == true && versionData?.nbtVersionTag == null
+            && copy(
+                versionData = null, dataFile = null, storageEngine = null, dialect = null, folder = null
+            ) == LevelData(
+                spawn = spawn, lastPlayed = lastPlayed, randomSeed = randomSeed, sizeOnDisk = sizeOnDisk,
+                time = time
+            )
+        ) {
+            StorageEngine.ALPHA
+        } else {
+            StorageEngine.ANVIL
+        }
     }
 
     private fun parsePocketMineLevelData(levelData: NbtCompound, current: LevelData) = with(current) {
@@ -549,7 +565,10 @@ object LevelDataIO {
         return when (version?.minecraftEdition) {
             MinecraftEdition.BEDROCK -> parseBedrockEditionLevelData(levelData, version, forSure = true)
             MinecraftEdition.JAVA -> with(parseJavaEditionLevelData(levelData, version)) {
-                copy(dialect = dialect ?: Dialect.VANILLA_JAVA_EDITION)
+                copy(
+                    dialect = dialect ?: Dialect.VANILLA_JAVA_EDITION,
+                    storageEngine = storageEngine ?: detectJavaStorageEngine(this)
+                )
             }
             null -> parseUndefinedEditionLevelData(levelData, version, nbtFile)
             MinecraftEdition.UNIVERSAL -> throw UnsupportedOperationException("Universal don't persist files")

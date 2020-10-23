@@ -45,6 +45,7 @@ internal class LevelDataIOTest {
         with(java) {
             assertEquals(MinecraftEdition.JAVA, versionData?.minecraftEdition)
             assertEquals(Dialect.VANILLA_JAVA_EDITION, dialect)
+            assertEquals(StorageEngine.ANVIL, storageEngine)
             assertEquals(emptyList<Any>(), scheduledEvents)
             assertEquals(listOf("vanilla"), serverBrands)
             assertEquals(false, allowCommands)

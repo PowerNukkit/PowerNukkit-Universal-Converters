@@ -77,7 +77,7 @@ data class LevelData(
     val thunderTime: Int? = null,
 
     // Since JE Beta 1.8
-    val gameType: Int?,
+    val gameType: Int? = null,
     val mapFeatures: Boolean? = null,
 
     // Since JE 1.0
