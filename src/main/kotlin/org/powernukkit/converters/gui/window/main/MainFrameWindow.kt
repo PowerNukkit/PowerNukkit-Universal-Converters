@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui.main
+package org.powernukkit.converters.gui.window.main
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import org.powernukkit.converters.ui.WorldConverterGUI
+import org.powernukkit.converters.gui.WorldConverterGUI
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.WindowAdapter

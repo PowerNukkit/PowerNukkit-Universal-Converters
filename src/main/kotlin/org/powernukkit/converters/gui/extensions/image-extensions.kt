@@ -16,36 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui.extensions
+package org.powernukkit.converters.gui.extensions
 
-import java.awt.Color
-import java.awt.Cursor
-import java.awt.Desktop
-import java.awt.Insets
-import java.net.URI
-import javax.swing.JButton
-import javax.swing.SwingConstants
-
+import java.awt.Image
+import java.awt.image.BufferedImage
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-fun <B : JButton> B.labelUri(uri: String): B {
-    horizontalAlignment = SwingConstants.LEFT
-    isBorderPainted = false
-    isOpaque = false
-    background = Color.WHITE
-    toolTipText = uri
-
-    cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-    margin = Insets(0, 0, 0, 0)
-    isContentAreaFilled = false
-
-    addActionListener {
-        if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().browse(URI(uri))
-        }
-    }
-    return this
-}
+fun BufferedImage.scaleDown(percentage: Double, hints: Int = Image.SCALE_SMOOTH) =
+    getScaledInstance((width * percentage).toInt(), (height * percentage).toInt(), hints)

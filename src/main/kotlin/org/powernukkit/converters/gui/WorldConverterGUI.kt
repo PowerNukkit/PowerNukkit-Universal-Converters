@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui
+package org.powernukkit.converters.gui
 
 import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.CoroutineName
@@ -24,7 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.swing.Swing
-import org.powernukkit.converters.ui.main.MainFrameWindow
+import org.powernukkit.converters.gui.window.main.MainFrameWindow
 import java.util.*
 import javax.imageio.ImageIO
 

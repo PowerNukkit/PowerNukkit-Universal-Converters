@@ -16,22 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui.extensions
+package org.powernukkit.converters.gui.extensions
 
-import java.awt.event.ActionEvent
-import javax.swing.AbstractAction
-import javax.swing.Icon
+import java.util.*
 
 /**
  * @author joserobjr
- * @since 2020-10-23
+ * @since 2020-11-12
  */
-inline fun action(
-    name: String,
-    icon: Icon? = null,
-    crossinline operation: AbstractAction.(event: ActionEvent) -> Unit
-) = object : AbstractAction(name, icon) {
-    override fun actionPerformed(e: ActionEvent) {
-        operation(e)
+inline fun ResourceBundle.getMessage(key: String, fallback: (key: String) -> String? = { null }): String? {
+    return if (containsKey(key)) {
+        getString(key)
+    } else {
+        fallback(key)
     }
 }

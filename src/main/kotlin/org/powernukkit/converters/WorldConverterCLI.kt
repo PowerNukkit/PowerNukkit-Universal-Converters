@@ -27,6 +27,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
 import kotlinx.coroutines.swing.Swing
 import org.powernukkit.converters.conversion.converter.ConversionProblem
+import org.powernukkit.converters.gui.WorldConverterGUI
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.block.ImmutableStructure
@@ -34,7 +35,6 @@ import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
-import org.powernukkit.converters.ui.WorldConverterGUI
 import java.util.*
 import javax.swing.UIManager
 

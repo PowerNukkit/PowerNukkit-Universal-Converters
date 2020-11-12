@@ -16,28 +16,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui.extensions
+package org.powernukkit.converters.gui.extensions
 
-import kotlin.math.max
+import java.awt.Color
+import java.awt.Cursor
+import java.awt.Desktop
+import java.awt.Insets
+import java.net.URI
+import javax.swing.JButton
+import javax.swing.SwingConstants
+
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-val String.htmlEncoded: String
-    get() = buildString(max(16, length)) {
-        this@htmlEncoded.forEach { char ->
-            when (char) {
-                '"', '\'', '<', '>', '&' -> append("&#").append(char.toInt()).append(';')
-                else ->
-                    char.toInt().let { int ->
-                        if (int > 127) append("&#").append(int).append(';')
-                        else append(char)
-                    }
-            }
+fun <B : JButton> B.labelUri(uri: String): B {
+    horizontalAlignment = SwingConstants.LEFT
+    isBorderPainted = false
+    isOpaque = false
+    background = Color.WHITE
+    toolTipText = uri
+
+    cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+    margin = Insets(0, 0, 0, 0)
+    isContentAreaFilled = false
+
+    addActionListener {
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(URI(uri))
         }
     }
-
-val String.noHtml get() = "<html>$htmlEncoded</html>"
-val String.lineBreaks get() = replace("\n", "<br>")
-val String.autoWrapping get() = "<html><p>$this</p></html>"
+    return this
+}

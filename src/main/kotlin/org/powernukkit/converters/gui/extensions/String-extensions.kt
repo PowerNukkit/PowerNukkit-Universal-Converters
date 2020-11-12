@@ -16,18 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui.extensions
+package org.powernukkit.converters.gui.extensions
 
-import java.util.*
+import kotlin.math.max
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-inline fun ResourceBundle.getMessage(key: String, fallback: (key: String) -> String? = { null }): String? {
-    return if (containsKey(key)) {
-        getString(key)
-    } else {
-        fallback(key)
+val String.htmlEncoded: String
+    get() = buildString(max(16, length)) {
+        this@htmlEncoded.forEach { char ->
+            when (char) {
+                '"', '\'', '<', '>', '&' -> append("&#").append(char.toInt()).append(';')
+                else ->
+                    char.toInt().let { int ->
+                        if (int > 127) append("&#").append(int).append(';')
+                        else append(char)
+                    }
+            }
+        }
     }
-}
+
+val String.noHtml get() = "<html>$htmlEncoded</html>"
+val String.lineBreaks get() = replace("\n", "<br>")
+val String.autoWrapping get() = "<html><p>$this</p></html>"

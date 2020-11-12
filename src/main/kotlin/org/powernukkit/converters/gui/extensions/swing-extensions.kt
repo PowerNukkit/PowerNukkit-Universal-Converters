@@ -16,14 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui.extensions
+package org.powernukkit.converters.gui.extensions
 
-import java.awt.Image
-import java.awt.image.BufferedImage
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
+import javax.swing.Icon
 
 /**
  * @author joserobjr
- * @since 2020-11-12
+ * @since 2020-10-23
  */
-fun BufferedImage.scaleDown(percentage: Double, hints: Int = Image.SCALE_SMOOTH) =
-    getScaledInstance((width * percentage).toInt(), (height * percentage).toInt(), hints)
+inline fun action(
+    name: String,
+    icon: Icon? = null,
+    crossinline operation: AbstractAction.(event: ActionEvent) -> Unit
+) = object : AbstractAction(name, icon) {
+    override fun actionPerformed(e: ActionEvent) {
+        operation(e)
+    }
+}

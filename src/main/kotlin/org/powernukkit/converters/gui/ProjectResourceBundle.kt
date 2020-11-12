@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui
+package org.powernukkit.converters.gui
 
 import com.github.michaelbull.logging.InlineLogger
-import org.powernukkit.converters.ui.extensions.getMessage
+import org.powernukkit.converters.gui.extensions.getMessage
 import java.util.*
 
 /**
