@@ -19,7 +19,8 @@
 package org.powernukkit.converters.ui.main
 
 import org.powernukkit.converters.WorldConverterAPI
-import org.powernukkit.converters.ui.*
+import org.powernukkit.converters.ui.WorldConverterGUI
+import org.powernukkit.converters.ui.extensions.*
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.KeyEvent

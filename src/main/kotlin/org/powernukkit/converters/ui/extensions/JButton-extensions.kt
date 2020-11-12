@@ -16,37 +16,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui
+package org.powernukkit.converters.ui.extensions
 
-import javax.swing.JLabel
+import java.awt.Color
+import java.awt.Cursor
+import java.awt.Desktop
+import java.awt.Insets
+import java.net.URI
+import javax.swing.JButton
+import javax.swing.SwingConstants
+
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-fun <L : JLabel> L.makeMultiline(): L {
-    val adjusted = text
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace("\n", "<br/>")
+fun <B : JButton> B.labelUri(uri: String): B {
+    horizontalAlignment = SwingConstants.LEFT
+    isBorderPainted = false
+    isOpaque = false
+    background = Color.WHITE
+    toolTipText = uri
 
-    text = "<html>$adjusted</html>"
+    cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+    margin = Insets(0, 0, 0, 0)
+    isContentAreaFilled = false
+
+    addActionListener {
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(URI(uri))
+        }
+    }
     return this
 }
-
-var JLabel.multilineText: String
-    get() {
-        var current = text
-        if (!current.startsWith("<html>") || !current.endsWith("</html>")) {
-            return text
-        }
-        current = current.substring(6, current.length - 7)
-            .replace("<br/>", "\n")
-            .replace("&gt;", ">")
-            .replace("&lt;", "<")
-        return current
-    }
-    set(value) {
-        text = value
-        makeMultiline()
-    }

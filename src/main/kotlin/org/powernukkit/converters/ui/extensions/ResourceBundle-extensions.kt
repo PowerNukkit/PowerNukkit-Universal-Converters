@@ -16,36 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui
+package org.powernukkit.converters.ui.extensions
 
-import java.awt.Color
-import java.awt.Cursor
-import java.awt.Desktop
-import java.awt.Insets
-import java.net.URI
-import javax.swing.JButton
-import javax.swing.SwingConstants
-
+import java.util.*
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-fun <B : JButton> B.labelUri(uri: String): B {
-    horizontalAlignment = SwingConstants.LEFT
-    isBorderPainted = false
-    isOpaque = false
-    background = Color.WHITE
-    toolTipText = uri
-
-    cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-    margin = Insets(0, 0, 0, 0)
-    isContentAreaFilled = false
-
-    addActionListener {
-        if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().browse(URI(uri))
-        }
+inline fun ResourceBundle.getMessage(key: String, fallback: (key: String) -> String? = { null }): String? {
+    return if (containsKey(key)) {
+        getString(key)
+    } else {
+        fallback(key)
     }
-    return this
 }

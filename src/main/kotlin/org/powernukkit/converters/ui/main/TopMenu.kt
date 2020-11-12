@@ -23,6 +23,7 @@ import kotlinx.coroutines.swing.Swing
 import kotlinx.coroutines.withContext
 import org.powernukkit.converters.ui.ProjectResourceBundle
 import org.powernukkit.converters.ui.WorldConverterGUI
+import org.powernukkit.converters.ui.extensions.action
 import java.awt.Image
 import javax.swing.ImageIcon
 import javax.swing.JMenu

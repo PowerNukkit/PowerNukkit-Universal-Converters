@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui
+package org.powernukkit.converters.ui.extensions
 
 import java.awt.Image
 import java.awt.image.BufferedImage

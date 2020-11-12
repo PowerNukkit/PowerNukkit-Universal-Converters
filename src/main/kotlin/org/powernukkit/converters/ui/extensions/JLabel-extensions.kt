@@ -16,18 +16,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui
+package org.powernukkit.converters.ui.extensions
 
-import java.util.*
+import javax.swing.JLabel
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-inline fun ResourceBundle.getMessage(key: String, fallback: (key: String) -> String? = { null }): String? {
-    return if (containsKey(key)) {
-        getString(key)
-    } else {
-        fallback(key)
-    }
+fun <L : JLabel> L.makeMultiline(): L {
+    val adjusted = text
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\n", "<br/>")
+
+    text = "<html>$adjusted</html>"
+    return this
 }
+
+var JLabel.multilineText: String
+    get() {
+        var current = text
+        if (!current.startsWith("<html>") || !current.endsWith("</html>")) {
+            return text
+        }
+        current = current.substring(6, current.length - 7)
+            .replace("<br/>", "\n")
+            .replace("&gt;", ">")
+            .replace("&lt;", "<")
+        return current
+    }
+    set(value) {
+        text = value
+        makeMultiline()
+    }

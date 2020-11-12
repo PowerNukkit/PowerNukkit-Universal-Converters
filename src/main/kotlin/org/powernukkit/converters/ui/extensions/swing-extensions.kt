@@ -16,28 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.ui
+package org.powernukkit.converters.ui.extensions
 
-import kotlin.math.max
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
+import javax.swing.Icon
 
 /**
  * @author joserobjr
- * @since 2020-11-12
+ * @since 2020-10-23
  */
-val String.htmlEncoded: String
-    get() = buildString(max(16, length)) {
-        this@htmlEncoded.forEach { char ->
-            when (char) {
-                '"', '\'', '<', '>', '&' -> append("&#").append(char.toInt()).append(';')
-                else ->
-                    char.toInt().let { int ->
-                        if (int > 127) append("&#").append(int).append(';')
-                        else append(char)
-                    }
-            }
-        }
+inline fun action(
+    name: String,
+    icon: Icon? = null,
+    crossinline operation: AbstractAction.(event: ActionEvent) -> Unit
+) = object : AbstractAction(name, icon) {
+    override fun actionPerformed(e: ActionEvent) {
+        operation(e)
     }
-
-val String.noHtml get() = "<html>$htmlEncoded</html>"
-val String.lineBreaks get() = replace("\n", "<br>")
-val String.autoWrapping get() = "<html><p>$this</p></html>"
+}
