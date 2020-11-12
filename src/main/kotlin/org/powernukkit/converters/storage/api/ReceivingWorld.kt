@@ -18,20 +18,12 @@
 
 package org.powernukkit.converters.storage.api
 
-import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
-import org.powernukkit.converters.storage.anvil.AnvilStorageEngine
-import org.powernukkit.converters.storage.leveldb.LevelDBStorageEngine
-import org.powernukkit.converters.storage.pocketmine.PocketMineStorageEngine
-import org.powernukkit.converters.storage.region.McRegionsStorageEngine
+import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
- * @since 2020-10-19
+ * @since 2020-10-23
  */
-enum class StorageEngineType(val default: StorageEngine) {
-    ALPHA(AlphaStorageEngine()),
-    REGIONS(McRegionsStorageEngine()),
-    ANVIL(AnvilStorageEngine()),
-    POCKET_MINE(PocketMineStorageEngine()),
-    LEVELDB(LevelDBStorageEngine()),
+abstract class ReceivingWorld<P : Platform<P>> {
+    abstract val platform: P
 }

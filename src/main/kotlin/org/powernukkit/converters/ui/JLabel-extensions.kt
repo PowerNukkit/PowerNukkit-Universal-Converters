@@ -16,22 +16,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api
+package org.powernukkit.converters.ui
 
-import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
-import org.powernukkit.converters.storage.anvil.AnvilStorageEngine
-import org.powernukkit.converters.storage.leveldb.LevelDBStorageEngine
-import org.powernukkit.converters.storage.pocketmine.PocketMineStorageEngine
-import org.powernukkit.converters.storage.region.McRegionsStorageEngine
+import javax.swing.JLabel
 
 /**
  * @author joserobjr
- * @since 2020-10-19
+ * @since 2020-11-12
  */
-enum class StorageEngineType(val default: StorageEngine) {
-    ALPHA(AlphaStorageEngine()),
-    REGIONS(McRegionsStorageEngine()),
-    ANVIL(AnvilStorageEngine()),
-    POCKET_MINE(PocketMineStorageEngine()),
-    LEVELDB(LevelDBStorageEngine()),
+fun <L : JLabel> L.makeMultiline(): L {
+    val adjusted = text
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\n", "<br/>")
+
+    text = "<html>$adjusted</html>"
+    return this
 }
+
+var JLabel.multilineText: String
+    get() {
+        var current = text
+        if (!current.startsWith("<html>") || !current.endsWith("</html>")) {
+            return text
+        }
+        current = current.substring(6, current.length - 7)
+            .replace("<br/>", "\n")
+            .replace("&gt;", ">")
+            .replace("&lt;", "<")
+        return current
+    }
+    set(value) {
+        text = value
+        makeMultiline()
+    }

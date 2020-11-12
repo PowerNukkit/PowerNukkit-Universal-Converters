@@ -18,11 +18,14 @@
 
 package org.powernukkit.converters
 
+import com.github.michaelbull.logging.InlineLogger
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.selectUnbiased
+import kotlinx.coroutines.swing.Swing
 import org.powernukkit.converters.conversion.converter.ConversionProblem
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.NamespacedId
@@ -31,6 +34,8 @@ import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
+import org.powernukkit.converters.ui.WorldConverterGUI
+import javax.swing.UIManager
 
 /**
  * Executes the world conversion from the system's command line.
@@ -39,6 +44,8 @@ import org.powernukkit.converters.platform.universal.definitions.DefinitionLoade
  * @since 2020-10-09
  */
 object WorldConverterCLI {
+    private val log = InlineLogger()
+
     /**
      * The entry point of the command line interface.
      * @param args The arguments that was given in the command line.
@@ -46,6 +53,24 @@ object WorldConverterCLI {
     @ExperimentalCoroutinesApi
     @JvmStatic
     fun main(args: Array<String>) {
+        if (args.isEmpty()) {
+            runBlocking(Dispatchers.Swing) {
+                try {
+                    UIManager.setLookAndFeel(
+                        UIManager.getSystemLookAndFeelClassName()
+                    )
+                } catch (e: Exception) {
+                    log.warn(e) { "Could not change the UI look and feel" }
+                }
+                WorldConverterGUI()
+            }
+            return
+        }
+
+        // TODO CLI mode
+    }
+
+    private fun toyFun(args: Array<String>) {
         val universalPlatform = DefinitionLoader().loadBuiltin()
         val javaPlatform = JavaPlatform(universalPlatform)
         val bedrockPlatform = BedrockPlatform(universalPlatform)

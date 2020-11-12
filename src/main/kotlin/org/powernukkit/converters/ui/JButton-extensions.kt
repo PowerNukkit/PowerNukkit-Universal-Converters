@@ -16,22 +16,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api
+package org.powernukkit.converters.ui
 
-import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
-import org.powernukkit.converters.storage.anvil.AnvilStorageEngine
-import org.powernukkit.converters.storage.leveldb.LevelDBStorageEngine
-import org.powernukkit.converters.storage.pocketmine.PocketMineStorageEngine
-import org.powernukkit.converters.storage.region.McRegionsStorageEngine
+import java.awt.Color
+import java.awt.Desktop
+import java.awt.Insets
+import java.net.URI
+import javax.swing.JButton
+import javax.swing.SwingConstants
+
 
 /**
  * @author joserobjr
- * @since 2020-10-19
+ * @since 2020-11-12
  */
-enum class StorageEngineType(val default: StorageEngine) {
-    ALPHA(AlphaStorageEngine()),
-    REGIONS(McRegionsStorageEngine()),
-    ANVIL(AnvilStorageEngine()),
-    POCKET_MINE(PocketMineStorageEngine()),
-    LEVELDB(LevelDBStorageEngine()),
+fun <B : JButton> B.labelUri(uri: String): B {
+    horizontalAlignment = SwingConstants.LEFT
+    isBorderPainted = false
+    isOpaque = false
+    background = Color.WHITE
+    toolTipText = uri
+
+    //isFocusPainted = false
+    margin = Insets(0, 0, 0, 0)
+    isContentAreaFilled = false
+
+    addActionListener {
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(URI(uri))
+        }
+    }
+    return this
 }

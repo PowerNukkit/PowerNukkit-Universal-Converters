@@ -16,22 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api
+package org.powernukkit.converters.ui
 
-import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
-import org.powernukkit.converters.storage.anvil.AnvilStorageEngine
-import org.powernukkit.converters.storage.leveldb.LevelDBStorageEngine
-import org.powernukkit.converters.storage.pocketmine.PocketMineStorageEngine
-import org.powernukkit.converters.storage.region.McRegionsStorageEngine
+import java.awt.Image
+import java.awt.image.BufferedImage
 
 /**
  * @author joserobjr
- * @since 2020-10-19
+ * @since 2020-11-12
  */
-enum class StorageEngineType(val default: StorageEngine) {
-    ALPHA(AlphaStorageEngine()),
-    REGIONS(McRegionsStorageEngine()),
-    ANVIL(AnvilStorageEngine()),
-    POCKET_MINE(PocketMineStorageEngine()),
-    LEVELDB(LevelDBStorageEngine()),
-}
+fun BufferedImage.scaleDown(percentage: Double, hints: Int = Image.SCALE_SMOOTH) =
+    getScaledInstance((width * percentage).toInt(), (height * percentage).toInt(), hints)

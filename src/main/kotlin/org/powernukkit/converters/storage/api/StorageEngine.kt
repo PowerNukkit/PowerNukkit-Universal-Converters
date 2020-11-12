@@ -18,20 +18,25 @@
 
 package org.powernukkit.converters.storage.api
 
-import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
-import org.powernukkit.converters.storage.anvil.AnvilStorageEngine
-import org.powernukkit.converters.storage.leveldb.LevelDBStorageEngine
-import org.powernukkit.converters.storage.pocketmine.PocketMineStorageEngine
-import org.powernukkit.converters.storage.region.McRegionsStorageEngine
+import kotlinx.coroutines.Deferred
+import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.storage.api.leveldata.model.LevelData
+import java.io.File
 
 /**
  * @author joserobjr
- * @since 2020-10-19
+ * @since 2020-10-23
  */
-enum class StorageEngineType(val default: StorageEngine) {
-    ALPHA(AlphaStorageEngine()),
-    REGIONS(McRegionsStorageEngine()),
-    ANVIL(AnvilStorageEngine()),
-    POCKET_MINE(PocketMineStorageEngine()),
-    LEVELDB(LevelDBStorageEngine()),
+abstract class StorageEngine {
+    abstract suspend fun loadWorld(
+        fromDir: File,
+        levelData: LevelData,
+        universalPlatformLoader: Deferred<UniversalPlatform>
+    ): ProviderWorld<*>
+
+    abstract suspend fun prepareToReceive(
+        toFile: File,
+        fromWorld: Deferred<ProviderWorld<*>>,
+        universalPlatformLoader: Deferred<UniversalPlatform>
+    ): ReceivingWorld<*>
 }

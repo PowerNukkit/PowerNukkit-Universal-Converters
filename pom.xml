@@ -62,6 +62,7 @@
     <properties>
         <jvm.options>-Xjvm-default</jvm.options>
         <kotlin.version>1.4.10</kotlin.version>
+        <kotlinx.coroutines.version>1.4.0-M1</kotlinx.coroutines.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <kotlin.code.style>official</kotlin.code.style>
@@ -122,7 +123,12 @@
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
-            <version>1.4.0-M1</version>
+            <version>${kotlinx.coroutines.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-swing</artifactId>
+            <version>${kotlinx.coroutines.version}</version>
         </dependency>
         <dependency>
             <groupId>br.com.gamemods</groupId>

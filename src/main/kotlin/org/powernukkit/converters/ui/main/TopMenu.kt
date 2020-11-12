@@ -16,22 +16,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api
+package org.powernukkit.converters.ui.main
 
-import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
-import org.powernukkit.converters.storage.anvil.AnvilStorageEngine
-import org.powernukkit.converters.storage.leveldb.LevelDBStorageEngine
-import org.powernukkit.converters.storage.pocketmine.PocketMineStorageEngine
-import org.powernukkit.converters.storage.region.McRegionsStorageEngine
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
+import org.powernukkit.converters.ui.WorldConverterGUI
+import java.awt.Image
+import javax.swing.ImageIcon
+import javax.swing.JMenu
+import javax.swing.JMenuBar
+import javax.swing.JMenuItem
 
 /**
  * @author joserobjr
- * @since 2020-10-19
+ * @since 2020-10-23
  */
-enum class StorageEngineType(val default: StorageEngine) {
-    ALPHA(AlphaStorageEngine()),
-    REGIONS(McRegionsStorageEngine()),
-    ANVIL(AnvilStorageEngine()),
-    POCKET_MINE(PocketMineStorageEngine()),
-    LEVELDB(LevelDBStorageEngine()),
+internal class TopMenu(private val gui: WorldConverterGUI) {
+    val about = JMenuItem(action("About", gui.logo?.getScaledInstance(16, 16, Image.SCALE_FAST)?.let(::ImageIcon)) {
+        AboutDialog(gui)
+    })
+
+    val component = JMenuBar().apply {
+        add(JMenu("Help").apply {
+            add(about)
+        })
+    }
+
+    suspend fun loadIcons() = withContext(Dispatchers.Swing) {
+
+    }
 }

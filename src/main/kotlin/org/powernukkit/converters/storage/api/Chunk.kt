@@ -18,20 +18,22 @@
 
 package org.powernukkit.converters.storage.api
 
-import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
-import org.powernukkit.converters.storage.anvil.AnvilStorageEngine
-import org.powernukkit.converters.storage.leveldb.LevelDBStorageEngine
-import org.powernukkit.converters.storage.pocketmine.PocketMineStorageEngine
-import org.powernukkit.converters.storage.region.McRegionsStorageEngine
+import kotlinx.coroutines.flow.Flow
+import org.powernukkit.converters.math.BlockPos
+import org.powernukkit.converters.platform.api.Platform
+import org.powernukkit.converters.platform.api.block.PlatformBlock
+import org.powernukkit.converters.platform.api.block.PlatformStructure
 
 /**
  * @author joserobjr
- * @since 2020-10-19
+ * @since 2020-10-23
  */
-enum class StorageEngineType(val default: StorageEngine) {
-    ALPHA(AlphaStorageEngine()),
-    REGIONS(McRegionsStorageEngine()),
-    ANVIL(AnvilStorageEngine()),
-    POCKET_MINE(PocketMineStorageEngine()),
-    LEVELDB(LevelDBStorageEngine()),
+abstract class Chunk<P : Platform<P>> {
+    abstract val entityCount: Int
+    abstract val blockEntityCount: Int
+    abstract fun countNonAirBlocks(): Int
+
+    abstract fun structureFlow(): Flow<PlatformStructure<P>>
+
+    abstract operator fun get(blockInWorld: BlockPos): PlatformBlock<P>
 }
