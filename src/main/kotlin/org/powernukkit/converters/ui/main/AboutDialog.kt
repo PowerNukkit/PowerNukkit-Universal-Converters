@@ -31,7 +31,7 @@ import javax.swing.border.EmptyBorder
  * @since 2020-10-23
  */
 internal class AboutDialog(gui: WorldConverterGUI) {
-    private val lang = gui.loadBundle("lang.ui.dialog.about")
+    private val lang = gui.loadBundle("gui.dialog.about")
 
     private val okButton = JButton(action("OK") { dialog.dispose() })
     private val buttonsPanel = JPanel().apply {

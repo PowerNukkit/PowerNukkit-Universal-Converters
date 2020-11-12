@@ -28,10 +28,10 @@ import java.util.*
 class ProjectResourceBundle(val parents: List<ResourceBundle>) : ResourceBundle() {
     private val log = InlineLogger()
 
-    constructor(locale: Locale, baseName: String) : this(listOf(getBundle(baseName, locale)))
+    constructor(locale: Locale, baseName: String) : this(listOf(getBundle(PACKAGE_NAME + baseName, locale)))
     constructor(locale: Locale, baseName: String, parent: ResourceBundle) : this(
         listOf(
-            getBundle(baseName, locale),
+            getBundle(PACKAGE_NAME + baseName, locale),
             parent
         )
     )
@@ -107,5 +107,6 @@ class ProjectResourceBundle(val parents: List<ResourceBundle>) : ResourceBundle(
 
     companion object {
         private val KEY_PATTERN = Regex("""\{([a-z]+(?:\.[a-z]+))}""")
+        private const val PACKAGE_NAME = "org.powernukkit.converters.lang."
     }
 }

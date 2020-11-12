@@ -36,7 +36,7 @@ internal class MainFrameWindow(private val gui: WorldConverterGUI, parentJob: Jo
     private val job = Job(parentJob)
     override val coroutineContext = job + Dispatchers.Swing + CoroutineName("Main Frame")
 
-    val lang = gui.loadBundle("lang.ui.window.main")
+    val lang = gui.loadBundle("gui.window.main")
 
     private val topMenu = TopMenu(gui, lang)
 

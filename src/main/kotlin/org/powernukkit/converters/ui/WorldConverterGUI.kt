@@ -48,7 +48,7 @@ internal class WorldConverterGUI(val locale: Locale) : CoroutineScope {
             null
         }
 
-    val lang = ProjectResourceBundle(locale, "lang.ui.project")
+    val lang = ProjectResourceBundle(locale, "gui.project")
     val main = MainFrameWindow(this, job)
 
     init {
@@ -60,9 +60,7 @@ internal class WorldConverterGUI(val locale: Locale) : CoroutineScope {
         constructor: (commonLang: ProjectResourceBundle, name: String) -> ProjectResourceBundle = { lang, _ ->
             ProjectResourceBundle(locale, name, lang)
         }
-    ) = bundles.computeIfAbsent(name) { _ ->
-        constructor(lang, name)
-    }
+    ) = bundles.computeIfAbsent(name) { constructor(lang, name) }
 
     fun close() {
         job.cancel()
