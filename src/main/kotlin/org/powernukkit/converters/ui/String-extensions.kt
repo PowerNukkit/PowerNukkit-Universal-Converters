@@ -18,34 +18,26 @@
 
 package org.powernukkit.converters.ui
 
-import java.awt.Color
-import java.awt.Cursor
-import java.awt.Desktop
-import java.awt.Insets
-import java.net.URI
-import javax.swing.JButton
-import javax.swing.SwingConstants
-
+import kotlin.math.max
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-fun <B : JButton> B.labelUri(uri: String): B {
-    horizontalAlignment = SwingConstants.LEFT
-    isBorderPainted = false
-    isOpaque = false
-    background = Color.WHITE
-    toolTipText = uri
-
-    cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-    margin = Insets(0, 0, 0, 0)
-    isContentAreaFilled = false
-
-    addActionListener {
-        if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().browse(URI(uri))
+val String.htmlEncoded: String
+    get() = buildString(max(16, length)) {
+        this@htmlEncoded.forEach { char ->
+            when (char) {
+                '"', '\'', '<', '>', '&' -> append("&#").append(char.toInt()).append(';')
+                else ->
+                    char.toInt().let { int ->
+                        if (int > 127) append("&#").append(int).append(';')
+                        else append(char)
+                    }
+            }
         }
     }
-    return this
-}
+
+val String.noHtml get() = "<html>$htmlEncoded</html>"
+val String.lineBreaks get() = replace("\n", "<br>")
+val String.autoWrapping get() = "<html><p>$this</p></html>"

@@ -19,10 +19,7 @@
 package org.powernukkit.converters.ui.main
 
 import org.powernukkit.converters.WorldConverterAPI
-import org.powernukkit.converters.ui.WorldConverterGUI
-import org.powernukkit.converters.ui.labelUri
-import org.powernukkit.converters.ui.makeMultiline
-import org.powernukkit.converters.ui.scaleDown
+import org.powernukkit.converters.ui.*
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.KeyEvent
@@ -34,6 +31,8 @@ import javax.swing.border.EmptyBorder
  * @since 2020-10-23
  */
 internal class AboutDialog(gui: WorldConverterGUI) {
+    private val lang = gui.loadBundle("lang.ui.dialog.about")
+
     private val okButton = JButton(action("OK") { dialog.dispose() })
     private val buttonsPanel = JPanel().apply {
         add(okButton)
@@ -42,35 +41,30 @@ internal class AboutDialog(gui: WorldConverterGUI) {
     private val mainContentPanel = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         border = EmptyBorder(5, 15, 5, 5)
-        add(JLabel("<html><h1>Universal World Converter</h1></html>"))
-        add(JLabel("Convert any Minecraft world to any Minecraft server"))
+        add(JLabel("<html><h1>${lang["project.name"].htmlEncoded}</h1></html>"))
+        add(JLabel(lang["dialog.about.tagline"].noHtml))
         add(Box.createRigidArea(Dimension(0, 10)))
         add(JSeparator(SwingConstants.HORIZONTAL).apply { maximumSize = Dimension(Int.MAX_VALUE, 1) })
         add(Box.createRigidArea(Dimension(0, 10)))
-        add(
-            JLabel(
-                """This tool allows you to convert Minecraft worlds between different versions and editions,
-                    | a great effort has been done to preserve the integrity and details of the world's content but this
-                    | operation can be lossy depending on the conversion configurations and the source content.
-                    |
-                    | Worlds from modded saves are partially supported, meaning that modded content
-                    | may be replaced by something else or ignored.""".trimMargin()
-            ).makeMultiline()
-        )
+        add(JLabel("""<html><div WIDTH=400>${lang["dialog.about.description"].lineBreaks}</div></html>"""))
         add(Box.createRigidArea(Dimension(0, 10)))
         add(JSeparator(SwingConstants.HORIZONTAL).apply { maximumSize = Dimension(Int.MAX_VALUE, 1) })
         add(Box.createRigidArea(Dimension(0, 10)))
-        add(JLabel("<html><b>API Version:</b> ${WorldConverterAPI.VERSION}</html>"))
-        add(JLabel("<html><b>GUI Version:</b> ${WorldConverterAPI.VERSION}</html>"))
+        add(JLabel("<html><b>${lang["dialog.about.version.api.label"].htmlEncoded}:</b> ${WorldConverterAPI.VERSION}</html>"))
+        add(JLabel("<html><b>${lang["dialog.about.version.gui.label"].htmlEncoded}</b> ${WorldConverterGUI.VERSION}</html>"))
         add(Box.createRigidArea(Dimension(0, 10)))
         add(
-            JButton("<html><b>License:</b> <a href='https://www.gnu.org/licenses/agpl-3.0.html'>GNU Affero General Public License v3</a></html>")
-                .labelUri("https://www.gnu.org/licenses/agpl-3.0.html")
+            JButton(
+                "<html><b>${lang["dialog.about.license.label"].htmlEncoded}</b> " +
+                        "<a href='${lang["dialog.about.license.url"].htmlEncoded}'>${lang["dialog.about.license.name"].htmlEncoded}</a></html>"
+            )
+                .labelUri(lang["dialog.about.license.url"])
         )
         add(
-            JButton("<html><b>Source:</b> <a href='${WorldConverterGUI.SOURCE_URL}'>${WorldConverterGUI.SOURCE_URL}</a></html>")
+            JButton("<html><b>${lang["dialog.about.source.label"].htmlEncoded}</b> <a href='${WorldConverterGUI.SOURCE_URL}'>${WorldConverterGUI.SOURCE_URL}</a></html>")
                 .labelUri(WorldConverterGUI.SOURCE_URL)
         )
+        add(Box.createRigidArea(Dimension(0, 20)))
     }
 
     private val midPanel = JPanel(BorderLayout()).apply {
@@ -94,15 +88,16 @@ internal class AboutDialog(gui: WorldConverterGUI) {
         )
     }
 
-    private val dialog = JDialog(gui.main.frame, "About PowerNukkit Universal Converters").apply {
+    private val dialog = JDialog(gui.main.frame, lang["dialog.about.title"]).apply {
         defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
         isModal = true
-        minimumSize = Dimension(300, 150)
+        //preferredSize = Dimension(725, 370)
     }
 
     init {
         with(dialog) {
             contentPane = mainPanel
+            pack()
             pack()
             setLocationRelativeTo(owner)
             isResizable = false
@@ -110,6 +105,4 @@ internal class AboutDialog(gui: WorldConverterGUI) {
             isVisible = true
         }
     }
-
-    companion object
 }

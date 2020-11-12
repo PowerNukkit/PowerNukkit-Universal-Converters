@@ -36,9 +36,11 @@ internal class MainFrameWindow(private val gui: WorldConverterGUI, parentJob: Jo
     private val job = Job(parentJob)
     override val coroutineContext = job + Dispatchers.Swing + CoroutineName("Main Frame")
 
-    private val topMenu = TopMenu(gui)
+    val lang = gui.loadBundle("lang.ui.window.main")
 
-    val frame = JFrame("PowerNukkit Universal World Converter").apply {
+    private val topMenu = TopMenu(gui, lang)
+
+    val frame = JFrame(gui.lang["project.title"]).apply {
         launch {
             try {
                 job.join()

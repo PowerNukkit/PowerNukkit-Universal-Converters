@@ -35,6 +35,7 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
 import org.powernukkit.converters.ui.WorldConverterGUI
+import java.util.*
 import javax.swing.UIManager
 
 /**
@@ -62,7 +63,7 @@ object WorldConverterCLI {
                 } catch (e: Exception) {
                     log.warn(e) { "Could not change the UI look and feel" }
                 }
-                WorldConverterGUI()
+                WorldConverterGUI(Locale.getDefault())
             }
             return
         }

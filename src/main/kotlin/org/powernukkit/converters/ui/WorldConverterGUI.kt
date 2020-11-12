@@ -25,16 +25,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.swing.Swing
 import org.powernukkit.converters.ui.main.MainFrameWindow
+import java.util.*
 import javax.imageio.ImageIO
 
 /**
  * @author joserobjr
  * @since 2020-10-23
  */
-internal class WorldConverterGUI : CoroutineScope {
+internal class WorldConverterGUI(val locale: Locale) : CoroutineScope {
     private val log = InlineLogger()
     private val job = Job()
     override val coroutineContext = job + Dispatchers.Swing + CoroutineName("GUI")
+
+    private val bundles = mutableMapOf<String, ProjectResourceBundle>()
 
     val logo =
         try {
@@ -45,10 +48,20 @@ internal class WorldConverterGUI : CoroutineScope {
             null
         }
 
+    val lang = ProjectResourceBundle(locale, "lang.ui.project")
     val main = MainFrameWindow(this, job)
 
     init {
         main.show()
+    }
+
+    fun loadBundle(
+        name: String,
+        constructor: (commonLang: ProjectResourceBundle, name: String) -> ProjectResourceBundle = { lang, _ ->
+            ProjectResourceBundle(locale, name, lang)
+        }
+    ) = bundles.computeIfAbsent(name) { _ ->
+        constructor(lang, name)
     }
 
     fun close() {

@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.ui
 
+import com.github.michaelbull.logging.InlineLogger
 import java.util.*
 
 /**
@@ -25,9 +26,33 @@ import java.util.*
  * @since 2020-11-12
  */
 class ProjectResourceBundle(val parents: List<ResourceBundle>) : ResourceBundle() {
-    constructor(vararg parents: ResourceBundle) : this(parents.toList())
-    constructor(baseName: String, vararg parents: ResourceBundle) : this(getBundle(baseName), *parents)
-    constructor(vararg baseNames: String) : this(baseNames.map(ResourceBundle::getBundle))
+    private val log = InlineLogger()
+
+    constructor(locale: Locale, baseName: String) : this(listOf(getBundle(baseName, locale)))
+    constructor(locale: Locale, baseName: String, parent: ResourceBundle) : this(
+        listOf(
+            getBundle(baseName, locale),
+            parent
+        )
+    )
+
+    val allBundles: List<ResourceBundle> by lazy {
+        parents.asSequence()
+            .flatMap {
+                if (it is ProjectResourceBundle) {
+                    it.parents
+                } else {
+                    listOf(it)
+                }
+            }
+            .filter { it !is ProjectResourceBundle }
+            .distinct()
+            .toList()
+    }
+
+    val allBundlesNameList by lazy {
+        allBundles.asSequence().mapNotNull { it.baseBundleName }.distinct().joinToString()
+    }
 
     override fun handleGetObject(key: String): String? {
         val bundle = parents.firstOrNull { it.containsKey(key) } ?: return null
@@ -36,13 +61,15 @@ class ProjectResourceBundle(val parents: List<ResourceBundle>) : ResourceBundle(
             return rawValue
         }
 
+        val keys = keys.asSequence().toSet()
+
         var last = rawValue
         while (true) {
             val current = KEY_PATTERN.findAll(last)
                 .distinctBy { it.groupValues[1] }
                 .fold(last) { current, match ->
                     val matchedKey = match.groupValues[1]
-                    if (matchedKey == key || !containsKey(matchedKey)) {
+                    if (matchedKey == key || matchedKey !in keys) {
                         current
                     } else {
                         val keyValue = getString(matchedKey)
@@ -68,6 +95,15 @@ class ProjectResourceBundle(val parents: List<ResourceBundle>) : ResourceBundle(
             override fun nextElement() = iterator.next()
         }
     }
+
+    operator fun contains(key: String) = parents.any { it.containsKey(key) }
+    operator fun get(key: String) = getMessage(key) {
+        log.warn { "Resource bundle key $key not found in $allBundlesNameList" }
+        "{$key}"
+    } ?: throw MissingResourceException(
+        "Can´t find resource key in bundles $allBundlesNameList",
+        this::class.java.name, key
+    )
 
     companion object {
         private val KEY_PATTERN = Regex("""\{([a-z]+(?:\.[a-z]+))}""")

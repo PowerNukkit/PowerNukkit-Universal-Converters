@@ -21,6 +21,7 @@ package org.powernukkit.converters.ui.main
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.swing.Swing
 import kotlinx.coroutines.withContext
+import org.powernukkit.converters.ui.ProjectResourceBundle
 import org.powernukkit.converters.ui.WorldConverterGUI
 import java.awt.Image
 import javax.swing.ImageIcon
@@ -32,13 +33,16 @@ import javax.swing.JMenuItem
  * @author joserobjr
  * @since 2020-10-23
  */
-internal class TopMenu(private val gui: WorldConverterGUI) {
-    val about = JMenuItem(action("About", gui.logo?.getScaledInstance(16, 16, Image.SCALE_FAST)?.let(::ImageIcon)) {
+internal class TopMenu(private val gui: WorldConverterGUI, private val lang: ProjectResourceBundle) {
+    val about = JMenuItem(action(
+        lang["window.main.menu.top.help.about"],
+        gui.logo?.getScaledInstance(16, 16, Image.SCALE_FAST)?.let(::ImageIcon)
+    ) {
         AboutDialog(gui)
     })
 
     val component = JMenuBar().apply {
-        add(JMenu("Help").apply {
+        add(JMenu(lang["window.main.menu.top.help"]).apply {
             add(about)
         })
     }
