@@ -18,30 +18,25 @@
 
 package org.powernukkit.converters.gui.extensions
 
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.Font
+import java.awt.Image
+import java.awt.image.BufferedImage
+import javax.swing.ImageIcon
 
 /**
  * @author joserobjr
- * @since 2020-11-12
+ * @since 2020-11-13
  */
-fun <C : Component> C.withMax(width: Int? = null, height: Int? = null): C {
-    maximumSize = if (isMaximumSizeSet) {
-        Dimension(width ?: maximumSize.width, height ?: maximumSize.height)
-    } else {
-        Dimension(width ?: Int.MAX_VALUE, height ?: Int.MAX_VALUE)
-    }
-    return this
-}
+val Image.icon get() = ImageIcon(this)
 
-fun <C : Component> C.bold(bold: Boolean = true): C {
-    this.bold = bold
-    return this
-}
+fun Image.buffered(): BufferedImage {
+    // Create a buffered image with transparency
+    val bimage = BufferedImage(getWidth(null), getHeight(null), BufferedImage.TYPE_INT_ARGB)
 
-var Component.bold: Boolean
-    get() = font.style and Font.BOLD == Font.BOLD
-    set(bold) {
-        font = font.deriveFont(if (bold) font.style or Font.BOLD else font.style and Font.BOLD.inv())
-    }
+    // Draw the image on to the buffered image
+    val bGr = bimage.createGraphics()
+    bGr.drawImage(this, 0, 0, null)
+    bGr.dispose()
+
+    // Return the buffered image
+    return bimage
+}

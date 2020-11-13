@@ -52,6 +52,7 @@ internal class WorldConverterGUI(val locale: Locale) : CoroutineScope {
     val main = MainFrameWindow(this, job)
 
     init {
+        log.info { "Showing the GUI" }
         main.show()
     }
 

@@ -39,6 +39,7 @@ import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.*
+import java.util.concurrent.ExecutionException
 import javax.imageio.ImageIO
 
 /**
@@ -585,8 +586,12 @@ object LevelDataIO {
     }
 
     fun readLevelDataBlocking(levelDataFile: File) =
-        runBlocking(Dispatchers.IO + CoroutineName("Awaiting level.dat: $levelDataFile")) {
-            readLevelData(levelDataFile).await()
+        try {
+            runBlocking(Dispatchers.IO + CoroutineName("Awaiting level.dat: $levelDataFile")) {
+                readLevelData(levelDataFile).await()
+            }
+        } catch (e: Throwable) {
+            throw ExecutionException(e)
         }
 
     /**
@@ -602,7 +607,7 @@ object LevelDataIO {
             val icon = async {
                 listOf(
                     async { loadIcon(levelDataFile.resolveSibling("icon.png"), timeout) },
-                    async { loadIcon(levelDataFile.resolveSibling("world_icon.png"), timeout) }
+                    async { loadIcon(levelDataFile.resolveSibling("world_icon.jpeg"), timeout) }
                 ).firstOrNull { it.await() != null }?.await()
             }
 

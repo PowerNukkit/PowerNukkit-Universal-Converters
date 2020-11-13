@@ -20,10 +20,8 @@ package org.powernukkit.converters.gui.window.main
 
 import com.github.michaelbull.logging.InlineLogger
 import org.powernukkit.converters.gui.extensions.scaleDownKeepingAspect
-import org.powernukkit.converters.storage.api.leveldata.LevelDataIO
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import java.io.File
-import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.Icon
 import javax.swing.ImageIcon
@@ -33,9 +31,8 @@ import javax.swing.filechooser.FileView
  * @author joserobjr
  * @since 2020-11-12
  */
-class WorldPreviewIcon : FileView() {
+class WorldPreviewIcon(val cache: LevelDataCache) : FileView() {
     private val log = InlineLogger()
-    private val cache = mutableMapOf<File, Optional<LevelData>>()
 
     override fun getName(f: File): String? {
         if (f.isDirectory) {
@@ -102,8 +99,8 @@ class WorldPreviewIcon : FileView() {
                 }
             } catch (e: Exception) {
                 log.debug(e) { "Failed to load the image icon of the folder $f" }
-                return null
             }
+            return null
         }
         if (!f.isFile || !f.name.equals("level.dat", ignoreCase = true)) {
             return null
@@ -113,13 +110,6 @@ class WorldPreviewIcon : FileView() {
     }
 
     private fun requestLevelData(f: File): LevelData? {
-        return cache.computeIfAbsent(f) {
-            try {
-                Optional.of(LevelDataIO.readLevelDataBlocking(it))
-            } catch (e: Exception) {
-                log.debug(e) { "Failed to parse the level.dat file for type description. File: $f" }
-                Optional.empty()
-            }
-        }.orElse(null)
+        return cache[f]
     }
 }

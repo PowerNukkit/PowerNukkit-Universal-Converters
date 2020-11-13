@@ -18,9 +18,14 @@
 
 package org.powernukkit.converters.gui.window.main
 
+import org.powernukkit.converters.gui.extensions.GBFill
 import org.powernukkit.converters.gui.extensions.action
+import org.powernukkit.converters.gui.extensions.gridBagData
 import org.powernukkit.converters.gui.extensions.withMax
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.GridBagLayout
 import java.io.File
 import javax.swing.*
 import javax.swing.border.EmptyBorder
@@ -70,27 +75,13 @@ class SelectWorldPanel {
 
     private val form = JPanel(GridBagLayout()).apply {
 
-        add(worldSelectionLabel, GridBagConstraints().apply {
-            gridx = 0
-            gridy = 0
-            fill = GridBagConstraints.NONE
-        })
+        add(worldSelectionLabel, gridBagData(0, 0))
 
-        add(worldSelectionField, GridBagConstraints().apply {
-            gridx = 1
-            gridy = 0
-            weightx = 1.0
-            fill = GridBagConstraints.HORIZONTAL
-            minimumSize = Dimension(300, 20)
-        })
+        add(worldSelectionField, gridBagData(1, 0, weightX = 1.0, fill = GBFill.HORIZONTAL))
 
         add(JButton(action("Browse...") {
             openFileChooser()
-        }), GridBagConstraints().apply {
-            gridx = 2
-            gridy = 0
-            fill = GridBagConstraints.NONE
-        })
+        }), gridBagData(2, 0))
 
         val isWindows = "Windows" in System.getProperty("os.name")
 
@@ -112,45 +103,32 @@ class SelectWorldPanel {
             } else {
                 openFileChooser(location)
             }
-        }), GridBagConstraints().apply {
-            gridx = 3
-            gridy = 0
-            fill = GridBagConstraints.NONE
-        })
+        }), gridBagData(3, 0))
 
-        if (isWindows) {
-            add(JButton(action("Windows 10 Edition") {
-                val localAppData = System.getenv("LOCALAPPDATA")?.takeIf { it.isNotBlank() }
-                val location = localAppData?.let {
-                    File(
-                        it,
-                        "Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds"
-                    )
-                }
-                if (location == null || !location.isDirectory) {
-                    JOptionPane.showMessageDialog(
-                        this@apply,
-                        "The Minecraft Windows 10 Edition save folder was not found in your system. Click on \"Browse...\" to locate it manually.",
-                        "Windows 10 Edition saves not found",
-                        JOptionPane.ERROR_MESSAGE
-                    )
-                    openFileChooser(location)
-                } else {
-                    openFileChooser(location)
-                }
-            }), GridBagConstraints().apply {
-                gridx = 4
-                gridy = 0
-                fill = GridBagConstraints.NONE
-            })
-        }
+        add(JButton(action("Windows 10 Edition") {
+            val localAppData = System.getenv("LOCALAPPDATA")?.takeIf { it.isNotBlank() }
+            val location = localAppData?.let {
+                File(
+                    it,
+                    "Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds"
+                )
+            }
+            if (location == null || !location.isDirectory) {
+                JOptionPane.showMessageDialog(
+                    this@apply,
+                    "The Minecraft Windows 10 Edition save folder was not found in your system. Click on \"Browse...\" to locate it manually.",
+                    "Windows 10 Edition saves not found",
+                    JOptionPane.ERROR_MESSAGE
+                )
+                openFileChooser(location)
+            } else {
+                openFileChooser(location)
+            }
+        }).apply {
+            isEnabled = isWindows
+        }, gridBagData(4, 0))
 
-        add(debug, GridBagConstraints().apply {
-            gridx = 0
-            gridy = 1
-            gridwidth = 3
-        })
-
+        add(debug, gridBagData(0, 1, width = 5))
     }
 
     private val panel = JPanel(BorderLayout()).apply {
@@ -171,10 +149,12 @@ class SelectWorldPanel {
         }
 
         JFileChooser(current).apply {
-            isMultiSelectionEnabled = true
+            val cache = LevelDataCache()
+            isMultiSelectionEnabled = false
             isAcceptAllFileFilterUsed = false
-            fileView = WorldPreviewIcon()
-            accessory = WorldValidationPanel().component
+            fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES
+            fileView = WorldPreviewIcon(cache)
+            accessory = WorldValidationPanel(this, cache).component
             fileFilter = object : FileFilter() {
                 override fun getDescription() = "Minecraft World (level.dat, *.mcworld)"
                 override fun accept(f: File?): Boolean {
@@ -192,7 +172,7 @@ class SelectWorldPanel {
             }
 
             addPropertyChangeListener { ev ->
-                if (ev.propertyName == "directoryChanged") {
+                if (ev.propertyName == JFileChooser.DIRECTORY_CHANGED_PROPERTY) {
                     ev.newValue?.toString()?.let(::File)?.takeIf { it.isDirectory }?.let { newDir ->
                         newDir.resolve("level.dat").let { levelDatFile ->
                             if (levelDatFile.isFile) {
