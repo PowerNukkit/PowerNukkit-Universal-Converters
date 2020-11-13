@@ -35,11 +35,11 @@ fun gridBagData(
     anchor: GBAnchor = GBAnchor.CENTER,
     fill: GBFill = GBFill.NONE,
     insets: Insets = Insets(0, 0, 0, 0),
-    internalPaddingX: Int = 0,
-    internalPaddingY: Int = 0,
+    paddingX: Int = 0,
+    paddingY: Int = 0,
 ) = GridBagConstraints(
     col, row, width, height, weightX, weightY, anchor.magicValue, fill.magicValue,
-    insets, internalPaddingX, internalPaddingY
+    insets, paddingX, paddingY
 )
 
 enum class GBAnchor {

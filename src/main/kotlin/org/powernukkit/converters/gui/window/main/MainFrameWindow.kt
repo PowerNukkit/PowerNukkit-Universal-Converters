@@ -39,7 +39,7 @@ internal class MainFrameWindow(private val gui: WorldConverterGUI, parentJob: Jo
     val lang = gui.loadBundle("gui.window.main")
 
     private val topMenu = TopMenu(gui, lang)
-    private val tabs = ConversionProcessTabPanel()
+    private val tabs = ConversionProcessTabPanel(job)
 
     val frame = JFrame(gui.lang["project.title"]).apply {
         launch {

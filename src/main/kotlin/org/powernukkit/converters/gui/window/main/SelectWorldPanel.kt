@@ -18,26 +18,33 @@
 
 package org.powernukkit.converters.gui.window.main
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import org.powernukkit.converters.gui.extensions.GBFill
 import org.powernukkit.converters.gui.extensions.action
 import org.powernukkit.converters.gui.extensions.gridBagData
 import org.powernukkit.converters.gui.extensions.withMax
-import java.awt.BorderLayout
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.GridBagLayout
+import java.awt.*
 import java.io.File
 import javax.swing.*
 import javax.swing.border.EmptyBorder
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.filechooser.FileFilter
+import kotlin.coroutines.CoroutineContext
+import kotlin.math.min
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-class SelectWorldPanel {
+class SelectWorldPanel(parent: Job) : CoroutineScope {
+    private val job = Job(parent)
+    override val coroutineContext: CoroutineContext
+        get() = job
+
+    private var openChooser: JFileChooser? = null
+
     private val worldSelectionField = JTextField().apply {
         document.addDocumentListener(object : DocumentListener {
             override fun insertUpdate(e: DocumentEvent?) {
@@ -148,49 +155,75 @@ class SelectWorldPanel {
             current = current.parentFile
         }
 
-        JFileChooser(current).apply {
-            val cache = LevelDataCache()
-            isMultiSelectionEnabled = false
-            isAcceptAllFileFilterUsed = false
-            fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES
-            fileView = WorldPreviewIcon(cache)
-            accessory = WorldValidationPanel(this, cache).component
-            fileFilter = object : FileFilter() {
-                override fun getDescription() = "Minecraft World (level.dat, *.mcworld)"
-                override fun accept(f: File?): Boolean {
-                    return when {
-                        f == null -> false
-                        f.isDirectory -> true
-                        !f.isFile -> false
-                        f.name.equals("level.dat", ignoreCase = true) -> true
-                        else -> when (f.extension.toLowerCase()) {
-                            "mcworld" -> true
-                            else -> false
+
+        val chooseFileJob = Job(job)
+        try {
+            openChooser = object : JFileChooser(current) {
+                override fun approveSelection() {
+                    with(selectedFile ?: return) {
+                        if (isFile) {
+                            super.approveSelection()
+                        } else if (isDirectory && !resolve("level.dat").isFile) {
+                            currentDirectory = selectedFile
+                            selectedFile = File("")
                         }
                     }
                 }
-            }
-
-            addPropertyChangeListener { ev ->
-                if (ev.propertyName == JFileChooser.DIRECTORY_CHANGED_PROPERTY) {
-                    ev.newValue?.toString()?.let(::File)?.takeIf { it.isDirectory }?.let { newDir ->
-                        newDir.resolve("level.dat").let { levelDatFile ->
-                            if (levelDatFile.isFile) {
-                                selectedFile = levelDatFile
-                                approveSelection()
+            }.apply {
+                val cache = LevelDataCache()
+                isMultiSelectionEnabled = false
+                isAcceptAllFileFilterUsed = false
+                fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES
+                fileView = WorldPreviewIcon(this, cache, chooseFileJob)
+                accessory = WorldValidationPanel(this, cache, chooseFileJob).component
+                val screenSize = Toolkit.getDefaultToolkit().screenSize
+                preferredSize = Dimension(min(screenSize.width - 50, 1024), min(screenSize.height - 50, 600))
+                fileFilter = object : FileFilter() {
+                    override fun getDescription() = "Minecraft World (level.dat, *.mcworld)"
+                    override fun accept(f: File?): Boolean {
+                        return when {
+                            f == null -> false
+                            f.isDirectory -> true
+                            !f.isFile -> false
+                            f.name.equals("level.dat", ignoreCase = true) -> true
+                            else -> when (f.extension.toLowerCase()) {
+                                "mcworld" -> true
+                                else -> false
                             }
                         }
                     }
                 }
-            }
 
-            if (showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                worldSelectionField.text = selectedFile.absolutePath
+                addPropertyChangeListener { ev ->
+                    if (ev.propertyName == JFileChooser.DIRECTORY_CHANGED_PROPERTY) {
+                        ev.newValue?.toString()?.let(::File)?.takeIf { it.isDirectory }?.let { newDir ->
+                            newDir.resolve("level.dat").let { levelDatFile ->
+                                if (levelDatFile.isFile) {
+                                    selectedFile = levelDatFile
+                                    approveSelection()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    worldSelectionField.text = selectedFile.absolutePath
+                }
+                openChooser = null
             }
+        } finally {
+            chooseFileJob.cancel()
         }
     }
 
     private fun checkFile() {
         debug.text = worldSelectionField.text
+    }
+
+    fun cancel() {
+        openChooser?.cancelSelection()
+        openChooser?.isVisible = false
+        job.cancel()
     }
 }

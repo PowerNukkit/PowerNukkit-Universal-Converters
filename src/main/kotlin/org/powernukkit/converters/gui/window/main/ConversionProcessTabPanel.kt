@@ -18,17 +18,24 @@
 
 package org.powernukkit.converters.gui.window.main
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import java.awt.Component
 import javax.swing.JLabel
 import javax.swing.JTabbedPane
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-class ConversionProcessTabPanel {
+class ConversionProcessTabPanel(parent: Job) : CoroutineScope {
+    private val job = Job(parent)
+    override val coroutineContext: CoroutineContext
+        get() = job
+
     private val tabs = JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT)
-    private lateinit var currentWorldSelection: SelectWorldPanel
+    private var currentWorldSelection: SelectWorldPanel? = null
 
     init {
         with(tabs) {
@@ -68,7 +75,8 @@ class ConversionProcessTabPanel {
 
     private fun addNewPlusTab() {
         with(tabs) {
-            SelectWorldPanel().let {
+            currentWorldSelection?.cancel()
+            SelectWorldPanel(job).let {
                 currentWorldSelection = it
                 addTab(null, it.component)
             }

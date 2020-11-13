@@ -18,12 +18,15 @@
 
 package org.powernukkit.converters.gui.window.main
 
+import kotlinx.coroutines.*
+import kotlinx.coroutines.swing.Swing
 import org.powernukkit.converters.gui.extensions.*
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
-import java.awt.CardLayout
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagLayout
+import java.awt.Insets
+import java.awt.image.BufferedImage
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.io.File
@@ -32,25 +35,36 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
 import javax.swing.*
+import javax.swing.border.EmptyBorder
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-class WorldValidationPanel(val chooser: JFileChooser, val cache: LevelDataCache) : PropertyChangeListener {
-    private val cards = CardLayout()
-    private val empty = JPanel()
+class WorldValidationPanel(
+    private val chooser: JFileChooser,
+    private val cache: LevelDataCache,
+    parent: Job
+) : PropertyChangeListener, CoroutineScope {
+    private val job = Job(parent)
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Swing
 
     private var selections = emptyList<File>()
     private var data = mutableMapOf<File, Optional<LevelData>>()
+
+    private val defaultImage = cache.defaultSquareIcon
+        ?.scaleDownKeepingAspect(128, 64)
+        ?: BufferedImage(96, 96, BufferedImage.TYPE_INT_ARGB)
 
     init {
         chooser.addPropertyChangeListener(this)
     }
 
     private fun updateDetails() {
+        job.cancelChildren()
         if (selections.isEmpty()) {
-            //cards.show(panel, "empty")
             visible = false
             return
         }
@@ -64,18 +78,25 @@ class WorldValidationPanel(val chooser: JFileChooser, val cache: LevelDataCache)
 
         val levelData = data.computeIfAbsent(last, cache::getOpt).let {
             if (!it.isPresent) {
-                //cards.show(panel, "empty")
                 visible = false
                 return
             }
             it.get()
         }
 
-        if (levelData.icon != null) {
-            icon.icon = levelData.icon.scaleDownKeepingAspect(128, 96).icon
-            icon.isVisible = true
+        val deferredIcon = cache.getIcon(levelData)
+        suspend fun updateIcon() {
+            val loadedIcon = deferredIcon.await()
+                ?.scaleDownKeepingAspect(128, 96)
+                ?: return
+            icon.icon = loadedIcon.icon
+        }
+
+        if (deferredIcon.isCompleted) {
+            runBlocking { updateIcon() }
         } else {
-            icon.isVisible = false
+            icon.icon = ImageIcon(defaultImage)
+            launch { updateIcon() }
         }
 
         updateValue(levelNameLabel, levelName, levelData.levelName)
@@ -91,10 +112,9 @@ class WorldValidationPanel(val chooser: JFileChooser, val cache: LevelDataCache)
         })
 
         visible = true
-        //cards.show(panel, "details")
     }
 
-    private val icon = JLabel().apply { minimumSize = Dimension(250, 20) }
+    private val icon = JLabel()
 
     private val levelName = JLabel()
     private val levelNameLabel = createLabel("Name:", levelName)
@@ -113,7 +133,7 @@ class WorldValidationPanel(val chooser: JFileChooser, val cache: LevelDataCache)
 
     private fun createLabel(name: String, owner: Component) = JLabel(name).bold().apply { labelFor = owner }
 
-    private fun updateValue(labelComponent: JLabel, valueComponent: JLabel, value: String?, limit: Int = 16) {
+    private fun updateValue(labelComponent: JLabel, valueComponent: JLabel, value: String?, limit: Int = 20) {
         if (value != null) {
             valueComponent.text = value.run { if (length > limit) take(limit - 3) + "..." else this }
             labelComponent.isVisible = true
@@ -127,27 +147,24 @@ class WorldValidationPanel(val chooser: JFileChooser, val cache: LevelDataCache)
     private val detailsPanel = JPanel(GridBagLayout()).apply {
         isVisible = false
 
+        border = EmptyBorder(0, 10, 0, 0)
+
         var line = 0
-        add(icon, gridBagData(0, line++, width = 2, anchor = GBAnchor.NORTH))
+        add(icon, gridBagData(0, line++))
 
-        add(levelNameLabel, gridBagData(0, line))
-        add(levelName, gridBagData(1, line++, 1, weightX = 1.0, fill = GBFill.HORIZONTAL))
+        add(levelName.bold(), gridBagData(0, line++, paddingY = 5))
 
+        add(edition, gridBagData(0, line++))
 
-        add(editionLabel, gridBagData(0, line))
-        add(edition, gridBagData(1, line++))
+        add(dialect, gridBagData(0, line++))
 
-        add(dialectLabel, gridBagData(0, line))
-        add(dialect, gridBagData(1, line++))
+        add(version, gridBagData(0, line++))
 
-        add(versionLabel, gridBagData(0, line))
-        add(version, gridBagData(1, line++))
-
-        add(lastPlayedLabel, gridBagData(0, line))
-        add(lastPlayed, gridBagData(1, line++))
+        add(lastPlayedLabel.bold(), gridBagData(0, line++, insets = Insets(5, 0, 0, 0)))
+        add(lastPlayed, gridBagData(0, line++))
 
         add(
-            Box.createRigidArea(Dimension(0, 0)),
+            Box.createRigidArea(Dimension(128, 0)),
             gridBagData(0, line, width = 2, weightY = 1.0, fill = GBFill.VERTICAL)
         )
     }

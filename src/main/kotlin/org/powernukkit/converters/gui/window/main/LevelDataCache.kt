@@ -19,19 +19,78 @@
 package org.powernukkit.converters.gui.window.main
 
 import com.github.michaelbull.logging.InlineLogger
+import kotlinx.coroutines.*
+import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.converters.storage.api.leveldata.LevelDataIO
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
+import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import javax.imageio.ImageIO
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author joserobjr
  * @since 2020-11-13
  */
-class LevelDataCache {
+class LevelDataCache : CoroutineScope {
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
+
     private val log = InlineLogger()
     private val cache: MutableMap<File, Optional<LevelData>> = ConcurrentHashMap()
+    private val iconCache: MutableMap<File, Optional<BufferedImage>> = ConcurrentHashMap()
+    val defaultWideIcon by lazy {
+        "/org/powernukkit/converters/gui/default-world-icon-wide.png".let(WorldValidationPanel::class.java::getResource)
+            ?.let(ImageIO::read)
+    }
+
+    val defaultSquareIcon by lazy {
+        "/org/powernukkit/converters/gui/default-world-icon-square.png".let(WorldValidationPanel::class.java::getResource)
+            ?.let(ImageIO::read)
+    }
+
+    fun getIcon(levelData: LevelData): Deferred<BufferedImage?> {
+        val file = cache.entries.firstOrNull { it.value.orElse(null) == levelData }?.key
+            ?: levelData.folder!!.resolve("level.dat").toFile()
+
+        if (file in iconCache) {
+            return CompletableDeferred(iconCache[file]?.orElse(null))
+        }
+
+        return async {
+            iconCache.computeIfAbsent(file) {
+                Optional.ofNullable(getIconOrDefault(levelData))
+            }.orElse(null)
+        }
+    }
+
+    fun getIcon(levelDataFile: File): Deferred<BufferedImage?> =
+        if (levelDataFile in iconCache) {
+            CompletableDeferred(iconCache[levelDataFile]?.orElse(null))
+        } else async {
+            iconCache.computeIfAbsent(levelDataFile) {
+                val levelFolder = levelDataFile.parentFile
+                val imageFile = levelFolder.resolve("icon.png").takeIf { it.isFile }
+                    ?: levelFolder.resolve("world_icon.jpeg").takeIf { it.isFile }
+
+                Optional.ofNullable(
+                    imageFile?.let(ImageIO::read)
+                        ?: get(levelDataFile)?.let { getIconOrDefault(it) }
+                )
+            }.orElse(null)
+        }
+
+    private fun getIconOrDefault(levelData: LevelData): BufferedImage? {
+        return levelData.icon
+            ?: if (levelData.storageEngineType == StorageEngineType.LEVELDB) {
+                defaultWideIcon
+            } else {
+                defaultSquareIcon
+            }
+    }
 
     fun getOpt(file: File): Optional<LevelData> {
         return cache.computeIfAbsent(file) {

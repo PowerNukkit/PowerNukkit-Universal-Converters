@@ -19,26 +19,66 @@
 package org.powernukkit.converters.gui.window.main
 
 import com.github.michaelbull.logging.InlineLogger
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.swing.Swing
+import org.powernukkit.converters.gui.extensions.buffered
 import org.powernukkit.converters.gui.extensions.scaleDownKeepingAspect
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
+import java.awt.image.BufferedImage
 import java.io.File
-import javax.imageio.ImageIO
 import javax.swing.Icon
 import javax.swing.ImageIcon
+import javax.swing.JFileChooser
 import javax.swing.filechooser.FileView
+import kotlin.coroutines.CoroutineContext
+
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-class WorldPreviewIcon(val cache: LevelDataCache) : FileView() {
+class WorldPreviewIcon(
+    private val chooser: JFileChooser,
+    private val cache: LevelDataCache,
+    parent: Job,
+) : FileView(), CoroutineScope {
+    private val job = Job(parent)
+    override val coroutineContext: CoroutineContext
+        get() = job
+
     private val log = InlineLogger()
+    private val icons = mutableMapOf<File, ImageIcon?>()
+    private val temporaryImage = cache.defaultWideIcon
+        ?.scaleDownKeepingAspect(64, 64)
+        ?: BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
+
+    @ExperimentalCoroutinesApi
+    private val needsRepaint = MutableStateFlow(false)
+
+    @ExperimentalCoroutinesApi
+    private val repaintJob = launch {
+        while (true) {
+            needsRepaint.collect { repaint ->
+                if (repaint) {
+                    delay(50)
+                    withContext(Dispatchers.Swing) {
+                        log.debug { "Repainting" }
+                        chooser.repaint()
+                        needsRepaint.value = false
+                    }
+                }
+            }
+        }
+    }
 
     override fun getName(f: File): String? {
+        log.debug { "getName(${f.name})" }
         if (f.isDirectory) {
             try {
                 f.resolve("level.dat").takeIf { it.isFile }?.let { dat ->
-                    val data = requestLevelData(dat) ?: return null
+                    val data = cache[dat] ?: return null
                     return addDetails(f, data)
                 }
             } catch (e: Exception) {
@@ -51,7 +91,7 @@ class WorldPreviewIcon(val cache: LevelDataCache) : FileView() {
             return null
         }
 
-        val data = requestLevelData(f) ?: return null
+        val data = cache[f] ?: return null
         return addDetails(f, data)
     }
 
@@ -67,49 +107,35 @@ class WorldPreviewIcon(val cache: LevelDataCache) : FileView() {
         }
     }
 
-    /*override fun getTypeDescription(f: File): String? {
-        if (!f.isFile || !f.name.equals("level.dat", ignoreCase = true)) {
-            return null
-        }
-        
-        val data = requestLevelData(f) ?: return null
-        return buildString {
-            with(data) {
-                versionData?.minecraftEdition?.let { append(it.name.capitalize()).append(' ') }
-                dialect?.let { append(it.name.capitalize()).append(' ') }
-                storageEngineType?.let { append(it.name.capitalize()).append(' ') }
-                versionData?.lastOpenedWithVersion?.let { append(it).append(' ') }
-                versionData?.baseGameVersion?.let { append(it).append(' ') }
-            }
-        }.takeUnless { it.isBlank() }
-    }*/
-
+    @ExperimentalCoroutinesApi
     override fun getIcon(f: File): Icon? {
-        if (f.isDirectory) {
-            try {
-                if (f.resolve("level.dat").isFile) {
-                    val icon =
-                        f.resolve("icon.png").takeIf { it.isFile }
-                            ?: f.resolve("world_icon.jpeg").takeIf { it.isFile }
-
-                    return icon
-                        ?.let(ImageIO::read)
-                        ?.scaleDownKeepingAspect(64, 64)
-                        ?.let(::ImageIcon)
+        return icons.computeIfAbsent(f) icon@{
+            if (f.isDirectory) {
+                try {
+                    f.resolve("level.dat").takeIf { it.isFile }?.let {
+                        val icon = ImageIcon(temporaryImage)
+                        val loading = cache.getIcon(it)
+                        launch {
+                            val loadedIcon = loading.await()
+                                ?.scaleDownKeepingAspect(64, 64)
+                                ?: return@launch
+                            withContext(Dispatchers.Swing) {
+                                icon.image = loadedIcon.buffered()
+                                needsRepaint.value = true
+                            }
+                        }
+                        return@icon icon
+                    }
+                } catch (e: Exception) {
+                    log.debug(e) { "Failed to load the image icon of the folder $f" }
                 }
-            } catch (e: Exception) {
-                log.debug(e) { "Failed to load the image icon of the folder $f" }
+                return@icon null
             }
-            return null
-        }
-        if (!f.isFile || !f.name.equals("level.dat", ignoreCase = true)) {
-            return null
-        }
+            if (!f.isFile || !f.name.equals("level.dat", ignoreCase = true)) {
+                return@icon null
+            }
 
-        return requestLevelData(f)?.icon?.let(::ImageIcon)
-    }
-
-    private fun requestLevelData(f: File): LevelData? {
-        return cache[f]
+            return@icon cache[f]?.icon?.let(::ImageIcon)
+        }
     }
 }
