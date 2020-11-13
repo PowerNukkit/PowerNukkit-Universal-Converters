@@ -157,7 +157,9 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
 
 
         val chooseFileJob = Job(job)
+        val prev = UIManager.get("FileChooser.readOnly")
         try {
+            UIManager.put("FileChooser.readOnly", true)
             openChooser = object : JFileChooser(current) {
                 override fun approveSelection() {
                     with(selectedFile ?: return) {
@@ -213,6 +215,7 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                 openChooser = null
             }
         } finally {
+            UIManager.put("FileChooser.readOnly", prev)
             chooseFileJob.cancel()
         }
     }

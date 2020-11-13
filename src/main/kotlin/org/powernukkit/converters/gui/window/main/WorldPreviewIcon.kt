@@ -46,11 +46,12 @@ class WorldPreviewIcon(
 ) : FileView(), CoroutineScope {
     private val job = Job(parent)
     override val coroutineContext: CoroutineContext
-        get() = job
+        get() = job + Dispatchers.IO
 
     private val log = InlineLogger()
     private val icons = mutableMapOf<File, ImageIcon?>()
-    private val temporaryImage = cache.defaultWideIcon
+    private val names = mutableMapOf<File, String?>()
+    private val temporaryImage = cache.defaultSquareIcon
         ?.scaleDownKeepingAspect(64, 64)
         ?: BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
 
@@ -62,10 +63,13 @@ class WorldPreviewIcon(
         while (true) {
             needsRepaint.collect { repaint ->
                 if (repaint) {
-                    delay(50)
+                    delay(5)
                     withContext(Dispatchers.Swing) {
                         log.debug { "Repainting" }
-                        chooser.repaint()
+                        // I did using this hacky way because the custom names were not expanding
+                        val x = chooser.currentDirectory
+                        chooser.currentDirectory = x.parentFile ?: File(System.getProperty("user.home"))
+                        chooser.currentDirectory = x
                         needsRepaint.value = false
                     }
                 }
@@ -73,8 +77,26 @@ class WorldPreviewIcon(
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun getName(f: File): String? {
-        log.debug { "getName(${f.name})" }
+        if (f in names) {
+            return names[f]
+        }
+
+        launch {
+            val name = buildName(f)
+            withContext(Dispatchers.Swing) {
+                names[f] = name
+                if (name != null) {
+                    needsRepaint.value = true
+                }
+            }
+        }
+
+        return null
+    }
+
+    private fun buildName(f: File): String? {
         if (f.isDirectory) {
             try {
                 f.resolve("level.dat").takeIf { it.isFile }?.let { dat ->
