@@ -39,6 +39,7 @@ internal class MainFrameWindow(private val gui: WorldConverterGUI, parentJob: Jo
     val lang = gui.loadBundle("gui.window.main")
 
     private val topMenu = TopMenu(gui, lang)
+    private val tabs = ConversionProcessTabPanel()
 
     val frame = JFrame(gui.lang["project.title"]).apply {
         launch {
@@ -56,7 +57,7 @@ internal class MainFrameWindow(private val gui: WorldConverterGUI, parentJob: Jo
 
         iconImage = gui.logo
         defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
-        minimumSize = Dimension(400, 200)
+        minimumSize = Dimension(750, 500)
         layout = BorderLayout()
 
         addWindowListener(object : WindowAdapter() {
@@ -69,8 +70,9 @@ internal class MainFrameWindow(private val gui: WorldConverterGUI, parentJob: Jo
     init {
         frame.apply {
             add(topMenu.component, BorderLayout.NORTH)
+            add(tabs.component, BorderLayout.CENTER)
 
-            pack()
+            size = minimumSize
             setLocationRelativeTo(null)
         }
     }

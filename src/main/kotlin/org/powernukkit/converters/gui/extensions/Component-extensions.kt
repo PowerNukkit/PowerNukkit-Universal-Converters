@@ -18,19 +18,18 @@
 
 package org.powernukkit.converters.gui.extensions
 
-import java.awt.Image
-import java.awt.image.BufferedImage
-import kotlin.math.min
+import java.awt.Component
+import java.awt.Dimension
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-fun BufferedImage.scaleDown(percentage: Double, hints: Int = Image.SCALE_SMOOTH) =
-    getScaledInstance((width * percentage).toInt(), (height * percentage).toInt(), hints)
-
-fun BufferedImage.scaleDownKeepingAspect(targetWidth: Int, targetHeight: Int): Image {
-    val scalex = targetWidth.toDouble() / width.toDouble()
-    val scaley = targetHeight.toDouble() / height.toDouble()
-    return scaleDown(min(scalex, scaley))
+fun <C : Component> C.withMax(width: Int? = null, height: Int? = null): C {
+    maximumSize = if (isMaximumSizeSet) {
+        Dimension(width ?: maximumSize.width, height ?: maximumSize.height)
+    } else {
+        Dimension(width ?: Int.MAX_VALUE, height ?: Int.MAX_VALUE)
+    }
+    return this
 }

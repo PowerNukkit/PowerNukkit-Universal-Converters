@@ -16,21 +16,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.gui.extensions
+package org.powernukkit.converters.gui.window.main
 
-import java.awt.Image
-import java.awt.image.BufferedImage
-import kotlin.math.min
+import java.awt.Component
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JProgressBar
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-fun BufferedImage.scaleDown(percentage: Double, hints: Int = Image.SCALE_SMOOTH) =
-    getScaledInstance((width * percentage).toInt(), (height * percentage).toInt(), hints)
+class ConversionProcessTab {
+    private val overallProgress = JProgressBar(0, 100).apply {
+        isIndeterminate = true
+    }
 
-fun BufferedImage.scaleDownKeepingAspect(targetWidth: Int, targetHeight: Int): Image {
-    val scalex = targetWidth.toDouble() / width.toDouble()
-    val scaley = targetHeight.toDouble() / height.toDouble()
-    return scaleDown(min(scalex, scaley))
+    private val tabPanel = JPanel().apply {
+        isOpaque = false
+        add(overallProgress)
+    }
+
+    private val contentPanel = JPanel().apply {
+        add(JLabel("Content!"))
+    }
+
+    val component: Component get() = tabPanel
+    val content: Component get() = contentPanel
 }

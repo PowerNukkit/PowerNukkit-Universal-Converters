@@ -16,21 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.gui.extensions
+package org.powernukkit.converters.gui.window.main
 
-import java.awt.Image
-import java.awt.image.BufferedImage
-import kotlin.math.min
+import javax.swing.JComponent
+import javax.swing.JPanel
 
 /**
  * @author joserobjr
  * @since 2020-11-12
  */
-fun BufferedImage.scaleDown(percentage: Double, hints: Int = Image.SCALE_SMOOTH) =
-    getScaledInstance((width * percentage).toInt(), (height * percentage).toInt(), hints)
+class WorldValidationPanel {
+    private val panel = JPanel()
 
-fun BufferedImage.scaleDownKeepingAspect(targetWidth: Int, targetHeight: Int): Image {
-    val scalex = targetWidth.toDouble() / width.toDouble()
-    val scaley = targetHeight.toDouble() / height.toDouble()
-    return scaleDown(min(scalex, scaley))
+    val component: JComponent = panel
 }
