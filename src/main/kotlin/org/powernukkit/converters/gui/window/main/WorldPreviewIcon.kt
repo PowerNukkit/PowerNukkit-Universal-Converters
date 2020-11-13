@@ -42,6 +42,7 @@ import kotlin.coroutines.CoroutineContext
 class WorldPreviewIcon(
     private val chooser: JFileChooser,
     private val cache: LevelDataCache,
+    private val temporaryImage: BufferedImage,
     parent: Job,
 ) : FileView(), CoroutineScope {
     private val job = Job(parent)
@@ -51,9 +52,6 @@ class WorldPreviewIcon(
     private val log = InlineLogger()
     private val icons = mutableMapOf<File, ImageIcon?>()
     private val names = mutableMapOf<File, String?>()
-    private val temporaryImage = cache.defaultSquareIcon
-        ?.scaleDownKeepingAspect(64, 64)
-        ?: BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
 
     @ExperimentalCoroutinesApi
     private val needsRepaint = MutableStateFlow(false)

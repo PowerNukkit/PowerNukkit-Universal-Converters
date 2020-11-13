@@ -29,6 +29,8 @@ import javax.swing.ImageIcon
 val Image.icon get() = ImageIcon(this)
 
 fun Image.buffered(): BufferedImage {
+    (this as? BufferedImage)?.let { return it }
+    
     // Create a buffered image with transparency
     val bimage = BufferedImage(getWidth(null), getHeight(null), BufferedImage.TYPE_INT_ARGB)
 

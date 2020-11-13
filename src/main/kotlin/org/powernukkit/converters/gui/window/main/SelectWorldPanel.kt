@@ -20,16 +20,12 @@ package org.powernukkit.converters.gui.window.main
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import org.powernukkit.converters.gui.extensions.GBFill
-import org.powernukkit.converters.gui.extensions.action
-import org.powernukkit.converters.gui.extensions.gridBagData
-import org.powernukkit.converters.gui.extensions.withMax
+import org.powernukkit.converters.gui.extensions.*
 import java.awt.*
+import java.awt.image.BufferedImage
 import java.io.File
 import javax.swing.*
 import javax.swing.border.EmptyBorder
-import javax.swing.event.DocumentEvent
-import javax.swing.event.DocumentListener
 import javax.swing.filechooser.FileFilter
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
@@ -45,36 +41,23 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
 
     private var openChooser: JFileChooser? = null
 
-    private val worldSelectionField = JTextField().apply {
-        document.addDocumentListener(object : DocumentListener {
-            override fun insertUpdate(e: DocumentEvent?) {
-                checkFile()
-            }
+    private val worldSelectionLabel = JLabel("Input world:")
+    private var selected: File? = null
+    private var lastPlace: File? = null
 
-            override fun removeUpdate(e: DocumentEvent?) {
-                checkFile()
-            }
-
-            override fun changedUpdate(e: DocumentEvent?) {
-                checkFile()
-            }
-        })
-    }
-
-    private val worldSelectionLabel = JLabel("Input world:").apply {
-        labelFor = worldSelectionField
-    }
-
-    private val header = JPanel().apply {
-        layout = BoxLayout(this, BoxLayout.Y_AXIS)
-        add(JLabel("<html><h1>PowerNukkit Universal Converters</h1></html>"))
-        add(JSeparator(JSeparator.HORIZONTAL).withMax(height = 1))
-        add(Box.createRigidArea(Dimension(0, 10)))
+    private val header = JPanel(GridBagLayout()).apply {
+        var line = 0
+        add(
+            JLabel("<html><h1 style='text-align: center;'>PowerNukkit Universal Converters</h1></html>"),
+            gridBagData(0, line++)
+        )
+        add(JSeparator(JSeparator.HORIZONTAL), gridBagData(0, line++, fill = GBFill.HORIZONTAL, weightX = 1.0))
+        add(Box.createRigidArea(Dimension(0, 10)), gridBagData(0, line++))
         add(
             JLabel(
-                "<html><p>Select the <b>level.dat</b> file which is directly inside the folder of the world that you want to convert. " +
-                        "Worlds with type <b>mcworld</p> and zipped inside and <b>zip</b> and <b>tar.gz</b> are also supported.</p></html>"
-            )
+                "<html><p>Select either a <b>level.dat</b> file, a <b>.mcworld</b> file or a world folder to continue.</p></html>"
+            ),
+            gridBagData(0, line++)
         )
     }
 
@@ -82,13 +65,11 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
 
     private val form = JPanel(GridBagLayout()).apply {
 
-        add(worldSelectionLabel, gridBagData(0, 0))
-
-        add(worldSelectionField, gridBagData(1, 0, weightX = 1.0, fill = GBFill.HORIZONTAL))
+        //add(worldSelectionLabel, gridBagData(0, 0))
 
         add(JButton(action("Browse...") {
             openFileChooser()
-        }), gridBagData(2, 0))
+        }), gridBagData(1, 0))
 
         val isWindows = "Windows" in System.getProperty("os.name")
 
@@ -106,11 +87,11 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                     "Java Edition saves not found",
                     JOptionPane.ERROR_MESSAGE
                 )
-                openFileChooser()
+                openFileChooser(changesLastPlace = false)
             } else {
-                openFileChooser(location)
+                openFileChooser(location, changesLastPlace = false)
             }
-        }), gridBagData(3, 0))
+        }), gridBagData(2, 0))
 
         add(JButton(action("Windows 10 Edition") {
             val localAppData = System.getenv("LOCALAPPDATA")?.takeIf { it.isNotBlank() }
@@ -127,15 +108,11 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                     "Windows 10 Edition saves not found",
                     JOptionPane.ERROR_MESSAGE
                 )
-                openFileChooser(location)
-            } else {
-                openFileChooser(location)
             }
+            openFileChooser(location, changesLastPlace = false, wideDefault = true)
         }).apply {
             isEnabled = isWindows
-        }, gridBagData(4, 0))
-
-        add(debug, gridBagData(0, 1, width = 5))
+        }, gridBagData(3, 0))
     }
 
     private val panel = JPanel(BorderLayout()).apply {
@@ -149,8 +126,12 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
 
     val component: Component get() = panel
 
-    private fun openFileChooser(location: File? = null) {
-        var current = location ?: worldSelectionField.text?.takeIf { it.isNotBlank() }?.let(::File)
+    private fun openFileChooser(
+        location: File? = null,
+        changesLastPlace: Boolean = true,
+        wideDefault: Boolean = false
+    ) {
+        var current = location ?: lastPlace
         while (current != null && !current.exists()) {
             current = current.parentFile
         }
@@ -176,7 +157,13 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                 isMultiSelectionEnabled = false
                 isAcceptAllFileFilterUsed = false
                 fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES
-                fileView = WorldPreviewIcon(this, cache, chooseFileJob)
+                val defaultImage = if (wideDefault) {
+                    cache.defaultWideIcon ?: BufferedImage(64, 36, BufferedImage.TYPE_INT_ARGB)
+                } else {
+                    cache.defaultSquareIcon ?: BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB)
+                }.scaleDownKeepingAspect(64, 64).buffered()
+
+                fileView = WorldPreviewIcon(this, cache, defaultImage, chooseFileJob)
                 accessory = WorldValidationPanel(this, cache, chooseFileJob).component
                 val screenSize = Toolkit.getDefaultToolkit().screenSize
                 preferredSize = Dimension(min(screenSize.width - 50, 1024), min(screenSize.height - 50, 600))
@@ -203,6 +190,8 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                                 if (levelDatFile.isFile) {
                                     selectedFile = levelDatFile
                                     approveSelection()
+                                } else if (changesLastPlace) {
+                                    lastPlace = newDir
                                 }
                             }
                         }
@@ -210,7 +199,7 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                 }
 
                 if (showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                    worldSelectionField.text = selectedFile.absolutePath
+                    selected = selectedFile.absoluteFile
                 }
                 openChooser = null
             }
@@ -218,10 +207,6 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
             UIManager.put("FileChooser.readOnly", prev)
             chooseFileJob.cancel()
         }
-    }
-
-    private fun checkFile() {
-        debug.text = worldSelectionField.text
     }
 
     fun cancel() {
