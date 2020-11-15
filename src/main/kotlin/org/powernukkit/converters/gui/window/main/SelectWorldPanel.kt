@@ -19,6 +19,7 @@
 package org.powernukkit.converters.gui.window.main
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import org.powernukkit.converters.gui.extensions.*
 import java.awt.*
@@ -34,6 +35,7 @@ import kotlin.math.min
  * @author joserobjr
  * @since 2020-11-12
  */
+@ExperimentalCoroutinesApi
 class SelectWorldPanel(parent: Job) : CoroutineScope {
     private val job = Job(parent)
     override val coroutineContext: CoroutineContext
@@ -146,9 +148,14 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                     with(selectedFile ?: return) {
                         if (isFile) {
                             super.approveSelection()
-                        } else if (isDirectory && !resolve("level.dat").isFile) {
-                            currentDirectory = selectedFile
-                            selectedFile = File("")
+                        } else if (isDirectory) {
+                            if (!resolve("level.dat").isFile) {
+                                currentDirectory = selectedFile
+                                selectedFile = File("")
+                            } else {
+                                selectedFile = resolve("level.dat")
+                                approveSelection()
+                            }
                         }
                     }
                 }
@@ -163,7 +170,8 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                     cache.defaultSquareIcon ?: BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB)
                 }.scaleDownKeepingAspect(64, 64).buffered()
 
-                fileView = WorldPreviewIcon(this, cache, defaultImage, chooseFileJob)
+                val previewIcon = WorldPreviewIcon(this, cache, defaultImage, chooseFileJob)
+                fileView = previewIcon
                 accessory = WorldValidationPanel(this, cache, chooseFileJob).component
                 val screenSize = Toolkit.getDefaultToolkit().screenSize
                 preferredSize = Dimension(min(screenSize.width - 50, 1024), min(screenSize.height - 50, 600))
@@ -184,7 +192,7 @@ class SelectWorldPanel(parent: Job) : CoroutineScope {
                 }
 
                 addPropertyChangeListener { ev ->
-                    if (ev.propertyName == JFileChooser.DIRECTORY_CHANGED_PROPERTY) {
+                    if (!previewIcon.isRepainting.value && ev.propertyName == JFileChooser.DIRECTORY_CHANGED_PROPERTY) {
                         ev.newValue?.toString()?.let(::File)?.takeIf { it.isDirectory }?.let { newDir ->
                             newDir.resolve("level.dat").let { levelDatFile ->
                                 if (levelDatFile.isFile) {

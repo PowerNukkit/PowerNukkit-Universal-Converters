@@ -21,6 +21,7 @@ package org.powernukkit.converters.gui.window.main
 import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.swing.Swing
 import org.powernukkit.converters.gui.extensions.buffered
@@ -28,6 +29,7 @@ import org.powernukkit.converters.gui.extensions.scaleDownKeepingAspect
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import java.awt.image.BufferedImage
 import java.io.File
+import java.nio.file.InvalidPathException
 import javax.swing.Icon
 import javax.swing.ImageIcon
 import javax.swing.JFileChooser
@@ -57,31 +59,68 @@ class WorldPreviewIcon(
     private val needsRepaint = MutableStateFlow(false)
 
     @ExperimentalCoroutinesApi
-    private val repaintJob = launch {
+    private val _isRepainting = MutableStateFlow(false)
+
+    @ExperimentalCoroutinesApi
+    val isRepainting = _isRepainting.asStateFlow()
+
+    @ExperimentalCoroutinesApi
+    private var currentDir: File = chooser.currentDirectory
+        get() {
+            return if (isRepainting.value) {
+                field
+            } else {
+                chooser.currentDirectory
+            }
+        }
+
+    @ExperimentalCoroutinesApi
+    private val repaintJob = launch(Dispatchers.Swing) {
         while (true) {
             needsRepaint.collect { repaint ->
                 if (repaint) {
                     delay(5)
-                    withContext(Dispatchers.Swing) {
-                        log.debug { "Repainting" }
-                        // I did using this hacky way because the custom names were not expanding
-                        val x = chooser.currentDirectory
-                        chooser.currentDirectory = x.parentFile ?: File(System.getProperty("user.home"))
-                        chooser.currentDirectory = x
-                        needsRepaint.value = false
-                    }
+                    log.debug { "Repainting" }
+                    // I did using this hacky way because the custom names were not expanding
+                    _isRepainting.value = true
+                    val x = chooser.currentDirectory
+                    currentDir = x
+                    chooser.currentDirectory = x.parentFile ?: File(System.getProperty("user.home"))
+                    chooser.currentDirectory = x
+                    _isRepainting.value = false
+                    needsRepaint.value = false
                 }
             }
         }
     }
 
+    private fun isPartOfCurrentDirectoryPath(f: File): Boolean {
+        val path = try {
+            f.toPath()
+        } catch (e: InvalidPathException) {
+            return false
+        }
+
+        val currentDir = try {
+            currentDir.toPath()
+        } catch (e: InvalidPathException) {
+            return false
+        }
+
+        return currentDir == path || path.relativize(currentDir).toString().startsWith("..")
+    }
+
     @ExperimentalCoroutinesApi
     override fun getName(f: File): String? {
+        if (!isPartOfCurrentDirectoryPath(f)) {
+            return null
+        }
+
         if (f in names) {
             return names[f]
         }
 
-        launch {
+        launch(Dispatchers.IO) {
             val name = buildName(f)
             withContext(Dispatchers.Swing) {
                 names[f] = name
@@ -129,6 +168,10 @@ class WorldPreviewIcon(
 
     @ExperimentalCoroutinesApi
     override fun getIcon(f: File): Icon? {
+        if (!isPartOfCurrentDirectoryPath(f)) {
+            return null
+        }
+
         return icons.computeIfAbsent(f) icon@{
             if (f.isDirectory) {
                 try {
