@@ -106,6 +106,18 @@ class AlphaProviderWorld<P : Platform<P>> private constructor(
         }.flowOn(Dispatchers.IO)
     }
 
+    /*@ExperimentalCoroutinesApi
+    override fun listChunks(): ReceiveChannel<Chunk<P>>{
+        channelFlow<> {  }
+        val channel = Channel<Chunk<P>>()
+        launch { 
+            chunkFlow().collect { 
+                channel.send(it) 
+            }
+        }
+        channel
+    }*/
+
     @ExperimentalCoroutinesApi
     override fun chunkFlow(): Flow<Chunk<P>> {
         return callbackFlow<Chunk<P>> {
@@ -122,5 +134,9 @@ class AlphaProviderWorld<P : Platform<P>> private constructor(
                 }
             }
         }.flowOn(Dispatchers.IO)
+    }
+
+    override fun close() {
+        // Does nothing
     }
 }
