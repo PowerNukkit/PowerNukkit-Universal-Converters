@@ -18,9 +18,11 @@
 
 package org.powernukkit.converters.platform.java.entity
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
+import org.powernukkit.converters.platform.base.entity.BaseEntityType
 import org.powernukkit.converters.platform.java.JavaPlatform
 
 /**
@@ -29,7 +31,9 @@ import org.powernukkit.converters.platform.java.JavaPlatform
  */
 class JavaEntity(
     private val constructors: BaseConstructors<JavaPlatform>,
-    pos: EntityPos
-) : BaseEntity<JavaPlatform>(constructors, pos) {
-    override fun withPos(entityPos: EntityPos) = JavaEntity(constructors, pos)
+    type: BaseEntityType<JavaPlatform>,
+    pos: EntityPos,
+    nbt: NbtCompound,
+) : BaseEntity<JavaPlatform>(constructors, type, pos, nbt) {
+    override fun withPos(entityPos: EntityPos) = JavaEntity(constructors, type, pos, nbt.deepCopy())
 }

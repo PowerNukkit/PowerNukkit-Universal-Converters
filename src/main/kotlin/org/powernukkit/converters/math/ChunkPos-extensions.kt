@@ -16,21 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.entity
+package org.powernukkit.converters.math
 
-import br.com.gamemods.nbtmanipulator.NbtCompound
-import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.base.BaseConstructors
-import org.powernukkit.converters.platform.base.BasePlatform
+import br.com.gamemods.regionmanipulator.ChunkPos
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-11-16
  */
-abstract class BaseEntity<P : BasePlatform<P>>(
-    constructors: BaseConstructors<P>,
-    override val type: BaseEntityType<P>,
-    pos: EntityPos,
-    protected val nbt: NbtCompound,
-) : PlatformEntity<P>(pos)
+operator fun ChunkPos.contains(blockPos: BlockPos): Boolean {
+    val minX = xPos shl 4
+    val minZ = zPos shl 4
+    return blockPos.xPos >= minX && blockPos.zPos >= minZ
+            && blockPos.xPos <= minX + 15 && blockPos.zPos <= minZ + 15
+}
+
+operator fun ChunkPos.contains(entityPos: EntityPos): Boolean {
+    val minX = xPos shl 4
+    val minZ = zPos shl 4
+    return entityPos.xPos >= minX && entityPos.zPos >= minZ
+            && entityPos.xPos <= minX + 15 && entityPos.zPos <= minZ + 15
+}

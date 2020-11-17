@@ -19,6 +19,7 @@
 package org.powernukkit.converters.storage.api
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 
@@ -26,10 +27,16 @@ import org.powernukkit.converters.storage.api.leveldata.model.LevelData
  * @author joserobjr
  * @since 2020-10-23
  */
-abstract class ProviderWorld<P : Platform<P>> {
+abstract class ProviderWorld<P : Platform<P>>(protected val problemManager: StorageProblemManager) {
     abstract val platform: P
     abstract val levelData: LevelData
     abstract val storageEngine: StorageEngine
+
+    open fun countChunks() = chunkFlow().map { 1 }
+    open fun countBlocks() = chunkFlow().map { it.countNonAirBlocks() }
+    open fun countChunkSections() = chunkFlow().map { it.entityCount }
+    open fun countEntities() = chunkFlow().map { it.entityCount }
+    open fun countBlockEntities() = chunkFlow().map { it.blockEntityCount }
 
     abstract fun chunkFlow(): Flow<Chunk<P>>
 }

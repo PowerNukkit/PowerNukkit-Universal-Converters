@@ -18,9 +18,11 @@
 
 package org.powernukkit.converters.platform.bedrock.entity
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.entity.BaseEntity
+import org.powernukkit.converters.platform.base.entity.BaseEntityType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**
@@ -29,7 +31,9 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
  */
 class BedrockEntity(
     private val constructors: BaseConstructors<BedrockPlatform>,
-    pos: EntityPos
-) : BaseEntity<BedrockPlatform>(constructors, pos) {
-    override fun withPos(entityPos: EntityPos) = BedrockEntity(constructors, pos)
+    type: BaseEntityType<BedrockPlatform>,
+    pos: EntityPos,
+    nbt: NbtCompound
+) : BaseEntity<BedrockPlatform>(constructors, type, pos, nbt) {
+    override fun withPos(entityPos: EntityPos) = BedrockEntity(constructors, type, pos, nbt.deepCopy())
 }

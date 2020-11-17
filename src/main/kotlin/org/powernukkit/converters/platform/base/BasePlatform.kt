@@ -25,6 +25,7 @@ import org.powernukkit.converters.platform.api.TechnicalValues
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.api.entity.PlatformEntityType
 import org.powernukkit.converters.platform.base.block.BaseBlockEntity
 import org.powernukkit.converters.platform.base.block.BaseBlockState
 import org.powernukkit.converters.platform.base.entity.BaseEntity
@@ -90,6 +91,11 @@ abstract class BasePlatform<P : BasePlatform<P>>(
     final override val airBlock = constructors.createBlock(airBlockState)
 
     override fun getBlockType(id: NamespacedId) = blockTypesById[id]
+    override fun getBlockEntityType(id: String) = blockEntityTypesById[id]
+
+    override fun getEntityType(id: String): PlatformEntityType<P>? {
+        return null
+    }
 
     @Suppress("UNCHECKED_CAST")
     final override fun createPlatformBlock(

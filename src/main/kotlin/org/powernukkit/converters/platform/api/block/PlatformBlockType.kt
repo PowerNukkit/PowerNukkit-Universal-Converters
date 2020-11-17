@@ -34,6 +34,7 @@ abstract class PlatformBlockType<P : Platform<P>>(
     abstract val blockProperties: Map<String, PlatformBlockProperty<P>>
     abstract val blockEntityType: PlatformBlockEntityType<P>?
     abstract val universalType: UniversalBlockType?
+    open val defaultState get() = withState(defaultPropertyValues())
 
     abstract fun defaultPropertyValues(): Map<String, PlatformBlockPropertyValue<P>>
 
@@ -54,6 +55,8 @@ abstract class PlatformBlockType<P : Platform<P>>(
             }
         })
     }
+
+    open fun withStateFromLegacy(legacyData: Int) = defaultState
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true

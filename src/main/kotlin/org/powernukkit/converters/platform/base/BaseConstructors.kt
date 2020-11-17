@@ -18,11 +18,14 @@
 
 package org.powernukkit.converters.platform.base
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.internal.InitOnceDelegator
+import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.PlatformObject
 import org.powernukkit.converters.platform.base.block.*
 import org.powernukkit.converters.platform.base.entity.BaseEntity
+import org.powernukkit.converters.platform.base.entity.BaseEntityType
 import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.block.type.ModelExtraBlock
 
@@ -91,8 +94,26 @@ class BaseConstructors<P : BasePlatform<P>>(
         Boolean, UniversalBlockPropertyValue, Boolean
     ) -> BaseBlockPropertyValue<P>,
 
+    val blockEntity: (
+        BaseConstructors<P>,
+        BaseBlockEntityType<P>,
+        NbtCompound
+    ) -> BaseBlockEntity<P>,
 
-) : PlatformObject<P> {
+    val entityType: (
+        BaseConstructors<P>,
+        String
+    ) -> BaseEntityType<P>,
+
+    val entity: (
+        BaseConstructors<P>,
+        BaseEntityType<P>,
+        EntityPos,
+        NbtCompound,
+    ) -> BaseEntity<P>,
+
+
+    ) : PlatformObject<P> {
 
     override var platform: P by InitOnceDelegator(); private set
 
@@ -168,4 +189,19 @@ class BaseConstructors<P : BasePlatform<P>>(
         universalValue: UniversalBlockPropertyValue,
         default: Boolean,
     ) = blockPropertyValueBoolean(this, boolean, universalValue, default)
+
+    fun createBlockEntity(
+        type: BaseBlockEntityType<P>,
+        nbt: NbtCompound,
+    ) = blockEntity(this, type, nbt)
+
+    fun createEntityType(
+        id: String,
+    ) = entityType(this, id)
+
+    fun createEntity(
+        type: BaseEntityType<P>,
+        pos: EntityPos,
+        nbt: NbtCompound,
+    ) = entity(this, type, pos, nbt)
 }

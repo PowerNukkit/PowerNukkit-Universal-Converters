@@ -16,21 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.entity
+package org.powernukkit.converters.storage.alpha
 
-import br.com.gamemods.nbtmanipulator.NbtCompound
-import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.base.BaseConstructors
-import org.powernukkit.converters.platform.base.BasePlatform
+import br.com.gamemods.regionmanipulator.ChunkPos
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-11-16
  */
-abstract class BaseEntity<P : BasePlatform<P>>(
-    constructors: BaseConstructors<P>,
-    override val type: BaseEntityType<P>,
-    pos: EntityPos,
-    protected val nbt: NbtCompound,
-) : PlatformEntity<P>(pos)
+inline class AlphaChunkPos(
+    val asChunkPos: ChunkPos
+) {
+    constructor(xPos: Int, zPos: Int) : this(ChunkPos(xPos, zPos))
+    constructor(xName: String, zName: String) : this(ChunkPos(xName.toInt(36), zName.toInt(36)))
+
+    inline val xPos get() = asChunkPos.xPos
+    inline val zPos get() = asChunkPos.zPos
+
+    val xName get() = xPos.toString(36)
+    val zName get() = zPos.toString(36)
+
+    val folderPos get() = AlphaFolderPos(xPos % 64, zPos % 64)
+    val path get() = folderPos.path.resolve("c.$xName.$zName.dat")
+}

@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.bedrock.block
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockEntity
 import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
@@ -30,4 +31,5 @@ import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 class BedrockBlockEntity(
     constructors: BaseConstructors<BedrockPlatform>,
     type: BaseBlockEntityType<BedrockPlatform>,
-) : BaseBlockEntity<BedrockPlatform>(constructors, type)
+    nbt: NbtCompound,
+) : BaseBlockEntity<BedrockPlatform>(constructors, type, nbt)

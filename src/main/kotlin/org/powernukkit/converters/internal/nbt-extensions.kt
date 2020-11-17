@@ -24,6 +24,7 @@ import br.com.gamemods.nbtmanipulator.*
  * @author joserobjr
  * @since 2020-10-20
  */
+internal val NbtTag?.byteArrayOrNull get() = (this as? NbtByteArray)?.value
 internal val NbtTag?.uByteOrNull get() = (this as? NbtByte)?.unsigned
 internal val NbtTag?.intOrNull get() = (this as? NbtInt)?.value
 internal val NbtTag?.longOrNull get() = (this as? NbtLong)?.value
@@ -42,6 +43,7 @@ internal val NbtTag?.intListOrNull get() = nbtIntListOrNull?.map { it.value }
 internal val NbtTag?.doubleListOrNull get() = nbtDoubleListOrNull?.map { it.value }
 internal val NbtTag?.stringListOrNull get() = nbtStringListOrNull?.map { it.value }
 
+internal val NbtTag?.byteArray get() = checkNotNull(byteArrayOrNull)
 internal val NbtTag?.uByte get() = checkNotNull(uByteOrNull)
 internal val NbtTag?.int get() = checkNotNull(intOrNull)
 internal val NbtTag?.long get() = checkNotNull(longOrNull)

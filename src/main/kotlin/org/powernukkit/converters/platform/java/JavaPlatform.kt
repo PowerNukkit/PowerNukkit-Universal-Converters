@@ -23,11 +23,17 @@ import org.powernukkit.converters.conversion.adapter.plus
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.MinecraftEdition
+import org.powernukkit.converters.platform.api.NamespacedId
+import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.java.adapters.block.JavaStoneAdapter
 import org.powernukkit.converters.platform.java.block.*
+import org.powernukkit.converters.platform.java.entity.JavaEntity
+import org.powernukkit.converters.platform.java.entity.JavaEntityType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.storage.api.Dialect
+import java.util.*
 
 /**
  * @author joserobjr
@@ -35,15 +41,21 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
  */
 class JavaPlatform(
     universal: UniversalPlatform,
-    name: String = "Java"
+    val dialect: Dialect? = null,
+    name: String = dialect?.name ?: "Java"
 ) : BasePlatform<JavaPlatform>(
     BaseConstructors(
         ::JavaBlockState, ::JavaBlockProperty, ::JavaBlockEntityType, ::JavaBlockEntityDataType,
         ::JavaBlockType, ::JavaBlock, ::JavaBlock, ::JavaBlockPropertyValueInt, ::JavaBlockPropertyValueString,
-        ::JavaBlockPropertyValueBoolean
+        ::JavaBlockPropertyValueBoolean,
+        ::JavaBlockEntity, ::JavaEntityType, ::JavaEntity
     ),
     universal, name, MinecraftEdition.JAVA
 ) {
+    override fun getBlockType(legacyId: Int): PlatformBlockType<JavaPlatform>? {
+        return getBlockType(legacyBlockTypeIds[legacyId] ?: return null)
+    }
+
     override fun convertToUniversal(adapters: PlatformAdapters<JavaPlatform, UniversalPlatform>?): ToUniversalConverter<JavaPlatform> {
         var adjustedAdapters = (adapters ?: PlatformAdapters())
         adjustedAdapters += JavaStoneAdapter()
@@ -54,5 +66,20 @@ class JavaPlatform(
         var adjustedAdapters = (adapters ?: PlatformAdapters())
         adjustedAdapters += JavaStoneAdapter()
         return FromUniversalConverter(universal, this, adjustedAdapters)
+    }
+
+    companion object {
+        val legacyBlockTypeIds: Map<Int, NamespacedId> by lazy {
+            val props =
+                JavaPlatform::class.java.getResourceAsStream("definitions/java-numeric-block-type-ids.properties")
+                    ?.use { Properties().apply { load(it) } }
+                    ?: return@lazy emptyMap()
+
+            props.entries.asSequence()
+                .mapNotNull { (k, v) ->
+                    (k.toString().toIntOrNull() ?: return@mapNotNull null) to NamespacedId(v.toString())
+                }
+                .toMap()
+        }
     }
 }

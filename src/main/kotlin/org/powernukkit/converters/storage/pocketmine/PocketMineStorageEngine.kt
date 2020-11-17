@@ -19,11 +19,11 @@
 package org.powernukkit.converters.storage.pocketmine
 
 import kotlinx.coroutines.Deferred
+import org.powernukkit.converters.conversion.job.InputWorld
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.ReceivingWorld
 import org.powernukkit.converters.storage.api.StorageEngine
-import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import java.io.File
 
 /**
@@ -31,11 +31,7 @@ import java.io.File
  * @since 2020-10-23
  */
 class PocketMineStorageEngine : StorageEngine() {
-    override suspend fun loadWorld(
-        fromDir: File,
-        levelData: LevelData,
-        universalPlatformLoader: Deferred<UniversalPlatform>
-    ): ProviderWorld<*> {
+    override suspend fun loadWorld(inputWorld: InputWorld): ProviderWorld<*> {
         TODO("Not yet implemented")
     }
 

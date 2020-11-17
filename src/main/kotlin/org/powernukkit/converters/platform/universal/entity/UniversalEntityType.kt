@@ -16,21 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.entity
+package org.powernukkit.converters.platform.universal.entity
 
 import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.base.BaseConstructors
-import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.api.entity.PlatformEntityType
+import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-11-16
  */
-abstract class BaseEntity<P : BasePlatform<P>>(
-    constructors: BaseConstructors<P>,
-    override val type: BaseEntityType<P>,
-    pos: EntityPos,
-    protected val nbt: NbtCompound,
-) : PlatformEntity<P>(pos)
+class UniversalEntityType(
+    platform: UniversalPlatform,
+    id: String,
+) : PlatformEntityType<UniversalPlatform>(platform, id) {
+    override fun createEntity(pos: EntityPos, nbt: NbtCompound): UniversalEntity {
+        return UniversalEntity(this, pos, nbt)
+    }
+}

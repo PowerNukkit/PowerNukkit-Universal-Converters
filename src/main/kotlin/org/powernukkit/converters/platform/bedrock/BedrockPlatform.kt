@@ -22,10 +22,14 @@ import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.MinecraftEdition
+import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
 import org.powernukkit.converters.platform.bedrock.block.*
+import org.powernukkit.converters.platform.bedrock.entity.BedrockEntity
+import org.powernukkit.converters.platform.bedrock.entity.BedrockEntityType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.storage.api.Dialect
 
 /**
  * @author joserobjr
@@ -33,15 +37,21 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
  */
 class BedrockPlatform(
     universal: UniversalPlatform,
-    name: String = "Bedrock"
+    val dialect: Dialect? = null,
+    name: String = dialect?.name ?: "Bedrock"
 ) : BasePlatform<BedrockPlatform>(
     BaseConstructors(
         ::BedrockBlockState, ::BedrockBlockProperty, ::BedrockBlockEntityType,
         ::BedrockBlockEntityDataType, ::BedrockBlockType, ::BedrockBlock, ::BedrockBlock,
         ::BedrockBlockPropertyValueInt, ::BedrockBlockPropertyValueString, ::BedrockBlockPropertyValueBoolean,
+        ::BedrockBlockEntity, ::BedrockEntityType, ::BedrockEntity
     ),
     universal, name, MinecraftEdition.BEDROCK
 ) {
+    override fun getBlockType(legacyId: Int): PlatformBlockType<BedrockPlatform>? {
+        return null
+    }
+
     override fun convertToUniversal(adapters: PlatformAdapters<BedrockPlatform, UniversalPlatform>?): ToUniversalConverter<BedrockPlatform> {
         return ToUniversalConverter(this, universal)
     }

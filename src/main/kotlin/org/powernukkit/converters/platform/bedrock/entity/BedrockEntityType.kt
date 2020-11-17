@@ -16,21 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.entity
+package org.powernukkit.converters.platform.bedrock.entity
 
-import br.com.gamemods.nbtmanipulator.NbtCompound
-import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
 import org.powernukkit.converters.platform.base.BaseConstructors
-import org.powernukkit.converters.platform.base.BasePlatform
+import org.powernukkit.converters.platform.base.entity.BaseEntityType
+import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-11-16
  */
-abstract class BaseEntity<P : BasePlatform<P>>(
-    constructors: BaseConstructors<P>,
-    override val type: BaseEntityType<P>,
-    pos: EntityPos,
-    protected val nbt: NbtCompound,
-) : PlatformEntity<P>(pos)
+class BedrockEntityType(
+    constructors: BaseConstructors<BedrockPlatform>,
+    id: String
+) : BaseEntityType<BedrockPlatform>(constructors, id)

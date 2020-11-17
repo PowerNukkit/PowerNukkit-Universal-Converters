@@ -19,8 +19,6 @@
 package org.powernukkit.converters.platform.universal
 
 import org.powernukkit.converters.conversion.adapter.PlatformAdapters
-import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
-import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.internal.toMapOfList
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
@@ -28,6 +26,7 @@ import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.api.entity.PlatformEntityType
 import org.powernukkit.converters.platform.universal.block.*
 import org.powernukkit.converters.platform.universal.definitions.model.ModelDefinitions
 import org.powernukkit.converters.platform.universal.entity.UniversalEntity
@@ -80,15 +79,24 @@ class UniversalPlatform internal constructor(
     override val airBlockState = UniversalBlockState(airBlockType)
     override val airBlock = UniversalBlock(this, listOf(airBlockState))
 
-    override fun convertToUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): ToUniversalConverter<UniversalPlatform> {
+    override fun convertToUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): Nothing {
         throw UnsupportedOperationException("Cannot convert an universal platform to an other universal platform")
     }
 
-    override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): FromUniversalConverter<UniversalPlatform> {
+    override fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, UniversalPlatform>?): Nothing {
         throw UnsupportedOperationException("Cannot convert an universal platform to an other universal platform")
     }
 
     override fun getBlockType(id: NamespacedId) = blockTypesById[id]
+
+    override fun getBlockType(legacyId: Int): Nothing? {
+        return null
+    }
+
+    override fun getBlockEntityType(id: String) = blockEntityTypesById[id]
+    override fun getEntityType(id: String): PlatformEntityType<UniversalPlatform>? {
+        return null
+    }
 
     fun getBlockPropertyByEditionId(edition: MinecraftEdition, propertyId: String): List<UniversalBlockProperty> {
         return blockPropertiesByEditionId[edition]?.get(propertyId) ?: emptyList()

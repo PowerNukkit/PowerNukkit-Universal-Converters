@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.base.block
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntityType
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
@@ -28,8 +29,10 @@ import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityT
  * @since 2020-10-13
  */
 abstract class BaseBlockEntityType<P : BasePlatform<P>>(
-    constructors: BaseConstructors<P>,
+    private val constructors: BaseConstructors<P>,
     id: String,
     final override val universalType: UniversalBlockEntityType?,
     final override val data: Map<String, BaseBlockEntityDataType<P>>
-) : PlatformBlockEntityType<P>(constructors.platform, id)
+) : PlatformBlockEntityType<P>(constructors.platform, id) {
+    override fun createBlockEntity(nbt: NbtCompound) = constructors.blockEntity(constructors, this, nbt)
+}

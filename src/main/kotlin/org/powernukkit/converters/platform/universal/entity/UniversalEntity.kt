@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.universal.entity
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
 import org.powernukkit.converters.platform.universal.UniversalPlatform
@@ -27,8 +28,9 @@ import org.powernukkit.converters.platform.universal.UniversalPlatform
  * @since 2020-10-10
  */
 class UniversalEntity(
-    platform: UniversalPlatform,
-    pos: EntityPos
-) : PlatformEntity<UniversalPlatform>(platform, pos) {
-    override fun withPos(entityPos: EntityPos) = UniversalEntity(platform, entityPos)
+    override val type: UniversalEntityType,
+    pos: EntityPos,
+    private val nbt: NbtCompound,
+) : PlatformEntity<UniversalPlatform>(pos) {
+    override fun withPos(entityPos: EntityPos) = UniversalEntity(type, entityPos, nbt.deepCopy())
 }

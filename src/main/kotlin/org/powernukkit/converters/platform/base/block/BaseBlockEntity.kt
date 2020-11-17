@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.base.block
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
@@ -29,4 +30,5 @@ import org.powernukkit.converters.platform.base.BasePlatform
 abstract class BaseBlockEntity<P : BasePlatform<P>>(
     constructors: BaseConstructors<P>,
     final override val type: BaseBlockEntityType<P>,
+    protected val nbt: NbtCompound,
 ) : PlatformBlockEntity<P>()

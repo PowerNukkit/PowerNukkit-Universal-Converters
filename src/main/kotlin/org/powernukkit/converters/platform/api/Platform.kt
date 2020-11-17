@@ -21,11 +21,9 @@ package org.powernukkit.converters.platform.api
 import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
-import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformBlockEntity
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.block.PlatformBlockType
+import org.powernukkit.converters.platform.api.block.*
 import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.api.entity.PlatformEntityType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 
 abstract class Platform<P : Platform<P>>(
@@ -52,6 +50,9 @@ abstract class Platform<P : Platform<P>>(
     ): PlatformBlock<P>
 
     abstract fun getBlockType(id: NamespacedId): PlatformBlockType<P>?
+    abstract fun getBlockType(legacyId: Int): PlatformBlockType<P>?
+    abstract fun getBlockEntityType(id: String): PlatformBlockEntityType<P>?
+    abstract fun getEntityType(id: String): PlatformEntityType<P>?
 
     override fun toString(): String {
         return "Platform(name='$name', minecraftEdition=$minecraftEdition)"

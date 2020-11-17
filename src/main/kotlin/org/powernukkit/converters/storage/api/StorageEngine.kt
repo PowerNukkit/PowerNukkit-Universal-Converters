@@ -19,8 +19,8 @@
 package org.powernukkit.converters.storage.api
 
 import kotlinx.coroutines.Deferred
+import org.powernukkit.converters.conversion.job.InputWorld
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import java.io.File
 
 /**
@@ -29,9 +29,7 @@ import java.io.File
  */
 abstract class StorageEngine {
     abstract suspend fun loadWorld(
-        fromDir: File,
-        levelData: LevelData,
-        universalPlatformLoader: Deferred<UniversalPlatform>
+        inputWorld: InputWorld,
     ): ProviderWorld<*>
 
     abstract suspend fun prepareToReceive(

@@ -16,21 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.platform.base.entity
+package org.powernukkit.converters.conversion.job
 
-import br.com.gamemods.nbtmanipulator.NbtCompound
-import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
-import org.powernukkit.converters.platform.base.BaseConstructors
-import org.powernukkit.converters.platform.base.BasePlatform
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-11-15
  */
-abstract class BaseEntity<P : BasePlatform<P>>(
-    constructors: BaseConstructors<P>,
-    override val type: BaseEntityType<P>,
-    pos: EntityPos,
-    protected val nbt: NbtCompound,
-) : PlatformEntity<P>(pos)
+@ExperimentalCoroutinesApi
+data class Estimation(
+    val current: StateFlow<Int>,
+    val total: StateFlow<Int>,
+    val isCounting: StateFlow<Boolean>,
+    val countingJob: Job
+)

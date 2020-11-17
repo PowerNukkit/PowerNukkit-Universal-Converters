@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.api.block
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.PlatformObject
 import org.powernukkit.converters.platform.universal.block.UniversalBlockEntityType
@@ -32,6 +33,8 @@ abstract class PlatformBlockEntityType<P : Platform<P>>(
 ) : PlatformObject<P> {
     abstract val universalType: UniversalBlockEntityType?
     abstract val data: Map<String, PlatformBlockEntityDataType<P>>
+
+    abstract fun createBlockEntity(nbt: NbtCompound): PlatformBlockEntity<P>
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true

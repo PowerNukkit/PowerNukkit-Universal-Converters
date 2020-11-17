@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-package org.powernukkit.converters.conversion
+/*
+package org.powernukkit.converters.conversion.job
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
@@ -183,3 +183,4 @@ class ConversionProcess(
         CONVERTING,
     }
 } 
+*/

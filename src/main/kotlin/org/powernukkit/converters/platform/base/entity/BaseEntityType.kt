@@ -20,17 +20,17 @@ package org.powernukkit.converters.platform.base.entity
 
 import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.math.EntityPos
-import org.powernukkit.converters.platform.api.entity.PlatformEntity
+import org.powernukkit.converters.platform.api.entity.PlatformEntityType
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.BasePlatform
 
 /**
  * @author joserobjr
- * @since 2020-10-13
+ * @since 2020-11-16
  */
-abstract class BaseEntity<P : BasePlatform<P>>(
-    constructors: BaseConstructors<P>,
-    override val type: BaseEntityType<P>,
-    pos: EntityPos,
-    protected val nbt: NbtCompound,
-) : PlatformEntity<P>(pos)
+abstract class BaseEntityType<P : BasePlatform<P>>(
+    private val constructors: BaseConstructors<P>,
+    id: String
+) : PlatformEntityType<P>(constructors.platform, id) {
+    override fun createEntity(pos: EntityPos, nbt: NbtCompound) = constructors.createEntity(this, pos, nbt)
+} 

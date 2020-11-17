@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.java.block
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
 import org.powernukkit.converters.platform.base.BaseConstructors
 import org.powernukkit.converters.platform.base.block.BaseBlockEntity
 import org.powernukkit.converters.platform.base.block.BaseBlockEntityType
@@ -30,4 +31,5 @@ import org.powernukkit.converters.platform.java.JavaPlatform
 class JavaBlockEntity(
     constructors: BaseConstructors<JavaPlatform>,
     type: BaseBlockEntityType<JavaPlatform>,
-) : BaseBlockEntity<JavaPlatform>(constructors, type)
+    nbt: NbtCompound,
+) : BaseBlockEntity<JavaPlatform>(constructors, type, nbt)

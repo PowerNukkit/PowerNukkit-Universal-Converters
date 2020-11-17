@@ -27,12 +27,13 @@ import org.powernukkit.converters.platform.api.PlatformObject
  * @since 2020-10-11
  */
 abstract class PlatformEntity<P : Platform<P>>(
-    override val platform: P,
     val pos: EntityPos
 ) : PlatformObject<P> {
+    abstract val type: PlatformEntityType<P>
+    override val platform: P get() = type.platform
+    abstract fun withPos(entityPos: EntityPos): PlatformEntity<P>
+
     final override fun toString(): String {
         return "${platform.name}PlatformEntity(pos=$pos)"
     }
-
-    abstract fun withPos(entityPos: EntityPos): PlatformEntity<P>
 }
