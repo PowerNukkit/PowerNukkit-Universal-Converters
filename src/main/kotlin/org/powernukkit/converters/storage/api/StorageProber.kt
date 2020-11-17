@@ -20,6 +20,7 @@ package org.powernukkit.converters.storage.api
 
 import br.com.gamemods.nbtmanipulator.NbtCompound
 import br.com.gamemods.regionmanipulator.RegionIO
+import com.github.michaelbull.logging.InlineLogger
 import io.gomint.leveldb.DB
 import kotlinx.coroutines.*
 import org.intellij.lang.annotations.Language
@@ -126,8 +127,10 @@ class StorageProber(
             RegionIO.readRegion(regionFile.toFile())
             true
         } catch (e: IOException) {
+            log.debug(e) { "Invalid anvil region file: $regionFile" }
             false
         } catch (e: InvalidPathException) {
+            log.debug(e) { "Invalid anvil region file path: $regionFile" }
             false
         }
     }
@@ -139,6 +142,7 @@ class StorageProber(
             }
             true
         } catch (e: Exception) {
+            log.debug(e) { "Could not open LevelDB at $dbFolder" }
             false
         }
     }
@@ -221,8 +225,10 @@ class StorageProber(
         val folder = try {
             levelDatFile.toPath().parent.toRealPath()
         } catch (e: IOException) {
+            log.debug(e) { "Could not find the real path of the folder that holds the level.dat file: $levelDatFile" }
             return false
         } catch (e: InvalidPathException) {
+            log.debug(e) { "The folder that contains the level.dat file have an invalid path: $levelDatFile" }
             return false
         }
 
@@ -236,8 +242,10 @@ class StorageProber(
         val regions = try {
             levelDatFile.toPath().resolveSibling(name).toRealPath()
         } catch (e: IOException) {
+            log.debug(e) { "Could not find the real path of the sibling $name to the file $levelDatFile" }
             return null
         } catch (e: InvalidPathException) {
+            log.debug(e) { "Could not find the real path of the sibling $name to the file $levelDatFile" }
             return null
         }
 
@@ -245,6 +253,8 @@ class StorageProber(
     }
 
     companion object {
+        private val log = InlineLogger()
+
         @Language("RegExp")
         const val NUM = """[0-9]|-?[1-9][0-9]*"""
 

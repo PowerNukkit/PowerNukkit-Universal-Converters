@@ -18,9 +18,13 @@
 
 package org.powernukkit.converters.storage.leveldb
 
+import br.com.gamemods.nbtmanipulator.NbtFile
+import br.com.gamemods.nbtmanipulator.NbtIO
 import br.com.gamemods.regionmanipulator.ChunkPos
+import com.github.michaelbull.logging.InlineLogger
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.PooledByteBufAllocator
+import io.netty.buffer.Unpooled
 import org.powernukkit.converters.math.startsWith
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -33,6 +37,8 @@ import kotlin.contracts.contract
 sealed class LevelDBKey {
     abstract val bufferSize: Int
     abstract fun writeTo(buffer: ByteBuf)
+
+    abstract fun loadValue(value: ByteArray): Any
 
     @ExperimentalContracts
     inline fun <R> withBuffer(action: (ByteBuf) -> R): R {
@@ -47,9 +53,15 @@ sealed class LevelDBKey {
     }
 
     companion object {
+        private val log = InlineLogger()
         private val playerPrefix = "player_".toByteArray()
         private val villagePrefix = "VILLAGE_".toByteArray()
         private val localPlayer = "~local_player".toByteArray()
+        private val scheduledWT = "scheduledWT".toByteArray()
+        private val scoreboard = "scoreboard".toByteArray()
+        private val biomeData = "BiomeData".toByteArray()
+        private val mobEvents = "mobevents".toByteArray()
+        private val autonomousEntities = "AutonomousEntities".toByteArray()
         private val flatWorldPlayers = "game_flatworldlayers".toByteArray()
 
 
@@ -59,6 +71,11 @@ sealed class LevelDBKey {
                 when {
                     array.contentEquals(localPlayer) -> LocalPlayerKey
                     array.contentEquals(flatWorldPlayers) -> FlatWorldLayers
+                    array.contentEquals(scheduledWT) -> ScheduledWTKey
+                    array.contentEquals(scoreboard) -> ScoreboardKey
+                    array.contentEquals(biomeData) -> BiomeDataKey
+                    array.contentEquals(mobEvents) -> MobEventsKey
+                    array.contentEquals(autonomousEntities) -> AutonomousEntitiesKey
                     array.startsWith(playerPrefix) -> RemotePlayerKey(
                         array.copyOfRange(playerPrefix.size, array.size).toString().toLong()
                     )
@@ -69,6 +86,7 @@ sealed class LevelDBKey {
                     else -> UnknownKey(array).withBuffer(::ChunkKey)
                 }
             } catch (e: Exception) {
+                log.debug(e) { "Error while parsing a LevelDBKey: ${array.toList()}" }
                 UnknownKey(array)
             }
         }
@@ -91,6 +109,8 @@ class ChunkKey(val pos: ChunkPos, val type: ChunkKeyType, val dimension: Int? = 
         buffer.writeByte(type.code)
         section?.let { buffer.writeByte(it) }
     }
+
+    override fun loadValue(value: ByteArray) = type.loadValue(value)
 }
 
 abstract class StringKey(string: String) : LevelDBKey() {
@@ -101,15 +121,74 @@ abstract class StringKey(string: String) : LevelDBKey() {
     }
 }
 
-class RemotePlayerKey(val clientId: Long) : StringKey("player_$clientId")
-object LocalPlayerKey : StringKey("~local_player")
-object FlatWorldLayers : StringKey("game_flatworldlayers")
-class VillageKey(val id: String, type: VillageKeyType) : StringKey("VILLAGE_${id}_$type")
+class RemotePlayerKey(val clientId: Long) : StringKey("player_$clientId") {
+    override fun loadValue(value: ByteArray): Any {
+        TODO("Not yet implemented")
+    }
+}
+
+object LocalPlayerKey : StringKey("~local_player") {
+    override fun loadValue(value: ByteArray): Any {
+        TODO("Not yet implemented")
+    }
+}
+
+object FlatWorldLayers : StringKey("game_flatworldlayers") {
+    override fun loadValue(value: ByteArray): IntArray {
+        return String(value, Charsets.US_ASCII)
+            .removeSurrounding("[", "]")
+            .split(",")
+            .let { list ->
+                IntArray(list.size) {
+                    list[it].toInt()
+                }
+            }
+    }
+}
+
+class VillageKey(val id: String, type: VillageKeyType) : StringKey("VILLAGE_${id}_$type") {
+    override fun loadValue(value: ByteArray): Any {
+        TODO("Not yet implemented")
+    }
+}
+
+object ScoreboardKey : StringKey("scoreboard") {
+    override fun loadValue(value: ByteArray): NbtFile {
+        return readNbt(value)
+    }
+}
+
+object ScheduledWTKey : StringKey("scheduledWT") {
+    override fun loadValue(value: ByteArray): NbtFile {
+        return readNbt(value)
+    }
+}
+
+object AutonomousEntitiesKey : StringKey("AutonomousEntities") {
+    override fun loadValue(value: ByteArray): NbtFile {
+        return readNbt(value)
+    }
+}
+
+object BiomeDataKey : StringKey("BiomeData") {
+    override fun loadValue(value: ByteArray): NbtFile {
+        return readNbt(value)
+    }
+}
+
+object MobEventsKey : StringKey("mobevents") {
+    override fun loadValue(value: ByteArray): NbtFile {
+        return readNbt(value)
+    }
+}
+
 class UnknownKey(val content: ByteArray) : LevelDBKey() {
     override val bufferSize = content.size
     override fun writeTo(buffer: ByteBuf) {
         buffer.writeBytes(content)
     }
+
+    override fun loadValue(value: ByteArray) = value
 }
 
 enum class VillageKeyType {
@@ -119,26 +198,92 @@ enum class VillageKeyType {
     PLAYERS
 }
 
-enum class ChunkKeyType(val code: Int) {
-    DATA_2D(45),
-    DATA_2D_LEGACY(46),
-    SUB_CHUNK_PREFIX(47),
-    LEGACY_TERRAIN(48),
-    BLOCK_ENTITY(49),
-    ENTITY(50),
-    PENDING_TICKS(51),
-    BLOCK_EXTRA_DATA(52),
-    BIOME_STATE(53),
-    FINALIZED_STATE(54),
-    UNUSED_0X37(55),
-    BORDER_BLOCKS(56),
-    HARDCODED_SPAWN_AREAS(57),
-    RANDOM_TICKS(58),
-    CHECKSUM(59),
-    VERSION(118),
-    ;
+sealed class ChunkKeyType(val code: Int) {
+    abstract fun loadValue(value: ByteArray): Any
+
+    object DATA_2D : ChunkKeyType(45) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object DATA_2D_LEGACY : ChunkKeyType(46) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object SUB_CHUNK_PREFIX : ChunkKeyType(47) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object LEGACY_TERRAIN : ChunkKeyType(48) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object BLOCK_ENTITY : ChunkKeyType(49) {
+        override fun loadValue(value: ByteArray): NbtFile {
+            return readNbt(value)
+        }
+    }
+
+    object ENTITY : ChunkKeyType(50) {
+        override fun loadValue(value: ByteArray): NbtFile {
+            return readNbt(value)
+        }
+    }
+
+    object PENDING_TICKS : ChunkKeyType(51) {
+        override fun loadValue(value: ByteArray): NbtFile {
+            return readNbt(value)
+        }
+    }
+
+    object BLOCK_EXTRA_DATA : ChunkKeyType(52) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object BIOME_STATE : ChunkKeyType(53) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object FINALIZED_STATE : ChunkKeyType(54) {
+        override fun loadValue(value: ByteArray): Int {
+            return Unpooled.wrappedBuffer(value).use { byteBuf ->
+                byteBuf.readIntLE()
+            }
+        }
+    }
+
+    object UNUSED_0X37 : ChunkKeyType(55) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object BORDER_BLOCKS : ChunkKeyType(56) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object HARDCODED_SPAWN_AREAS : ChunkKeyType(57) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object RANDOM_TICKS : ChunkKeyType(58) {
+        override fun loadValue(value: ByteArray): NbtFile {
+            return readNbt(value)
+        }
+    }
+
+    object CHECKSUM : ChunkKeyType(59) {
+        override fun loadValue(value: ByteArray) = value
+    }
+
+    object VERSION : ChunkKeyType(118) {
+        override fun loadValue(value: ByteArray) = value[0]
+    }
 
     companion object {
-        val byCode = values().associateBy { it.code }
+        val byCode = ChunkKeyType::class.sealedSubclasses.asSequence()
+            .mapNotNull { it.objectInstance }
+            .associateBy { it.code }
     }
+}
+
+private fun readNbt(value: ByteArray): NbtFile {
+    return NbtIO.readNbtFile(value.inputStream(), compressed = false, littleEndian = true)
 }

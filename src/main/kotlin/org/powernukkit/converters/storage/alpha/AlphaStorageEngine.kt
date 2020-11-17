@@ -20,6 +20,7 @@ package org.powernukkit.converters.storage.alpha
 
 import br.com.gamemods.nbtmanipulator.NbtIO
 import br.com.gamemods.regionmanipulator.ChunkPos
+import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.Deferred
 import org.intellij.lang.annotations.Language
 import org.powernukkit.converters.conversion.job.InputWorld
@@ -52,6 +53,8 @@ class AlphaStorageEngine : StorageEngine() {
     }
 
     companion object {
+        private val log = InlineLogger()
+
         @Language("RegExp")
         const val NUM_B36 = """^[0-9a-z]|-?[1-9a-z][0-9a-z]*"""
 
@@ -107,8 +110,10 @@ class AlphaStorageEngine : StorageEngine() {
                 NbtIO.readNbtFile(nbtFilePath.toFile())
                 true
             } catch (e: IOException) {
+                log.debug(e) { "Invalid alpha chunk file: $nbtFilePath" }
                 false
             } catch (e: InvalidPathException) {
+                log.debug(e) { "Invalid alpha chunk file path: $nbtFilePath" }
                 false
             }
         }

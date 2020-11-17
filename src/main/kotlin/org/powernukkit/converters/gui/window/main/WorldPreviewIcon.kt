@@ -98,12 +98,14 @@ class WorldPreviewIcon(
         val path = try {
             f.toPath()
         } catch (e: InvalidPathException) {
+            log.debug(e) { "Invalid path for $f" }
             return false
         }
 
         val currentDir = try {
             currentDir.toPath()
         } catch (e: InvalidPathException) {
+            log.debug(e) { "Invalid path for $currentDir" }
             return false
         }
 

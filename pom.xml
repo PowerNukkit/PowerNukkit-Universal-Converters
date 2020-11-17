@@ -245,6 +245,7 @@
                 <configuration>
                     <args>
                         <arg>-Xinline-classes</arg>
+                        <arg>-Xopt-in=kotlin.RequiresOptIn</arg>
                     </args>
                 </configuration>
             </plugin>
