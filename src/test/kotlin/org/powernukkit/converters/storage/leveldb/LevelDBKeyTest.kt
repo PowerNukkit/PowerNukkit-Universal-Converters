@@ -18,8 +18,8 @@
 
 package org.powernukkit.converters.storage.leveldb
 
-import io.gomint.leveldb.DB
 import org.junit.jupiter.api.Test
+import org.powernukkit.converters.storage.leveldb.iq80.IQ80LevelDB
 import java.io.File
 
 /**
@@ -29,11 +29,24 @@ import java.io.File
 internal class LevelDBKeyTest {
     @Test
     fun testing() {
-        DB(File("sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0/db")).use { db ->
-            db.open()
-            db.snapshot.use { snapshot ->
-                db.iterator(snapshot).keyIterator().forEach {
-                    println(it)
+        val stringPattern = Regex("^\\w+$")
+        val dbDir = File("sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0/db")
+        IQ80LevelDB(dbDir).use { db ->
+            /*db.keyIterator().use { iter -> 
+                iter.forEach { bytes ->
+                    var str = String(bytes)
+                    if (!str.matches(stringPattern)) {
+                        str = "0x" + bytes.joinToString("") { "%02X".format(it) }
+                    }
+                    
+                    println("${bytes.size}\t$str")
+                }
+            }*/
+            db.parsedKeyIterator().use { iter ->
+                iter.forEach { key ->
+                    if (key !is ChunkKey) {
+                        println("${key.bufferSize} - $key")
+                    }
                 }
             }
         }

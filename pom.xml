@@ -108,6 +108,26 @@
             <id>powernukkit-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
+        <!--<repository>
+            <id>opencollab-repo-release</id>
+            <url>https://repo.opencollab.dev/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>opencollab-repo-snapshot</id>
+            <url>https://repo.opencollab.dev/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>-->
     </repositories>
 
     <dependencies>
@@ -188,6 +208,31 @@
             <groupId>io.gomint</groupId>
             <artifactId>leveldb-jni</artifactId>
             <version>1.3.0-SNAPSHOT</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>net.daporkchop</groupId>
+            <artifactId>leveldb-mcpe-jni</artifactId>
+            <version>0.0.7-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-buffer</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>-->
+        <!--<dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb</artifactId>
+            <version>0.12</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.powernukkit.bedrock.leveldb</groupId>
+            <artifactId>bedrock-leveldb</artifactId>
+            <version>0.11.0-PN</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

@@ -36,8 +36,15 @@ import kotlin.contracts.contract
  */
 sealed class LevelDBKey {
     abstract val bufferSize: Int
-    abstract fun writeTo(buffer: ByteBuf)
 
+    @OptIn(ExperimentalContracts::class)
+    open fun toByteArray() = withBuffer { buf ->
+        ByteArray(buf.readableBytes()).also {
+            buf.readBytes(it)
+        }
+    }
+
+    abstract fun writeTo(buffer: ByteBuf)
     abstract fun loadValue(value: ByteArray): Any
 
     @ExperimentalContracts
@@ -45,6 +52,7 @@ sealed class LevelDBKey {
         contract { callsInPlace(action, InvocationKind.EXACTLY_ONCE) }
         return PooledByteBufAllocator.DEFAULT.directBuffer(bufferSize).let { buffer ->
             try {
+                writeTo(buffer)
                 action(buffer)
             } finally {
                 buffer.release()
@@ -52,35 +60,72 @@ sealed class LevelDBKey {
         }
     }
 
+    override fun toString(): String {
+        return buildString {
+            append(this@LevelDBKey::class.java.simpleName)
+            append('[')
+            val bytes = this@LevelDBKey.toByteArray()
+            val str = String(bytes)
+            if (!str.matches(stringPattern)) {
+                append("0x")
+                bytes.forEach {
+                    append("%02X".format(it))
+                }
+            } else {
+                append(str)
+            }
+            append(']')
+        }
+    }
+
+    private data class ByteArrayBox(val byteArray: ByteArray) {
+        constructor(string: String) : this(string.toByteArray())
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ByteArrayBox
+
+            if (!byteArray.contentEquals(other.byteArray)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return byteArray.contentHashCode()
+        }
+    }
+
     companion object {
         private val log = InlineLogger()
+        private val stringPattern = Regex("^[\\w~_-]+$")
+
+        private val constantStringKeys = StringKey::class.sealedSubclasses.asSequence()
+            .mapNotNull { it.objectInstance }
+            .associateBy { ByteArrayBox(it.toByteArray()) } + mapOf(
+            ByteArrayBox("Overworld") to DimensionKey("Overworld"),
+            ByteArrayBox("Nether") to DimensionKey("Nether"),
+        )
+
+        private val posTrackDBPrefix = "PosTrackDB-0x".toByteArray()
         private val playerPrefix = "player_".toByteArray()
         private val villagePrefix = "VILLAGE_".toByteArray()
-        private val localPlayer = "~local_player".toByteArray()
-        private val scheduledWT = "scheduledWT".toByteArray()
-        private val scoreboard = "scoreboard".toByteArray()
-        private val biomeData = "BiomeData".toByteArray()
-        private val mobEvents = "mobevents".toByteArray()
-        private val autonomousEntities = "AutonomousEntities".toByteArray()
-        private val flatWorldPlayers = "game_flatworldlayers".toByteArray()
 
 
-        @ExperimentalContracts
+        @OptIn(ExperimentalContracts::class)
         fun createByArray(array: ByteArray): LevelDBKey {
             return try {
+                constantStringKeys[ByteArrayBox(array)]?.let { return it }
                 when {
-                    array.contentEquals(localPlayer) -> LocalPlayerKey
-                    array.contentEquals(flatWorldPlayers) -> FlatWorldLayers
-                    array.contentEquals(scheduledWT) -> ScheduledWTKey
-                    array.contentEquals(scoreboard) -> ScoreboardKey
-                    array.contentEquals(biomeData) -> BiomeDataKey
-                    array.contentEquals(mobEvents) -> MobEventsKey
-                    array.contentEquals(autonomousEntities) -> AutonomousEntitiesKey
+                    array.startsWith(posTrackDBPrefix) -> PosTrackDBKey(
+                        String(array.copyOfRange(posTrackDBPrefix.size, array.size)).toLong()
+                    )
                     array.startsWith(playerPrefix) -> RemotePlayerKey(
-                        array.copyOfRange(playerPrefix.size, array.size).toString().toLong()
+                        String(array.copyOfRange(playerPrefix.size, array.size))
                     )
                     array.startsWith(villagePrefix) -> {
-                        val parts = array.copyOfRange(villagePrefix.size, array.size).toString().split('_', limit = 2)
+                        val parts = String(array.copyOfRange(villagePrefix.size, array.size)).split('_', limit = 2)
                         VillageKey(parts[0], VillageKeyType.valueOf(parts[1]))
                     }
                     else -> UnknownKey(array).withBuffer(::ChunkKey)
@@ -111,17 +156,29 @@ class ChunkKey(val pos: ChunkPos, val type: ChunkKeyType, val dimension: Int? = 
     }
 
     override fun loadValue(value: ByteArray) = type.loadValue(value)
-}
-
-abstract class StringKey(string: String) : LevelDBKey() {
-    private val bytes = string.toByteArray()
-    override val bufferSize = bytes.size
-    override fun writeTo(buffer: ByteBuf) {
-        buffer.writeBytes(bytes)
+    override fun toString(): String {
+        return super.toString() + "(pos=$pos, type=$type, dimension=$dimension, section=$section)"
     }
 }
 
-class RemotePlayerKey(val clientId: Long) : StringKey("player_$clientId") {
+sealed class StringKey(string: String) : LevelDBKey() {
+    private val bytes = string.toByteArray()
+    override val bufferSize = bytes.size
+
+    fun matches(key: ByteArray) = bytes.contentEquals(key)
+
+    override fun writeTo(buffer: ByteBuf) {
+        buffer.writeBytes(bytes)
+    }
+
+    override fun toByteArray() = bytes.clone()
+
+    override fun toString(): String {
+        return super.toString() + "(${String(bytes)})"
+    }
+}
+
+class RemotePlayerKey(clientId: String) : StringKey("player_$clientId") {
     override fun loadValue(value: ByteArray): Any {
         TODO("Not yet implemented")
     }
@@ -133,7 +190,7 @@ object LocalPlayerKey : StringKey("~local_player") {
     }
 }
 
-object FlatWorldLayers : StringKey("game_flatworldlayers") {
+object FlatWorldLayersKey : StringKey("game_flatworldlayers") {
     override fun loadValue(value: ByteArray): IntArray {
         return String(value, Charsets.US_ASCII)
             .removeSurrounding("[", "]")
@@ -143,6 +200,12 @@ object FlatWorldLayers : StringKey("game_flatworldlayers") {
                     list[it].toInt()
                 }
             }
+    }
+}
+
+class DimensionKey(val type: String) : StringKey(type) {
+    override fun loadValue(value: ByteArray): Any {
+        return readNbt(value)
     }
 }
 
@@ -158,7 +221,7 @@ object ScoreboardKey : StringKey("scoreboard") {
     }
 }
 
-object ScheduledWTKey : StringKey("scheduledWT") {
+object ScheduledWTKey : StringKey("schedulerWT") {
     override fun loadValue(value: ByteArray): NbtFile {
         return readNbt(value)
     }
@@ -182,13 +245,31 @@ object MobEventsKey : StringKey("mobevents") {
     }
 }
 
-class UnknownKey(val content: ByteArray) : LevelDBKey() {
+class PosTrackDBKey(id: Long) : StringKey("PosTrackDB-0x%08d".format(id)) {
+    override fun loadValue(value: ByteArray) = value
+}
+
+object PosTrackDBLastKey : StringKey("PositionTrackDB-LastId") {
+    override fun loadValue(value: ByteArray) = value
+}
+
+object PortalsKey : StringKey("portals") {
+    override fun loadValue(value: ByteArray) = value
+}
+
+class UnknownKey(private val content: ByteArray) : LevelDBKey() {
     override val bufferSize = content.size
+    override fun toByteArray() = content.clone()
+
     override fun writeTo(buffer: ByteBuf) {
         buffer.writeBytes(content)
     }
 
     override fun loadValue(value: ByteArray) = value
+
+    override fun toString(): String {
+        return super.toString() + "(${String(content)})"
+    }
 }
 
 enum class VillageKeyType {
@@ -275,6 +356,10 @@ sealed class ChunkKeyType(val code: Int) {
 
     object VERSION : ChunkKeyType(118) {
         override fun loadValue(value: ByteArray) = value[0]
+    }
+
+    override fun toString(): String {
+        return this::class.java.simpleName
     }
 
     companion object {
