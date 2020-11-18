@@ -83,7 +83,7 @@ class LevelDBProviderWorld<P : Platform<P>> private constructor(
 
     @ExperimentalContracts
     @ExperimentalCoroutinesApi
-    override fun countBlocks(): Flow<Int> = snapshotFlow { snapshot ->
+    override fun countChunks(): Flow<Int> = snapshotFlow { snapshot ->
         var count = 0
         chunkPosFlow(snapshot).collect {
             if (++count >= 20) {
@@ -92,6 +92,26 @@ class LevelDBProviderWorld<P : Platform<P>> private constructor(
             }
         }
         send(count)
+    }
+
+    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalContracts::class)
+    override fun countEntities(): Flow<Int> = snapshotFlow { snapshot ->
+        chunkPosFlow(snapshot)
+            .mapNotNull { snapshot[ChunkKey(it, ChunkKeyType.ENTITY)] }
+            .map { ChunkKeyType.ENTITY.loadValue(it).size }
+            .filter { it > 0 }
+            .collect { send(it) }
+    }
+
+    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalContracts::class)
+    override fun countBlockEntities(): Flow<Int> = snapshotFlow { snapshot ->
+        chunkPosFlow(snapshot)
+            .mapNotNull { snapshot[ChunkKey(it, ChunkKeyType.BLOCK_ENTITY)] }
+            .map { ChunkKeyType.BLOCK_ENTITY.loadValue(it).size }
+            .filter { it > 0 }
+            .collect { send(it) }
     }
 
     @ExperimentalContracts

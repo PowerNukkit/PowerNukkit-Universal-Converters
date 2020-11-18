@@ -26,6 +26,8 @@ import java.util.*
  * @author joserobjr
  * @since 2020-11-18
  */
+operator fun LevelDBReadContainer.get(key: LevelDBKey) = get(key.toByteArray())
+
 fun LevelDBReadContainer.parsedKeyIterator(): CloseableIterator<LevelDBKey> {
     return object : CloseableIterator<LevelDBKey> {
         val root = keyIterator()

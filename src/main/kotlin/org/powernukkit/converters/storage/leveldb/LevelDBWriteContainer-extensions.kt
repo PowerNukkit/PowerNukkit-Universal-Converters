@@ -16,17 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb.facade
+package org.powernukkit.converters.storage.leveldb
+
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBWriteContainer
 
 /**
  * @author joserobjr
  * @since 2020-11-18
  */
-interface LevelDBReadContainer {
-    operator fun get(key: ByteArray): ByteArray?
-
-    fun keyIterator(): CloseableIterator<ByteArray>
-    fun entryIterator(): CloseableIterator<Map.Entry<ByteArray, ByteArray>>
-
-    operator fun get(key: String) = get(key.toByteArray())
-}
+operator fun LevelDBWriteContainer.set(key: LevelDBKey, value: ByteArray) = set(key.toByteArray(), value)
+fun LevelDBWriteContainer.delete(key: LevelDBKey) = delete(key.toByteArray())
