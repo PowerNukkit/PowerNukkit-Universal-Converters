@@ -20,6 +20,7 @@ package org.powernukkit.converters.conversion.job
 
 import kotlinx.coroutines.*
 import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.StorageProber
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
@@ -92,9 +93,16 @@ class ConversionJob(
     var inputWorld: InputWorld? = null
         private set(settings) {
             stopCounting()
+            provider?.close()
+
             field = settings
+            runBlocking {
+                provider = settings?.load()
+            }
             startCounting()
         }
+
+    var provider: ProviderWorld<*>? = null; private set
 
     init {
         launch {
@@ -106,15 +114,14 @@ class ConversionJob(
             inputWorld = InputWorld(
                 levelDatFile.parentFile,
                 levelData, storageEngine, dialect, minecraftEdition,
-                universalPlatform, problemManager,
-                job
+                universalPlatform, problemManager
             )
         }
     }
 
     private fun startCounting() {
         stopCounting()
-        val provider = inputWorld?.providerWorld ?: return
+        val provider = provider ?: return
         _chunkCount.startCounting(provider.countChunks())
         _chunkSectionCount.startCounting(provider.countChunkSections())
         _blockEntityCount.startCounting(provider.countBlockEntities())

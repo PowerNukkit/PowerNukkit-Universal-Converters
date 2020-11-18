@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.storage.leveldb
 
+import br.com.gamemods.nbtmanipulator.NbtFile
 import br.com.gamemods.regionmanipulator.ChunkPos
 import kotlinx.coroutines.flow.Flow
 import org.powernukkit.converters.math.BlockPos
@@ -35,11 +36,24 @@ class LevelDBChunk<P : Platform<P>>(
     private val world: LevelDBProviderWorld<P>,
     override val chunkPos: ChunkPos,
     problemManager: StorageProblemManager,
+    val version: Byte?,
+    val checksum: ByteArray?,
+    val finalized: Int?,
+    val blockEntities: List<NbtFile>?,
+    val entities: List<NbtFile>?,
+    val biomes: ByteArray?,
+    val pendingTicks: NbtFile?,
+    val randomTicks: NbtFile?,
+    val biomeState: ByteArray?,
+    val borderBlocks: NbtFile?,
+    val hardcodedSpawns: NbtFile?,
+    val sections: Array<ByteArray?>,
 ) : Chunk<P>(problemManager) {
+
     override val entityCount: Int
-        get() = TODO("Not yet implemented")
+        get() = entities?.size ?: 0
     override val blockEntityCount: Int
-        get() = TODO("Not yet implemented")
+        get() = blockEntities?.size ?: 0
 
     override fun countNonAirBlocks(): Int {
         TODO("Not yet implemented")

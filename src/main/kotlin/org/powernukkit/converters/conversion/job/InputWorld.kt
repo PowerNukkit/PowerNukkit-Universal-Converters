@@ -18,20 +18,16 @@
 
 package org.powernukkit.converters.conversion.job
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.platform.java.JavaPlatform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.storage.api.Dialect
+import org.powernukkit.converters.storage.api.StorageEngine
 import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import java.io.File
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @author joserobjr
@@ -44,20 +40,13 @@ class InputWorld(
     val dialect: Dialect,
     val minecraftEdition: MinecraftEdition,
     val universalPlatform: UniversalPlatform,
-    val problemManager: StorageProblemManager,
-    parent: Job
-) : CoroutineScope {
-    private val job = Job(parent)
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
-
+    val problemManager: StorageProblemManager
+) {
     val platform = when (minecraftEdition) {
         MinecraftEdition.UNIVERSAL -> throw UnsupportedOperationException("Input world can't be Universal")
         MinecraftEdition.JAVA -> JavaPlatform(universalPlatform, dialect)
         MinecraftEdition.BEDROCK -> BedrockPlatform(universalPlatform, dialect)
     }
 
-    val providerWorld = runBlocking(coroutineContext) {
-        storageEngine.default.loadWorld(this@InputWorld)
-    }
+    suspend fun load(storage: StorageEngine = storageEngine.default) = storage.loadWorld(this@InputWorld)
 }

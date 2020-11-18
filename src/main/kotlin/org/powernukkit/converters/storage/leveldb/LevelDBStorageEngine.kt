@@ -20,6 +20,7 @@ package org.powernukkit.converters.storage.leveldb
 
 import kotlinx.coroutines.Deferred
 import org.powernukkit.converters.conversion.job.InputWorld
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.ReceivingWorld
@@ -31,9 +32,7 @@ import java.io.File
  * @since 2020-10-23
  */
 class LevelDBStorageEngine : StorageEngine() {
-    override suspend fun loadWorld(inputWorld: InputWorld): ProviderWorld<*> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun loadWorld(inputWorld: InputWorld) = LevelDBProviderWorld<Platform<*>>(this, inputWorld)
 
     override suspend fun prepareToReceive(
         toFile: File,
