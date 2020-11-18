@@ -16,30 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb
+package org.powernukkit.converters.storage.leveldb.iq80
 
-import kotlin.contracts.ExperimentalContracts
+import org.powernukkit.converters.storage.leveldb.facade.LevelDB
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBFactory
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBSettings
+import java.io.File
 
 /**
  * @author joserobjr
- * @since 2020-11-17
+ * @since 2020-11-18
  */
-class LevelDBKeyIterator(val iterator: LDBIterator) : Iterator<LevelDBKey> {
-    init {
-        iterator.seekToFirst()
-    }
-
-    override fun hasNext(): Boolean {
-        return iterator.isValid
-    }
-
-    @ExperimentalContracts
-    override fun next(): LevelDBKey {
-        if (!hasNext()) {
-            throw NoSuchElementException()
-        }
-        val key = LevelDBKey.createByArray(iterator.key)
-        iterator.next()
-        return key
+object IQ80Factory : LevelDBFactory {
+    override fun open(dbDir: File, settings: LevelDBSettings): LevelDB {
+        return IQ80LevelDB(dbDir, settings)
     }
 }

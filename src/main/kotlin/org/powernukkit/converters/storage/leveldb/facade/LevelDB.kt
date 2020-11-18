@@ -18,7 +18,7 @@
 
 package org.powernukkit.converters.storage.leveldb.facade
 
-import org.powernukkit.converters.storage.leveldb.gomint.GoMintLevelDB
+import org.powernukkit.converters.storage.leveldb.iq80.IQ80Factory
 import java.io.Closeable
 import java.io.File
 
@@ -31,8 +31,9 @@ interface LevelDB : Closeable, LevelDBReadContainer, LevelDBWriteContainer {
     fun createWriteBatch(): LevelDBWriteBatch
 
     companion object {
-        private var implementation: (File, LevelDBSettings) -> LevelDB = ::GoMintLevelDB
+        var defaultFactory: LevelDBFactory = IQ80Factory
+
         operator fun invoke(dbFolder: File, settings: LevelDBSettings = LevelDBSettings()) =
-            implementation(dbFolder, settings)
+            defaultFactory.open(dbFolder, settings)
     }
 }

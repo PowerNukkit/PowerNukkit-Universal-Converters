@@ -16,35 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb
+package org.powernukkit.converters.storage.leveldb.facade
 
-import java.util.*
-import kotlin.NoSuchElementException
-import kotlin.contracts.ExperimentalContracts
+import java.io.File
 
 /**
  * @author joserobjr
- * @since 2020-11-17
+ * @since 2020-11-18
  */
-class LevelDBEntryIterator(val iterator: LDBIterator) : Iterator<Map.Entry<LevelDBKey, ByteArray>> {
-    init {
-        iterator.seekToFirst()
-    }
-
-    override fun hasNext(): Boolean {
-        return iterator.isValid
-    }
-
-    @ExperimentalContracts
-    override fun next(): Map.Entry<LevelDBKey, ByteArray> {
-        if (!hasNext()) {
-            throw NoSuchElementException()
-        }
-        val entry = AbstractMap.SimpleEntry(
-            LevelDBKey.createByArray(iterator.key),
-            iterator.value
-        )
-        iterator.next()
-        return entry
-    }
+interface LevelDBFactory {
+    fun open(dbDir: File, settings: LevelDBSettings = LevelDBSettings()): LevelDB
 }

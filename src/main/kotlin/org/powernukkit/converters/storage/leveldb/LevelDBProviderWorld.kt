@@ -19,7 +19,6 @@
 package org.powernukkit.converters.storage.leveldb
 
 import br.com.gamemods.regionmanipulator.ChunkPos
-import io.gomint.leveldb.DB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.SendChannel
@@ -30,6 +29,9 @@ import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.StorageException
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
+import org.powernukkit.converters.storage.leveldb.facade.LevelDB
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBFactory
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBSnapshot
 import java.nio.file.Path
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -44,34 +46,37 @@ class LevelDBProviderWorld<P : Platform<P>> private constructor(
     private val worldDir: Path,
     override val levelData: LevelData,
     problemManager: StorageProblemManager,
-    override val storageEngine: LevelDBStorageEngine
+    override val storageEngine: LevelDBStorageEngine,
+    levelDBFactory: LevelDBFactory = LevelDB.defaultFactory
 ) : ProviderWorld<P>(problemManager) {
 
-    private val db = DB(worldDir.resolve("db").toFile())
+    private val db = levelDBFactory.open(worldDir.resolve("db").toFile())
 
-    private fun readChunk(snapshot: DB.Snapshot, pos: ChunkPos) = try {
+    private fun readChunk(snapshot: LevelDBSnapshot, pos: ChunkPos) = try {
         LevelDBChunk(this, pos, problemManager)
     } catch (e: Exception) {
         throw StorageException(cause = e)
     }
 
     @ExperimentalCoroutinesApi
-    private fun chunkPosFlow(snapshot: DB.Snapshot): Flow<ChunkPos> =
-        snapshot.iteration().keySequence()
-            .mapNotNull { it as? ChunkKey }
-            .filter { it.bufferSize == 9 && it.type == ChunkKeyType.VERSION }
-            .map { it.pos }
-            .asFlow().flowOn(Dispatchers.IO)
+    private fun chunkPosFlow(snapshot: LevelDBSnapshot): Flow<ChunkPos> =
+        snapshot.parsedKeyIterator {
+            asSequence()
+                .mapNotNull { it as? ChunkKey }
+                .filter { it.bufferSize == 9 && it.type == ChunkKeyType.VERSION }
+                .map { it.pos }
+                .asFlow().flowOn(Dispatchers.IO)
+        }
 
     @ExperimentalCoroutinesApi
     override fun chunkFlow(): Flow<Chunk<P>> = flow {
-        db.snapshot.use { snapshot ->
+        db.createSnapshot().use { snapshot ->
             emitAll(chunkFlow(snapshot))
         }
     }.flowOn(Dispatchers.IO)
 
     @ExperimentalCoroutinesApi
-    private fun chunkFlow(snapshot: DB.Snapshot): Flow<Chunk<P>> =
+    private fun chunkFlow(snapshot: LevelDBSnapshot): Flow<Chunk<P>> =
         chunkPosFlow(snapshot)
             .map { readChunk(snapshot, it) }
             .flowOn(Dispatchers.IO)
@@ -92,7 +97,7 @@ class LevelDBProviderWorld<P : Platform<P>> private constructor(
     @ExperimentalContracts
     @ExperimentalCoroutinesApi
     private inline fun <T> snapshotFlow(
-        crossinline action: suspend SendChannel<T>.(snapshot: DB.Snapshot) -> Unit
+        crossinline action: suspend SendChannel<T>.(snapshot: LevelDBSnapshot) -> Unit
     ): Flow<T> {
         contract { callsInPlace(action, InvocationKind.EXACTLY_ONCE) }
         return callbackFlow {
@@ -103,19 +108,12 @@ class LevelDBProviderWorld<P : Platform<P>> private constructor(
     }
 
     @ExperimentalContracts
-    private inline fun <R> withSnapshot(action: (DB.Snapshot) -> R): R {
+    private inline fun <R> withSnapshot(action: (LevelDBSnapshot) -> R): R {
         contract { callsInPlace(action, InvocationKind.EXACTLY_ONCE) }
-        db.snapshot.use { snapshot ->
+        db.createSnapshot().use { snapshot ->
             return action(snapshot)
         }
     }
-
-    @ExperimentalContracts
-    private operator fun DB.Snapshot.get(key: LevelDBKey): ByteArray? {
-        return key.withBuffer { db[this, it] }
-    }
-
-    private fun DB.Snapshot.iteration() = db.iterator(this)
 
     override fun close() {
         db.close()

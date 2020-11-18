@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.storage.leveldb
 
+import br.com.gamemods.nbtmanipulator.LittleEndianDataInputStream
 import br.com.gamemods.nbtmanipulator.NbtFile
 import br.com.gamemods.nbtmanipulator.NbtIO
 import br.com.gamemods.regionmanipulator.ChunkPos
@@ -26,6 +27,7 @@ import io.netty.buffer.ByteBuf
 import io.netty.buffer.PooledByteBufAllocator
 import io.netty.buffer.Unpooled
 import org.powernukkit.converters.math.startsWith
+import org.powernukkit.converters.storage.leveldb.facade.use
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -179,15 +181,11 @@ sealed class StringKey(string: String) : LevelDBKey() {
 }
 
 class RemotePlayerKey(clientId: String) : StringKey("player_$clientId") {
-    override fun loadValue(value: ByteArray): Any {
-        TODO("Not yet implemented")
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object LocalPlayerKey : StringKey("~local_player") {
-    override fun loadValue(value: ByteArray): Any {
-        TODO("Not yet implemented")
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object FlatWorldLayersKey : StringKey("game_flatworldlayers") {
@@ -204,57 +202,43 @@ object FlatWorldLayersKey : StringKey("game_flatworldlayers") {
 }
 
 class DimensionKey(val type: String) : StringKey(type) {
-    override fun loadValue(value: ByteArray): Any {
-        return readNbt(value)
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 class VillageKey(val id: String, type: VillageKeyType) : StringKey("VILLAGE_${id}_$type") {
-    override fun loadValue(value: ByteArray): Any {
-        TODO("Not yet implemented")
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object ScoreboardKey : StringKey("scoreboard") {
-    override fun loadValue(value: ByteArray): NbtFile {
-        return readNbt(value)
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object ScheduledWTKey : StringKey("schedulerWT") {
-    override fun loadValue(value: ByteArray): NbtFile {
-        return readNbt(value)
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object AutonomousEntitiesKey : StringKey("AutonomousEntities") {
-    override fun loadValue(value: ByteArray): NbtFile {
-        return readNbt(value)
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object BiomeDataKey : StringKey("BiomeData") {
-    override fun loadValue(value: ByteArray): NbtFile {
-        return readNbt(value)
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object MobEventsKey : StringKey("mobevents") {
-    override fun loadValue(value: ByteArray): NbtFile {
-        return readNbt(value)
-    }
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 class PosTrackDBKey(id: Long) : StringKey("PosTrackDB-0x%08d".format(id)) {
-    override fun loadValue(value: ByteArray) = value
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object PosTrackDBLastKey : StringKey("PositionTrackDB-LastId") {
-    override fun loadValue(value: ByteArray) = value
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 object PortalsKey : StringKey("portals") {
-    override fun loadValue(value: ByteArray) = value
+    override fun loadValue(value: ByteArray) = readNbt(value)
 }
 
 class UnknownKey(private val content: ByteArray) : LevelDBKey() {
@@ -282,6 +266,9 @@ enum class VillageKeyType {
 sealed class ChunkKeyType(val code: Int) {
     abstract fun loadValue(value: ByteArray): Any
 
+    /**
+     * Holds the biome information.
+     */
     object DATA_2D : ChunkKeyType(45) {
         override fun loadValue(value: ByteArray) = value
     }
@@ -290,38 +277,51 @@ sealed class ChunkKeyType(val code: Int) {
         override fun loadValue(value: ByteArray) = value
     }
 
+    /**
+     * Holds the section data.
+     */
     object SUB_CHUNK_PREFIX : ChunkKeyType(47) {
         override fun loadValue(value: ByteArray) = value
     }
 
     object LEGACY_TERRAIN : ChunkKeyType(48) {
-        override fun loadValue(value: ByteArray) = value
+        override fun loadValue(value: ByteArray) = readNbt(value)
     }
 
     object BLOCK_ENTITY : ChunkKeyType(49) {
-        override fun loadValue(value: ByteArray): NbtFile {
-            return readNbt(value)
+        override fun loadValue(value: ByteArray): List<NbtFile> {
+            val bIn = value.inputStream()
+            return sequence {
+                while (bIn.available() > 0) {
+                    yield(NbtIO.readNbtFileDirectly(LittleEndianDataInputStream(bIn)))
+                }
+            }.toList()
         }
     }
 
     object ENTITY : ChunkKeyType(50) {
-        override fun loadValue(value: ByteArray): NbtFile {
-            return readNbt(value)
+        override fun loadValue(value: ByteArray): List<NbtFile> {
+            val bIn = value.inputStream()
+            return sequence {
+                while (bIn.available() > 0) {
+                    yield(NbtIO.readNbtFileDirectly(LittleEndianDataInputStream(bIn)))
+                }
+            }.toList()
         }
     }
 
     object PENDING_TICKS : ChunkKeyType(51) {
-        override fun loadValue(value: ByteArray): NbtFile {
-            return readNbt(value)
-        }
+        override fun loadValue(value: ByteArray) = readNbt(value)
     }
 
     object BLOCK_EXTRA_DATA : ChunkKeyType(52) {
-        override fun loadValue(value: ByteArray) = value
+        override fun loadValue(value: ByteArray) = readNbt(value)
     }
 
     object BIOME_STATE : ChunkKeyType(53) {
-        override fun loadValue(value: ByteArray) = value
+        override fun loadValue(value: ByteArray): ByteArray {
+            return value
+        }
     }
 
     object FINALIZED_STATE : ChunkKeyType(54) {
@@ -337,17 +337,15 @@ sealed class ChunkKeyType(val code: Int) {
     }
 
     object BORDER_BLOCKS : ChunkKeyType(56) {
-        override fun loadValue(value: ByteArray) = value
+        override fun loadValue(value: ByteArray) = readNbt(value)
     }
 
     object HARDCODED_SPAWN_AREAS : ChunkKeyType(57) {
-        override fun loadValue(value: ByteArray) = value
+        override fun loadValue(value: ByteArray) = readNbt(value)
     }
 
     object RANDOM_TICKS : ChunkKeyType(58) {
-        override fun loadValue(value: ByteArray): NbtFile {
-            return readNbt(value)
-        }
+        override fun loadValue(value: ByteArray) = readNbt(value)
     }
 
     object CHECKSUM : ChunkKeyType(59) {

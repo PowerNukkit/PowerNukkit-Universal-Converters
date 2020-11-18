@@ -21,7 +21,6 @@ package org.powernukkit.converters.storage.leveldb.gomint
 import io.gomint.leveldb.DB
 import io.netty.buffer.Unpooled
 import org.powernukkit.converters.storage.leveldb.facade.*
-import org.powernukkit.converters.storage.leveldb.use
 import java.io.File
 
 /**

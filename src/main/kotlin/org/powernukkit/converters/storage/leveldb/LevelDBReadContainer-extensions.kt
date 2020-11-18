@@ -19,14 +19,14 @@
 package org.powernukkit.converters.storage.leveldb
 
 import org.powernukkit.converters.storage.leveldb.facade.CloseableIterator
-import org.powernukkit.converters.storage.leveldb.facade.LevelDB
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBReadContainer
 import java.util.*
 
 /**
  * @author joserobjr
  * @since 2020-11-18
  */
-fun LevelDB.parsedKeyIterator(): CloseableIterator<LevelDBKey> {
+fun LevelDBReadContainer.parsedKeyIterator(): CloseableIterator<LevelDBKey> {
     return object : CloseableIterator<LevelDBKey> {
         val root = keyIterator()
         override fun hasNext(): Boolean {
@@ -43,7 +43,7 @@ fun LevelDB.parsedKeyIterator(): CloseableIterator<LevelDBKey> {
     }
 }
 
-fun LevelDB.parsedEntryIterator(): CloseableIterator<Map.Entry<LevelDBKey, ByteArray>> {
+fun LevelDBReadContainer.parsedEntryIterator(): CloseableIterator<Map.Entry<LevelDBKey, ByteArray>> {
     return object : CloseableIterator<Map.Entry<LevelDBKey, ByteArray>> {
         val root = entryIterator()
         override fun hasNext(): Boolean {
@@ -59,4 +59,12 @@ fun LevelDB.parsedEntryIterator(): CloseableIterator<Map.Entry<LevelDBKey, ByteA
             root.close()
         }
     }
+}
+
+inline fun <R> LevelDBReadContainer.parsedKeyIterator(action: CloseableIterator<LevelDBKey>.() -> R): R {
+    return parsedKeyIterator().use(action)
+}
+
+inline fun <R> LevelDBReadContainer.parsedEntryIterator(action: CloseableIterator<Map.Entry<LevelDBKey, ByteArray>>.() -> R): R {
+    return parsedEntryIterator().use(action)
 }

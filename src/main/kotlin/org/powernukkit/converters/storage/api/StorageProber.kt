@@ -21,12 +21,12 @@ package org.powernukkit.converters.storage.api
 import br.com.gamemods.nbtmanipulator.NbtCompound
 import br.com.gamemods.regionmanipulator.RegionIO
 import com.github.michaelbull.logging.InlineLogger
-import io.gomint.leveldb.DB
 import kotlinx.coroutines.*
 import org.intellij.lang.annotations.Language
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
+import org.powernukkit.converters.storage.leveldb.facade.LevelDB
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -137,9 +137,7 @@ class StorageProber(
 
     private fun attemptToOpenLevelDBDir(dbFolder: Path): Boolean {
         return try {
-            DB(dbFolder.toFile()).use { db ->
-                db.open()
-            }
+            LevelDB(dbFolder.toFile()).close()
             true
         } catch (e: Exception) {
             log.debug(e) { "Could not open LevelDB at $dbFolder" }

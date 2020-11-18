@@ -42,11 +42,20 @@ internal class LevelDBKeyTest {
                     println("${bytes.size}\t$str")
                 }
             }*/
-            db.parsedKeyIterator().use { iter ->
+            /*db.parsedKeyIterator().use { iter ->
                 iter.forEach { key ->
                     if (key !is ChunkKey) {
                         println("${key.bufferSize} - $key")
                     }
+                }
+            }*/
+            db.parsedEntryIterator {
+                asSequence().filter { it.key is ChunkKey }.forEach { (key, value) ->
+                    var v = key.loadValue(value)
+                    if (v is ByteArray) {
+                        v = "0x" + v.joinToString("") { "%02X".format(it) }
+                    }
+                    println("$key - $v")
                 }
             }
         }

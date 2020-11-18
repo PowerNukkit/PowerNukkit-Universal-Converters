@@ -16,28 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb
+package org.powernukkit.converters.storage.leveldb.gomint
 
-import io.netty.buffer.ByteBuf
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
+import org.powernukkit.converters.storage.leveldb.facade.LevelDB
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBFactory
+import org.powernukkit.converters.storage.leveldb.facade.LevelDBSettings
+import java.io.File
 
 /**
  * @author joserobjr
- * @since 2020-11-17
+ * @since 2020-11-18
  */
-@OptIn(ExperimentalContracts::class)
-inline fun <T : ByteBuf?, R> T.use(block: (T) -> R): R {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-
-    return if (this == null) {
-        block(this)
-    } else {
-        AutoCloseable { release() }.use {
-            block(this)
-        }
+object GoMintFactory : LevelDBFactory {
+    override fun open(dbDir: File, settings: LevelDBSettings): LevelDB {
+        return GoMintLevelDB(dbDir, settings)
     }
 }

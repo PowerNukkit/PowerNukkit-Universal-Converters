@@ -22,7 +22,7 @@ import io.gomint.leveldb.DB
 import io.netty.buffer.Unpooled
 import org.powernukkit.converters.storage.leveldb.facade.CloseableIterator
 import org.powernukkit.converters.storage.leveldb.facade.LevelDBSnapshot
-import org.powernukkit.converters.storage.leveldb.use
+import org.powernukkit.converters.storage.leveldb.facade.use
 
 /**
  * @author joserobjr

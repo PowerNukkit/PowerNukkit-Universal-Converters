@@ -16,18 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb
+package org.powernukkit.converters.storage.leveldb.facade
 
-import io.gomint.leveldb.Iterator
+import io.netty.buffer.ByteBuf
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * @author joserobjr
  * @since 2020-11-17
  */
-typealias LDBIterator = Iterator
+@OptIn(ExperimentalContracts::class)
+inline fun <T : ByteBuf?, R> T.use(block: (T) -> R): R {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
 
-fun LDBIterator.entryIterator() = LevelDBEntryIterator(this)
-fun LDBIterator.entrySequence() = entryIterator().asSequence()
-
-fun LDBIterator.keyIterator() = LevelDBKeyIterator(this)
-fun LDBIterator.keySequence() = keyIterator().asSequence()
+    return if (this == null) {
+        block(this)
+    } else {
+        AutoCloseable { release() }.use {
+            block(this)
+        }
+    }
+}
