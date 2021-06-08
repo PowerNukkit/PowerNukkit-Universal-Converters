@@ -21,7 +21,6 @@ package org.powernukkit.converters.storage.leveldb
 import br.com.gamemods.regionmanipulator.ChunkPos
 import com.github.michaelbull.logging.InlineLogger
 import com.google.common.cache.CacheBuilder
-import io.netty.util.internal.EmptyArrays
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.powernukkit.converters.conversion.job.InputWorld
@@ -95,10 +94,7 @@ class LevelDBProviderWorld<P : Platform<P>>(
         val sections = Array(16) { section ->
             val bytes = SUB_CHUNK_PREFIX[container, pos, dimension, section]
             if (bytes == null || bytes.isEmpty()) {
-                return@Array problemManager.handleReadChunkSectionFailure(
-                    null,
-                    LevelDBFailedChunkSection(this, pos, section, -1, EmptyArrays.EMPTY_BYTES)
-                )
+                return@Array LevelDBEmptyChunkSection(this, pos, section)
             }
 
             try {

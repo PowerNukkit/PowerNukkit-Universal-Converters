@@ -47,9 +47,10 @@ open class StorageProblemManager {
     fun <P : Platform<P>> handleMissingBlockPropertyParsingState(
         world: ProviderWorld<P>,
         storage: NbtCompound,
+        type: PlatformBlockType<P>,
         key: String,
         valueTag: NbtTag
-    ): PlatformBlockProperty<P> {
+    ): PlatformBlockProperty<P>? {
         TODO("Not yet implemented")
     }
 

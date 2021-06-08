@@ -75,9 +75,11 @@ class LevelDBBlockStorage<P : Platform<P>>(
             ?: problemManager.handleMissingBlockTypeParsingState(world, storage)
         val statesCompound = storage["states"].compoundOrNull
         if (statesCompound != null) {
-            val properties = statesCompound.entries.associate { (key, valueTag) ->
+            val properties = statesCompound.entries.asSequence().mapNotNull { (key, valueTag) ->
                 val property = type.blockProperties[key]
-                    ?: problemManager.handleMissingBlockPropertyParsingState(world, storage, key, valueTag)
+                    ?: problemManager.handleMissingBlockPropertyParsingState(world, storage, type, key, valueTag)
+                    ?: return@mapNotNull null
+
 
                 val value = when (valueTag) {
                     is NbtInt -> property.getPlatformValue(valueTag.value)
@@ -88,7 +90,7 @@ class LevelDBBlockStorage<P : Platform<P>>(
                 } ?: problemManager.handleMissingBlockPropertyValueParsingState(world, storage, key, valueTag, property)
 
                 key to value
-            }
+            }.toMap()
 
             return try {
                 type.withState(properties)

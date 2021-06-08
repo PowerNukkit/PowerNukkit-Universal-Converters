@@ -19,6 +19,8 @@
 package org.powernukkit.converters.storage.leveldb
 
 import br.com.gamemods.regionmanipulator.ChunkPos
+import com.github.michaelbull.logging.InlineLogger
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.flow.first
@@ -28,7 +30,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.powernukkit.converters.TestConstants
+import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
+import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.LevelDataIO
 import java.nio.file.Paths
@@ -41,6 +45,7 @@ import kotlin.test.assertNotNull
  */
 @ExtendWith(MockKExtension::class)
 internal class LevelDBChunkTest {
+    private val log = InlineLogger()
 
     @MockK
     lateinit var storageProblemManager: StorageProblemManager
@@ -59,6 +64,21 @@ internal class LevelDBChunkTest {
             storageProblemManager,
             LevelDBStorageEngine()
         )
+        every { storageProblemManager.handleReadChunkSectionFailure(any(), any<LevelDBFailedChunkSection<*>>()) }
+            .returnsArgument(1)
+        every {
+            storageProblemManager.handleMissingBlockPropertyParsingState(
+                world = any<ProviderWorld<BedrockPlatform>>(),
+                storage = any(),
+                type = any(),
+                key = any(),
+                valueTag = any()
+            )
+        }.answers {
+            val type = arg<PlatformBlockType<BedrockPlatform>>(2)
+            log.warn { "Property ${args[3]}=${args[4]} not found for type ${type.id}" }
+            null
+        }
         chunk = runBlocking { provider.chunkFlow().first() }
     }
 

@@ -586,6 +586,10 @@
         <block-property id="snowy">
             <boolean/>
         </block-property>
+        <block-property id="sand_type">
+            <value>normal</value>
+            <value>red</value>
+        </block-property>
     </block-properties>
     <block-entities>
         <block-entity id="sign_text" java="sign" bedrock="Sign">
@@ -1585,7 +1589,6 @@
         <block-type id="lectern"/>
         <block-type id="lever"/>
 
-        <block-type id="light_gray_terracotta"/>
         <block-type id="lily_pad"/>
         <block-type id="lodestone"/>
         <block-type id="loom"/>
@@ -1681,7 +1684,6 @@
         <block-type id="red_mushroom_block"/>
         <block-type id="red_mushroom"/>
         <block-type id="red_nether_bricks"/>
-        <block-type id="red_sand"/>
         <block-type id="red_sandstone"/>
         <block-type id="respawn_anchor"/>
         <block-type id="redstone_block"/>
@@ -1692,7 +1694,11 @@
         <block-type id="redstone_wire"/>
         <block-type id="repeater"/>
         <block-type id="repeating_command_block"/>
-        <block-type id="sand"/>
+        <block-type id="sand" java-requires-adapter="true">
+            <uses-property named="sand_type" on-java="false"/>
+
+            <extra-block on="java" id="red_sand"/>
+        </block-type>
         <block-type id="sandstone"/>
         <block-type id="scaffolding"/>
         <block-type id="sea_lantern"/>
