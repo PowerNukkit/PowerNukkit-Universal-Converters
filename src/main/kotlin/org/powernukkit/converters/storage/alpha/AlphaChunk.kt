@@ -53,6 +53,7 @@ class AlphaChunk<P : Platform<P>>(
     private val blockDataArray get() = data["Level"]["Data"].byteArrayOrNull
 
     override val entityCount get() = entitiesNbt?.size ?: 0
+    override val chunkSectionCount get() = 8
     override val blockEntityCount get() = blockEntitiesNbt?.size ?: 0
 
     private val entitiesNbtByPos by lazy {
@@ -91,7 +92,7 @@ class AlphaChunk<P : Platform<P>>(
         }
 
         val blockIndex = blockInWorld.index
-        val type = if (blockInWorld.yPos.let { it < 0 || it > 255 }) {
+        val type = if (blockInWorld.yPos.let { it < 0 || it > 128 }) {
             platform.airBlockType
         } else {
             blocksArray?.getOrNull(blockIndex)

@@ -19,15 +19,14 @@
 package org.powernukkit.converters.storage.leveldb
 
 import br.com.gamemods.regionmanipulator.ChunkPos
+import com.github.michaelbull.logging.InlineLogger
+import com.google.common.cache.CacheBuilder
+import io.netty.util.internal.EmptyArrays
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import org.powernukkit.converters.conversion.job.InputWorld
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.storage.api.Chunk
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.StorageException
 import org.powernukkit.converters.storage.api.StorageProblemManager
@@ -38,6 +37,7 @@ import org.powernukkit.converters.storage.leveldb.facade.LevelDBFactory
 import org.powernukkit.converters.storage.leveldb.facade.LevelDBReadContainer
 import org.powernukkit.converters.storage.leveldb.facade.LevelDBSnapshot
 import java.nio.file.Path
+import java.util.concurrent.TimeUnit
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -54,6 +54,13 @@ class LevelDBProviderWorld<P : Platform<P>>(
     override val storageEngine: LevelDBStorageEngine,
     levelDBFactory: LevelDBFactory = LevelDB.defaultFactory
 ) : ProviderWorld<P>(problemManager) {
+    private val blockStateCache = CacheBuilder.newBuilder()
+        .expireAfterAccess(5, TimeUnit.MINUTES)
+        .build<Int, PlatformBlockState<P>>()
+
+    private companion object {
+        private val log = InlineLogger()
+    }
 
     @Suppress("UNCHECKED_CAST")
     constructor(storageEngine: LevelDBStorageEngine, inputWorld: InputWorld) : this(
@@ -66,6 +73,7 @@ class LevelDBProviderWorld<P : Platform<P>>(
 
     private val db = levelDBFactory.open(worldDir.resolve("db").toFile())
 
+    @OptIn(ExperimentalUnsignedTypes::class)
     private fun readChunk(container: LevelDBReadContainer, pos: ChunkPos, dimension: Int? = null) = try {
         val scope = ChunkKeyQueryScope(container, pos, dimension)
 
@@ -85,7 +93,23 @@ class LevelDBProviderWorld<P : Platform<P>>(
         val hardcodedSpawns = HARDCODED_SPAWN_AREAS[scope]
 
         val sections = Array(16) { section ->
-            SUB_CHUNK_PREFIX[container, pos, dimension, section]
+            val bytes = SUB_CHUNK_PREFIX[container, pos, dimension, section]
+            if (bytes == null || bytes.isEmpty()) {
+                return@Array LevelDBFailedChunkSection(this, pos, section, -1, EmptyArrays.EMPTY_BYTES)
+            }
+
+            try {
+                when (bytes[0].toInt()) {
+                    0, 2, 3, 4, 5, 6, 7 -> LevelDBLegacyChunkSection(this, pos, section, bytes)
+                    1, 8 -> LevelDBPaletteChunkSection(this, problemManager, pos, section, bytes)
+                    else -> throw UnsupportedOperationException("Unsupported chunk section version ${bytes[0]}")
+                }
+            } catch (e: Exception) {
+                log.error(e) {
+                    "Failed to load the chunk section $section of the chunk at $pos in the world ${container.folder}"
+                }
+                LevelDBFailedChunkSection(this, pos, section, bytes[0], bytes)
+            }
         }
 
         LevelDBChunk(
@@ -107,7 +131,17 @@ class LevelDBProviderWorld<P : Platform<P>>(
         throw StorageException(cause = e)
     }
 
-    @ExperimentalCoroutinesApi
+    internal fun decodeBlockState(
+        chunkSectionVersion: Byte,
+        storageHash: Int,
+        decoder: () -> PlatformBlockState<P>
+    ): PlatformBlockState<P> {
+        return blockStateCache[hashStorage(chunkSectionVersion, storageHash), decoder]
+    }
+
+    private fun hashStorage(chunkSectionVersion: Byte, storageHash: Int) =
+        31 * chunkSectionVersion.toInt() + storageHash
+
     private fun LevelDBReadContainer.chunkPosFlow(): Flow<ChunkPos> =
         parsedKeyIterator {
             asSequence()
@@ -117,65 +151,53 @@ class LevelDBProviderWorld<P : Platform<P>>(
                 .asFlow().flowOn(Dispatchers.IO)
         }
 
-    @ExperimentalCoroutinesApi
-    override fun chunkFlow(): Flow<Chunk<P>> = flow {
+    override fun chunkFlow(): Flow<LevelDBChunk<P>> = flow {
         db.createSnapshot().use { snapshot ->
             emitAll(snapshot.chunkFlow())
         }
     }.flowOn(Dispatchers.IO)
 
-    @ExperimentalCoroutinesApi
-    private fun LevelDBReadContainer.chunkFlow(): Flow<Chunk<P>> =
+    private fun LevelDBReadContainer.chunkFlow(): Flow<LevelDBChunk<P>> =
         chunkPosFlow()
             .map { readChunk(this, it) }
             .flowOn(Dispatchers.IO)
 
-    @ExperimentalContracts
-    @ExperimentalCoroutinesApi
     override fun countChunks(): Flow<Int> = snapshotFlow { snapshot ->
         var count = 0
         snapshot.chunkPosFlow().collect {
-            if (++count >= 20) {
-                send(count)
+            if (++count >= 500) {
+                emit(count)
                 count = 0
             }
         }
-        send(count)
-        close()
+        emit(count)
     }
 
-    @ExperimentalCoroutinesApi
-    @OptIn(ExperimentalContracts::class)
     override fun countEntities(): Flow<Int> = snapshotFlow { snapshot ->
         snapshot.chunkPosFlow()
             .mapNotNull { snapshot[ChunkKey(it, ENTITY)] }
             .map { ENTITY.loadValue(it).size }
             .filter { it > 0 }
-            .collect { send(it) }
+            .collect { emit(it) }
     }
 
-    @ExperimentalCoroutinesApi
-    @OptIn(ExperimentalContracts::class)
     override fun countBlockEntities(): Flow<Int> = snapshotFlow { snapshot ->
         snapshot.chunkPosFlow()
             .mapNotNull { snapshot[ChunkKey(it, BLOCK_ENTITY)] }
             .map { BLOCK_ENTITY.loadValue(it).size }
             .filter { it > 0 }
-            .collect { send(it) }
+            .collect { emit(it) }
     }
 
-    @ExperimentalContracts
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalContracts::class)
     private inline fun <T> snapshotFlow(
-        crossinline action: suspend ProducerScope<T>.(snapshot: LevelDBSnapshot) -> Unit
+        crossinline action: suspend FlowCollector<T>.(snapshot: LevelDBSnapshot) -> Unit
     ): Flow<T> {
         contract { callsInPlace(action, InvocationKind.EXACTLY_ONCE) }
-        return callbackFlow {
-            val snapshot = db.createSnapshot()
-            launch {
-                action(snapshot)
+        return flow {
+            db.createSnapshot().use {
+                action(it)
             }
-            awaitClose { snapshot.close() }
         }.flowOn(Dispatchers.IO)
     }
 

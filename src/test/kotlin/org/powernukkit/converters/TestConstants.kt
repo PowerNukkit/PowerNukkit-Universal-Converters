@@ -16,21 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb.facade
+package org.powernukkit.converters
 
-import java.nio.file.Path
+import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
 
 /**
  * @author joserobjr
- * @since 2020-11-18
+ * @since 2021-06-06
  */
-interface LevelDBReadContainer {
-    val folder: Path
-
-    operator fun get(key: ByteArray): ByteArray?
-
-    fun keyIterator(): CloseableIterator<ByteArray>
-    fun entryIterator(): CloseableIterator<Map.Entry<ByteArray, ByteArray>>
-
-    operator fun get(key: String) = get(key.toByteArray())
+internal object TestConstants {
+    val universalPlatform = DefinitionLoader().loadBuiltin()
 }

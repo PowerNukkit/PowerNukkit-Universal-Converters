@@ -35,6 +35,11 @@ abstract class PlatformBlockProperty<P : Platform<P>>(
     abstract val values: List<PlatformBlockPropertyValue<P>>
 
     fun getPlatformValue(value: String) = values.first { it.stringValue == value }
+    fun getPlatformValue(value: Byte) = value.toInt().let { int ->
+        values.firstOrNull { it.type == Type.INT && it.intValue() == int }
+            ?: int.takeIf { it in 0..1 }?.let { getPlatformValue(it == 1) }
+    }
+
     fun getPlatformValue(value: Int) = values.first { it.type == Type.INT && it.intValue() == value }
     fun getPlatformValue(value: Boolean) = values.first { it.type == Type.BOOLEAN && it.booleanValue() == value }
 

@@ -16,21 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb.facade
-
-import java.nio.file.Path
+package org.powernukkit.converters.math.nibble
 
 /**
  * @author joserobjr
- * @since 2020-11-18
+ * @since 2021-06-06
  */
-interface LevelDBReadContainer {
-    val folder: Path
-
-    operator fun get(key: ByteArray): ByteArray?
-
-    fun keyIterator(): CloseableIterator<ByteArray>
-    fun entryIterator(): CloseableIterator<Map.Entry<ByteArray, ByteArray>>
-
-    operator fun get(key: String) = get(key.toByteArray())
+@Suppress("OVERRIDE_BY_INLINE", "NOTHING_TO_INLINE")
+data class InlineNibbleNumber(@PublishedApi internal val nibble: Nibble) : Comparable<InlineNibbleNumber>, Number() {
+    override inline fun compareTo(other: InlineNibbleNumber): Int = nibble.compareTo(other.nibble)
+    override inline fun toByte(): Byte = nibble.toByte()
+    override inline fun toChar(): Char = nibble.toChar()
+    override inline fun toDouble(): Double = nibble.toDouble()
+    override inline fun toFloat(): Float = nibble.toFloat()
+    override inline fun toInt(): Int = nibble.toInt()
+    override inline fun toLong(): Long = nibble.toLong()
+    override inline fun toShort(): Short = nibble.toShort()
+    override fun toString(): String = nibble.toString()
 }

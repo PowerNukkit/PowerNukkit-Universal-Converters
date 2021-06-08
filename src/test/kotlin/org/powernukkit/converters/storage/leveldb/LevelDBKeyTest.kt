@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.storage.leveldb
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.powernukkit.converters.storage.leveldb.iq80.IQ80LevelDB
 import java.io.File
@@ -28,6 +29,7 @@ import java.io.File
  */
 internal class LevelDBKeyTest {
     @Test
+    @Disabled
     fun testing() {
         val stringPattern = Regex("^\\w+$")
         val dbDir = File("sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0/db")

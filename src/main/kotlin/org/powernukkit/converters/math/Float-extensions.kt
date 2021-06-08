@@ -16,21 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb.facade
+package org.powernukkit.converters.math
 
-import java.nio.file.Path
+import kotlin.math.ceil
 
 /**
  * @author joserobjr
- * @since 2020-11-18
+ * @since 2021-06-07
  */
-interface LevelDBReadContainer {
-    val folder: Path
-
-    operator fun get(key: ByteArray): ByteArray?
-
-    fun keyIterator(): CloseableIterator<ByteArray>
-    fun entryIterator(): CloseableIterator<Map.Entry<ByteArray, ByteArray>>
-
-    operator fun get(key: String) = get(key.toByteArray())
-}
+@Suppress("NOTHING_TO_INLINE")
+inline fun Float.intCeil(): Int = ceil(toDouble()).toInt()

@@ -22,6 +22,7 @@ import io.gomint.leveldb.DB
 import io.netty.buffer.Unpooled
 import org.powernukkit.converters.storage.leveldb.facade.*
 import java.io.File
+import java.nio.file.Path
 
 /**
  * @author joserobjr
@@ -29,6 +30,8 @@ import java.io.File
  */
 class GoMintLevelDB(dbDir: File, settings: LevelDBSettings) : LevelDB {
     private val db = DB(dbDir).apply { open() }
+
+    override val folder: Path = dbDir.toPath()
 
     override fun get(key: ByteArray): ByteArray? = Unpooled.wrappedBuffer(key).use {
         db[it]
@@ -48,7 +51,7 @@ class GoMintLevelDB(dbDir: File, settings: LevelDBSettings) : LevelDB {
         }
     }
 
-    override fun createSnapshot(): LevelDBSnapshot = GoMintSnapshot(db)
+    override fun createSnapshot(): LevelDBSnapshot = GoMintSnapshot(db, folder)
     override fun createWriteBatch(): LevelDBWriteBatch = GoMintWriteBatch()
 
     override fun entryIterator(): CloseableIterator<Map.Entry<ByteArray, ByteArray>> {

@@ -16,31 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api
+package org.powernukkit.converters.storage.leveldb
 
 import br.com.gamemods.regionmanipulator.ChunkPos
-import kotlinx.coroutines.flow.Flow
-import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.math.contains
+import io.ktor.utils.io.bits.*
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformStructure
 
 /**
  * @author joserobjr
- * @since 2020-10-23
+ * @since 2021-06-06
  */
-abstract class Chunk<P : Platform<P>>(val problemManager: StorageProblemManager) {
-    abstract val chunkPos: ChunkPos
-
-    abstract val entityCount: Int
-    abstract val chunkSectionCount: Int
-    abstract val blockEntityCount: Int
-    abstract fun countNonAirBlocks(): Int
-
-    abstract fun structureFlow(): Flow<PlatformStructure<P>>
-
-    abstract operator fun get(blockInWorld: BlockPos): PlatformBlock<P>
-
-    open operator fun contains(blockInWorld: BlockPos) = blockInWorld in chunkPos
+class LevelDBFailedChunkSection<P : Platform<P>>(
+    override val world: LevelDBProviderWorld<P>,
+    override val chunkPos: ChunkPos,
+    override val sectionNumber: Int,
+    override val version: Byte,
+    bytes: ByteArray,
+) : LevelDBChunkSection<P> {
+    private val bytes = Memory.of(bytes)
 }

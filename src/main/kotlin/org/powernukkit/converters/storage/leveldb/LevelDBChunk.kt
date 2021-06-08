@@ -47,11 +47,13 @@ class LevelDBChunk<P : Platform<P>>(
     val biomeState: ByteArray?,
     val borderBlocks: NbtFile?,
     val hardcodedSpawns: NbtFile?,
-    val sections: Array<ByteArray?>,
+    val sections: Array<LevelDBChunkSection<P>>,
 ) : Chunk<P>(problemManager) {
 
     override val entityCount: Int
         get() = entities?.size ?: 0
+    override val chunkSectionCount: Int
+        get() = sections.size
     override val blockEntityCount: Int
         get() = blockEntities?.size ?: 0
 

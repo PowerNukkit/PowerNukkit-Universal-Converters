@@ -16,21 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.leveldb.facade
-
-import java.nio.file.Path
+package org.powernukkit.converters.storage.leveldb.bitarray
 
 /**
- * @author joserobjr
- * @since 2020-11-18
+ * @author SupremeMortal, joserobjr (Kotlin port)
+ * @since 2021-06-07
+ * @property version Palette version information
+ * @property size Number of entries in this palette (**not** the length of the words array that internally backs this palette)
+ * @property words Array used to store data
  */
-interface LevelDBReadContainer {
-    val folder: Path
+interface LevelDBBitArray {
+    val size: Int
+    val words: IntArray
+    val version: LevelDBBitArrayVersion
 
-    operator fun get(key: ByteArray): ByteArray?
+    operator fun set(index: Int, value: Int)
 
-    fun keyIterator(): CloseableIterator<ByteArray>
-    fun entryIterator(): CloseableIterator<Map.Entry<ByteArray, ByteArray>>
+    operator fun get(index: Int): Int
 
-    operator fun get(key: String) = get(key.toByteArray())
+    fun copy(): LevelDBBitArray
 }

@@ -16,31 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api
+package org.powernukkit.converters.storage.leveldb
 
-import br.com.gamemods.regionmanipulator.ChunkPos
-import kotlinx.coroutines.flow.Flow
-import org.powernukkit.converters.math.BlockPos
-import org.powernukkit.converters.math.contains
+import io.ktor.utils.io.bits.*
+import io.ktor.utils.io.core.*
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.storage.api.StorageProblemManager
 
 /**
  * @author joserobjr
- * @since 2020-10-23
+ * @since 2021-06-07
  */
-abstract class Chunk<P : Platform<P>>(val problemManager: StorageProblemManager) {
-    abstract val chunkPos: ChunkPos
-
-    abstract val entityCount: Int
-    abstract val chunkSectionCount: Int
-    abstract val blockEntityCount: Int
-    abstract fun countNonAirBlocks(): Int
-
-    abstract fun structureFlow(): Flow<PlatformStructure<P>>
-
-    abstract operator fun get(blockInWorld: BlockPos): PlatformBlock<P>
-
-    open operator fun contains(blockInWorld: BlockPos) = blockInWorld in chunkPos
+class LevelDBBlockLayers<P : Platform<P>>(
+    world: LevelDBProviderWorld<P>,
+    problemManager: StorageProblemManager,
+    version: Byte,
+    data: Memory
+) {
+    private val layers = if (version == 1.toByte()) {
+        ByteReadPacket(data.buffer).use { input ->
+            arrayOf(LevelDBBlockStorage(world, problemManager, input))
+        }
+    } else {
+        ByteReadPacket(data.buffer.slice()).use { input ->
+            Array(input.readByte().toInt()) {
+                LevelDBBlockStorage(world, problemManager, input)
+            }
+        }
+    }
 }

@@ -22,12 +22,13 @@ import org.iq80.leveldb.DB
 import org.iq80.leveldb.ReadOptions
 import org.powernukkit.converters.storage.leveldb.facade.CloseableIterator
 import org.powernukkit.converters.storage.leveldb.facade.LevelDBSnapshot
+import java.nio.file.Path
 
 /**
  * @author joserobjr
  * @since 2020-11-18
  */
-internal class IQ80Snapshot(private val db: DB) : LevelDBSnapshot {
+internal class IQ80Snapshot(private val db: DB, override val folder: Path) : LevelDBSnapshot {
     private val snapshot = db.snapshot!!
     private val readOptions = ReadOptions().snapshot(snapshot)!!
 

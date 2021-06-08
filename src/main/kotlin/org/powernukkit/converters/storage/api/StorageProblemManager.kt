@@ -18,12 +18,55 @@
 
 package org.powernukkit.converters.storage.api
 
+import br.com.gamemods.nbtmanipulator.NbtCompound
+import br.com.gamemods.nbtmanipulator.NbtTag
+import org.powernukkit.converters.platform.api.Platform
+import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
+import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
+import org.powernukkit.converters.platform.api.block.PlatformBlockState
+import org.powernukkit.converters.platform.api.block.PlatformBlockType
+
 /**
  * @author joserobjr
  * @since 2020-11-16
  */
-class StorageProblemManager {
+open class StorageProblemManager {
     fun handleReadChunkIssue(providerWorld: ProviderWorld<*>, exception: Throwable) {
+        TODO("Not yet implemented")
+    }
+
+    fun <P : Platform<P>> handleMissingBlockTypeParsingState(
+        world: ProviderWorld<P>,
+        storage: NbtCompound
+    ): PlatformBlockType<P> {
+        TODO("Not yet implemented")
+    }
+
+    fun <P : Platform<P>> handleMissingBlockPropertyParsingState(
+        world: ProviderWorld<P>,
+        storage: NbtCompound,
+        key: String,
+        valueTag: NbtTag
+    ): PlatformBlockProperty<P> {
+        TODO("Not yet implemented")
+    }
+
+    fun <P : Platform<P>> handleMissingBlockPropertyValueParsingState(
+        world: ProviderWorld<P>,
+        storage: NbtCompound,
+        key: String,
+        valueTag: NbtTag,
+        property: PlatformBlockProperty<P>
+    ): PlatformBlockPropertyValue<P> {
+        TODO("Not yet implemented")
+    }
+
+    fun <P : Platform<P>> handleExceptionBuildingState(
+        world: ProviderWorld<P>,
+        storage: NbtCompound,
+        type: PlatformBlockType<P>,
+        properties: Map<String, PlatformBlockPropertyValue<P>>
+    ): PlatformBlockState<P> {
         TODO("Not yet implemented")
     }
 }

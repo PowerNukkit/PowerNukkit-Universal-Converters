@@ -22,6 +22,7 @@ import org.iq80.leveldb.Options
 import org.iq80.leveldb.impl.Iq80DBFactory.factory
 import org.powernukkit.converters.storage.leveldb.facade.*
 import java.io.File
+import java.nio.file.Path
 
 /**
  * @author joserobjr
@@ -30,7 +31,9 @@ import java.io.File
 class IQ80LevelDB(dbDir: File, settings: LevelDBSettings = LevelDBSettings()) : LevelDB {
     private val db = factory.open(dbDir, Options())
 
-    override fun createSnapshot(): LevelDBSnapshot = IQ80Snapshot(db)
+    override val folder: Path = dbDir.toPath()
+
+    override fun createSnapshot(): LevelDBSnapshot = IQ80Snapshot(db, folder)
     override fun createWriteBatch(): LevelDBWriteBatch = IQ80WriteBatch(db.createWriteBatch())
 
     override fun get(key: ByteArray) = db[key]

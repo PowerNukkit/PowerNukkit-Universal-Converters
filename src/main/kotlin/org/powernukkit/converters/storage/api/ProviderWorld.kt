@@ -35,16 +35,13 @@ abstract class ProviderWorld<P : Platform<P>>(protected val problemManager: Stor
 
     open fun countChunks() = chunkFlow().map { 1 }
     open fun countBlocks() = chunkFlow().map { it.countNonAirBlocks() }
-    open fun countChunkSections() = chunkFlow().map { it.entityCount }
+    open fun countChunkSections() = chunkFlow().map { it.chunkSectionCount }
     open fun countEntities() = chunkFlow().map { it.entityCount }
     open fun countBlockEntities() = chunkFlow().map { it.blockEntityCount }
 
     abstract fun chunkFlow(): Flow<Chunk<P>>
-    //abstract fun listChunks(): ReceiveChannel<Chunk<P>>
 
-    //open fun chunkFlow(): Flow<Chunk<P>> {
-    //    return flow {
-    //        listChunks()
-    //    }
-    //}
+    override fun toString(): String {
+        return "${this::class.java.simpleName}{platform=$platform, storageEngine=$storageEngine, folder=${levelData.folder}}"
+    }
 }

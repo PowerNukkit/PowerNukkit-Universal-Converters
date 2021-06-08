@@ -23,13 +23,14 @@ import io.netty.buffer.Unpooled
 import org.powernukkit.converters.storage.leveldb.facade.CloseableIterator
 import org.powernukkit.converters.storage.leveldb.facade.LevelDBSnapshot
 import org.powernukkit.converters.storage.leveldb.facade.use
+import java.nio.file.Path
 
 /**
  * @author joserobjr
  * @since 2020-11-18
  */
 internal class GoMintSnapshot(
-    private val db: DB,
+    private val db: DB, override val folder: Path,
 ) : LevelDBSnapshot {
     private val snapshot = db.snapshot
 
