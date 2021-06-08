@@ -1,19 +1,19 @@
 /*
  * PowerNukkit Universal Worlds & Converters for Minecraft
- *  Copyright (C) 2020  José Roberto de Araújo Júnior
- *  
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Affero General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *  
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Affero General Public License for more details.
- *  
- *  You should have received a copy of the GNU Affero General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2020  José Roberto de Araújo Júnior
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.powernukkit.converters.platform.universal.definitions.model.block.entity
@@ -21,6 +21,7 @@ package org.powernukkit.converters.platform.universal.definitions.model.block.en
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
+import java.util.*
 import javax.xml.bind.annotation.XmlAttribute
 
 /**
@@ -69,6 +70,7 @@ data class ModelData (
     val bedrockRequiresAdapter: Boolean = false,
 ) {
     enum class Type {
+        SHORT,
         INT,
         LONG,
         STRING,
@@ -90,7 +92,7 @@ data class ModelData (
         INT_LIST;
         
         override fun toString(): String {
-            return name.toLowerCase()
+            return name.lowercase(Locale.getDefault())
         }
     }
 }

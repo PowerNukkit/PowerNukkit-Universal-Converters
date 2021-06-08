@@ -563,6 +563,12 @@
         <block-property id="coral_hang_type_bit">
             <boolean/>
         </block-property>
+        <block-property id="liquid_depth" java="level">
+            <int-range to="15"/>
+        </block-property>
+        <block-property id="flowing" bedrock-requires-adapter="true" java="true">
+            <boolean/>
+        </block-property>
     </block-properties>
     <block-entities>
         <block-entity id="sign_text" java="sign" bedrock="Sign">
@@ -1454,7 +1460,12 @@
         <block-type id="lapis_block"/>
         <block-type id="lapis_ore"/>
         <block-type id="large_fern"/>
-        <block-type id="lava"/>
+        <block-type id="lava" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="liquid_depth"/>
+            <uses-property named="flowing" on-java="false" on-bedrock="false"/>
+
+            <extra-block on="bedrock" id="flowing_lava"/>
+        </block-type>
         <block-type id="lectern"/>
         <block-type id="lever"/>
         <block-type id="light_blue_bed"/>
@@ -1685,7 +1696,12 @@
         <block-type id="warped_roots"/>
         <block-type id="warped_stem"/>
         <block-type id="warped_wart_block"/>
-        <block-type id="water"/>
+        <block-type id="water" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="liquid_depth"/>
+            <uses-property named="flowing" on-java="false" on-bedrock="false"/>
+
+            <extra-block on="bedrock" id="flowing_water"/>
+        </block-type>
         <block-type id="weeping_vines"/>
         <block-type id="weeping_vines_plant"/>
         <block-type id="wet_sponge"/>
@@ -1706,8 +1722,6 @@
         <block-type id="zombie_head"/>
         <block-type id="zombie_wall_head"/>
         <!-- ~~ ~~~~~~~ ~~~~ -->
-        <block-type id="flowing_water" />
-        <block-type id="flowing_lava" />
         <block-type id="noteblock" />
         <block-type id="bed">
             <uses-property named="bed_direction" />

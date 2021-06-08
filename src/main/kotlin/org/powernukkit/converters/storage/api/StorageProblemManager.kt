@@ -25,6 +25,8 @@ import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
 import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
+import org.powernukkit.converters.storage.leveldb.LevelDBChunkSection
+import org.powernukkit.converters.storage.leveldb.LevelDBFailedChunkSection
 
 /**
  * @author joserobjr
@@ -68,5 +70,12 @@ open class StorageProblemManager {
         properties: Map<String, PlatformBlockPropertyValue<P>>
     ): PlatformBlockState<P> {
         TODO("Not yet implemented")
+    }
+
+    fun <P : Platform<P>> handleReadChunkSectionFailure(
+        e: Exception?, chunkSection: LevelDBFailedChunkSection<P>
+    ): LevelDBChunkSection<P> {
+        //TODO
+        return chunkSection
     }
 }

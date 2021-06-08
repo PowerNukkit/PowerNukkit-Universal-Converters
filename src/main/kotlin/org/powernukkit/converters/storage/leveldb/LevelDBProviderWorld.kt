@@ -95,7 +95,10 @@ class LevelDBProviderWorld<P : Platform<P>>(
         val sections = Array(16) { section ->
             val bytes = SUB_CHUNK_PREFIX[container, pos, dimension, section]
             if (bytes == null || bytes.isEmpty()) {
-                return@Array LevelDBFailedChunkSection(this, pos, section, -1, EmptyArrays.EMPTY_BYTES)
+                return@Array problemManager.handleReadChunkSectionFailure(
+                    null,
+                    LevelDBFailedChunkSection(this, pos, section, -1, EmptyArrays.EMPTY_BYTES)
+                )
             }
 
             try {
@@ -105,10 +108,10 @@ class LevelDBProviderWorld<P : Platform<P>>(
                     else -> throw UnsupportedOperationException("Unsupported chunk section version ${bytes[0]}")
                 }
             } catch (e: Exception) {
-                log.error(e) {
-                    "Failed to load the chunk section $section of the chunk at $pos in the world ${container.folder}"
-                }
-                LevelDBFailedChunkSection(this, pos, section, bytes[0], bytes)
+                problemManager.handleReadChunkSectionFailure(
+                    e,
+                    LevelDBFailedChunkSection(this, pos, section, bytes[0], bytes)
+                )
             }
         }
 
