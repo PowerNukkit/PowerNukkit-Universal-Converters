@@ -106,6 +106,26 @@
             <value bedrock="2">west</value>
             <value bedrock="3">north</value>
         </block-property>
+        <block-property id="anvil_direction" java="facing" bedrock="direction">
+            <value bedrock="0" default="true">north</value>
+            <value bedrock="1">east</value>
+            <value bedrock="2">south</value>
+            <value bedrock="3">west</value>
+        </block-property>
+        <block-property id="observer_direction" bedrock="facing_direction" java="facing">
+            <value bedrock="0" default="true">south</value>
+            <value bedrock="1">up</value>
+            <value bedrock="2">north</value>
+            <value bedrock="3">down</value>
+            <value bedrock="4">west</value>
+            <value bedrock="5">east</value>
+        </block-property>
+        <block-property id="bed_direction" bedrock="facing_bit" java="facing">
+            <value bedrock="0" default="true">north</value>
+            <value bedrock="1">west</value>
+            <value bedrock="2">south</value>
+            <value bedrock="3">east</value>
+        </block-property>
         <block-property id="tall_block_half" bedrock="upper_block_bit" java="half">
             <boolean java-false="lower" java-true="upper"/>
         </block-property>
@@ -439,6 +459,9 @@
         <block-property id="age3" java="age" bedrock="age">
             <int-range to="3"/>
         </block-property>
+        <block-property id="age2" java="age" bedrock="age">
+            <int-range to="2"/>
+        </block-property>
         <block-property id="toggle" java="powered" bedrock="toggle_bit">
             <boolean/>
         </block-property>
@@ -459,6 +482,16 @@
             <value>magenta</value>
             <value>orange</value>
             <value default="true">white</value>
+        </block-property>
+        <block-property id="conditional" bedrock="conditional_bit" >
+            <boolean />
+        </block-property>
+        <block-property id="bed_occupied" bedrock="occupied_bit" java="occupied">
+            <boolean />
+        </block-property>
+        <block-property id="bed_part" bedrock="head_bit" java="part">
+            <value default="true" bedrock="false">foot</value>
+            <value bedrock="true">head</value>
         </block-property>
         <block-property id="age15" bedrock="age" java="age">
             <int-range to="15"/>
@@ -571,6 +604,26 @@
             <data name="Patterns" type="banner_patterns" />
             <data name="CustomName" type="text" optional="true" />
             <data name="Color" type="none" java-type="none" bedrock-type="int" bedrock-requires-adapter="true" />
+        </block-entity>
+        <block-entity id="command_block_content" java="command_block" bedrock="CommandBlock">
+            <data name="CustomName" type="text" optional="true" />
+            <data name="Command" type="string" />
+            <data name="auto" type="boolean" />
+            <data name="powered" type="boolean" />
+            <data name="conditionMet" type="boolean" />
+            <data name="LastExecution" type="long" />
+            <data name="TrackOutput" type="boolean" />
+            <data name="LastOutput" type="string" />
+            <data name="SuccessCount" type="int" />
+
+            <data name="UpdateLastExecution" type="none" bedrock-type="none" java-type="boolean" java-requires-adapter="true" />
+
+            <data name="ExecuteOnFirstTick" type="none" java-type="none" bedrock-type="boolean" bedrock-requires-adapter="true" />
+            <data name="LPCondionalMode" type="none" java-type="none" bedrock-type="boolean" bedrock-requires-adapter="true" />
+            <data name="LPRedstoneMode" type="none" java-type="none" bedrock-type="boolean" bedrock-requires-adapter="true" />
+            <data name="LPCommandMode" type="none" java-type="none" bedrock-type="boolean" bedrock-requires-adapter="true" />
+            <data name="TickDelay" type="none" java-type="none" bedrock-type="int" bedrock-requires-adapter="true" />
+            <data name="Version" type="none" java-type="none" bedrock-type="int" bedrock-requires-adapter="true" />
         </block-entity>
         <block-entity id="campfire_data" java="campfire" bedrock="Campfire">
             <data name="Items" type="item_list" bedrock-requires-adapter="true"/>
@@ -1072,6 +1125,7 @@
         
         <block-type id="anvil" java-requires-adapter="true">
             <uses-property named="anvil_damage" on-java="false"/>
+            <uses-property named="anvil_direction" />
             
             <extra-block on="java" id="chipped_anvil"/>
             <extra-block on="java" id="damaged_anvil"/>
@@ -1251,7 +1305,7 @@
             <extra-block on="bedrock" id="lava_cauldron"/>
         </block-type>
         <block-type id="cave_air" bedrock="_missing_" bedrock-requires-adapter="true"/>
-        <block-type id="chain_command_block"/>
+        <block-type id="chain_command_block" />
         <block-type id="chest"/>
         <block-type id="chipped_anvil"/>
         <block-type id="chiseled_nether_bricks"/>
@@ -1276,8 +1330,19 @@
         <block-type id="coal_ore"/>
         <block-type id="cobblestone"/>
         <block-type id="cobweb" bedrock="web"/>
-        <block-type id="cocoa"/>
-        <block-type id="command_block"/>
+        <block-type id="cocoa">
+            <uses-property named="age2" />
+            <uses-property named="horizontal_direction" />
+        </block-type>
+        <block-type id="command_block">
+            <uses-property named="conditional" />
+            <uses-property named="facing_direction" />
+
+            <uses-block-entity named="command_block_content" />
+
+            <extra-block on="both" id="repeating_command_block" />
+            <extra-block on="both" id="chain_command_block" />
+        </block-type>
         <block-type id="comparator"/>
         <block-type id="composter"/>
         <block-type id="conduit"/>
@@ -1430,11 +1495,16 @@
         <block-type id="nether_quartz_ore"/>
         <block-type id="nether_sprouts"/>
         <block-type id="nether_wart_block"/>
-        <block-type id="nether_wart"/>
+        <block-type id="nether_wart">
+            <uses-property named="age3" />
+        </block-type>
         <block-type id="netherite_block"/>
         <block-type id="netherrack"/>
         <block-type id="note_block"/>
-        <block-type id="observer"/>
+        <block-type id="observer">
+            <uses-property named="observer_direction" />
+            <uses-property named="powered" />
+        </block-type>
         <block-type id="obsidian"/>
         <block-type id="orange_bed"/>
         <block-type id="orange_glazed_terracotta"/>
@@ -1639,7 +1709,28 @@
         <block-type id="flowing_water" />
         <block-type id="flowing_lava" />
         <block-type id="noteblock" />
-        <block-type id="bed" />
+        <block-type id="bed">
+            <uses-property named="bed_direction" />
+            <uses-property named="bed_part" />
+            <uses-property named="bed_occupied" />
+
+            <extra-block on="both" id="white_bed" />
+            <extra-block on="both" id="orange_bed" />
+            <extra-block on="both" id="magenta_bed" />
+            <extra-block on="both" id="light_blue_bed" />
+            <extra-block on="both" id="yellow_bed" />
+            <extra-block on="both" id="lime_bed" />
+            <extra-block on="both" id="pink_bed" />
+            <extra-block on="both" id="gray_bed" />
+            <extra-block on="both" id="light_gray_bed" />
+            <extra-block on="both" id="cyan_bed" />
+            <extra-block on="both" id="purple_bed" />
+            <extra-block on="both" id="blue_bed" />
+            <extra-block on="both" id="brown_bed" />
+            <extra-block on="both" id="green_bed" />
+            <extra-block on="both" id="red_bed" />
+            <extra-block on="both" id="black_bed" />
+        </block-type>
         <block-type id="golden_rail" />
         <block-type id="tallgrass" />
         <block-type id="deadbush" />
