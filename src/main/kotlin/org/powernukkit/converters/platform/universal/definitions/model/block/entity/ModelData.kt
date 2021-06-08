@@ -86,7 +86,8 @@ data class ModelData (
         BANNER_PATTERNS,
         NONE,
         JSON_TEXT,
-        I18N_TEXT;
+        I18N_TEXT,
+        INT_LIST;
         
         override fun toString(): String {
             return name.toLowerCase()

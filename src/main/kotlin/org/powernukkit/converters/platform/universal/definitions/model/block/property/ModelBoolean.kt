@@ -29,6 +29,10 @@ import javax.xml.bind.annotation.XmlRootElement
 @XmlRootElement(name = "boolean")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 data class ModelBoolean (
+
+    @XmlAttribute(name = "default")
+    val default: Boolean?,
+
     @XmlAttribute(name = "java-false")
     val javaFalse: String = "false",
 
