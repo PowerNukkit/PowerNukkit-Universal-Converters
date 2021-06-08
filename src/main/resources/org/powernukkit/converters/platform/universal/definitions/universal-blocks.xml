@@ -481,7 +481,7 @@
             <value>blue</value>
             <value>purple</value>
             <value>cyan</value>
-            <value>light_gray</value>
+            <value bedrock="silver">light_gray</value>
             <value>gray</value>
             <value>pink</value>
             <value>lime</value>
@@ -598,15 +598,24 @@
             <data name="Items" type="item_list"/>
             <data name="Findable" type="findable"/>
             <data name="LootTable" type="loot_table" optional="true" />
-            <data name="LootTableSeed" type="long" optional="true" />
+            <data name="LootTableSeed" type="long" optional="true"/>
         </block-entity>
         <block-entity id="chest_content" java="chest" bedrock="Chest">
             <data name="CustomName" type="text" optional="true"/>
             <data name="Lock" type="string" optional="true"/>
             <data name="Items" type="item_list"/>
             <data name="Findable" type="findable"/>
-            <data name="LootTable" type="loot_table" optional="true" />
-            <data name="LootTableSeed" type="long" optional="true" />
+            <data name="LootTable" type="loot_table" optional="true"/>
+            <data name="LootTableSeed" type="long" optional="true"/>
+        </block-entity>
+        <block-entity id="shulker_box_content" java="shulker_box" bedrock="ShulkerBox">
+            <data name="CustomName" type="text" optional="true"/>
+            <data name="Lock" type="string" optional="true"/>
+            <data name="Items" type="item_list"/>
+            <data name="Findable" type="findable"/>
+            <data name="LootTable" type="loot_table" optional="true"/>
+            <data name="LootTableSeed" type="long" optional="true"/>
+            <data name="facing" type="int" optional="true" bedrock-optional="false"/>
         </block-entity>
         <block-entity id="beacon_state" java="beacon" bedrock="Beacon">
             <data name="Levels" type="int"/>
@@ -615,8 +624,8 @@
         </block-entity>
         <block-entity id="beehive_content" java="beehive" bedrock="Beehive">
             <data name="FlowerPos" type="int_coordinate" bedrock-type="none" bedrock-requires-adapter="true"/>
-            <data name="ShouldSpawnBees" type="boolean" java-type="none" />
-            <data name="Occupants" java-name="Bees" type="beehive_occupants" />
+            <data name="ShouldSpawnBees" type="boolean" java-type="none"/>
+            <data name="Occupants" java-name="Bees" type="beehive_occupants"/>
         </block-entity>
         <block-entity id="bell_state" java="bell" bedrock="Bell">
             <data name="Ringing" type="boolean" optional="true" java-type="none"/>
@@ -650,7 +659,7 @@
         </block-entity>
         <block-entity id="campfire_data" java="campfire" bedrock="Campfire">
             <data name="Items" type="item_list" bedrock-requires-adapter="true"/>
-            <data name="CookingTimes" bedrock-name="ItemTime" type="int_list" bedrock-requires-adapter="true" />
+            <data name="CookingTimes" bedrock-name="ItemTime" type="int_list" bedrock-requires-adapter="true"/>
             <data name="CookingTotalTimes" type="none" bedrock-type="none" java-type="int_list"/>
         </block-entity>
         <block-entity id="cauldron_data" java="_missing_" bedrock="Cauldron">
@@ -658,6 +667,9 @@
             <data name="PotionId" type="int" bedrock-type="short"/>
             <data name="PotionType" type="int" bedrock-type="short"/>
             <data name="CustomColor" type="int" optional="true"/>
+        </block-entity>
+        <block-entity id="bed_data" java="_missing_" bedrock="Bed">
+            <data name="color" type="dye_color"/>
         </block-entity>
     </block-entities>
     <block-types>
@@ -1269,30 +1281,127 @@
             <extra-block on="java" id="red_wall_banner"/>
             <extra-block on="java" id="black_wall_banner"/>
         </block-type>
-        
-        <block-type id="black_bed"/>
-        <block-type id="black_glazed_terracotta"/>
-        <block-type id="black_shulker_box"/>
-        <block-type id="black_stained_glass"/>
-        <block-type id="black_stained_glass_pane"/>
+
+        <block-type id="bed" java="white_bed" java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="bed_direction"/>
+            <uses-property named="bed_occupied"/>
+            <uses-property named="bed_part"/>
+            <uses-property named="dye_color" on-bedrock="false" on-java="false"/>
+            <uses-block-entity named="bed_data" on-universal="false" on-java="false"/>
+
+            <extra-block on="java" id="orange_bed"/>
+            <extra-block on="java" id="magenta_bed"/>
+            <extra-block on="java" id="light_blue_bed"/>
+            <extra-block on="java" id="yellow_bed"/>
+            <extra-block on="java" id="lime_bed"/>
+            <extra-block on="java" id="pink_bed"/>
+            <extra-block on="java" id="gray_bed"/>
+            <extra-block on="java" id="light_gray_bed"/>
+            <extra-block on="java" id="cyan_bed"/>
+            <extra-block on="java" id="purple_bed"/>
+            <extra-block on="java" id="blue_bed"/>
+            <extra-block on="java" id="brown_bed"/>
+            <extra-block on="java" id="green_bed"/>
+            <extra-block on="java" id="red_bed"/>
+            <extra-block on="java" id="black_bed"/>
+        </block-type>
+
+        <block-type id="colored_terracotta"
+                    java="black_glazed_terracotta" bedrock="black_glazed_terracotta"
+                    java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="facing_direction"/>
+            <uses-property named="dye_color" on-java="false" on-bedrock="false"/>
+
+            <extra-block on="both" id="blue_glazed_terracotta"/>
+            <extra-block on="both" id="brown_glazed_terracotta"/>
+            <extra-block on="both" id="cyan_glazed_terracotta"/>
+            <extra-block on="both" id="gray_glazed_terracotta"/>
+            <extra-block on="both" id="green_glazed_terracotta"/>
+            <extra-block on="both" id="light_blue_glazed_terracotta"/>
+            <extra-block on="java" id="light_gray_glazed_terracotta"/>
+            <extra-block on="bedrock" id="silver_glazed_terracotta"/>
+            <extra-block on="both" id="lime_glazed_terracotta"/>
+            <extra-block on="both" id="magenta_glazed_terracotta"/>
+            <extra-block on="both" id="orange_glazed_terracotta"/>
+            <extra-block on="both" id="pink_glazed_terracotta"/>
+            <extra-block on="both" id="purple_glazed_terracotta"/>
+            <extra-block on="both" id="red_glazed_terracotta"/>
+            <extra-block on="both" id="white_glazed_terracotta"/>
+            <extra-block on="both" id="yellow_glazed_terracotta"/>
+        </block-type>
+
+        <block-type id="colored_shulker_box"
+                    bedrock="shulker_box" java="black_shulker_box"
+                    java-requires-adapter="true" bedrock-requires-adapter="true">
+            <uses-property named="facing_direction" on-bedrock="false"/>
+            <uses-property named="dye_color" on-java="false"/>
+            <uses-block-entity named="shulker_box_content"/>
+
+            <extra-block on="java" id="blue_shulker_box"/>
+            <extra-block on="java" id="brown_shulker_box"/>
+            <extra-block on="java" id="cyan_shulker_box"/>
+            <extra-block on="java" id="gray_shulker_box"/>
+            <extra-block on="java" id="green_shulker_box"/>
+            <extra-block on="java" id="light_blue_shulker_box"/>
+            <extra-block on="java" id="light_gray_shulker_box"/>
+            <extra-block on="java" id="lime_shulker_box"/>
+            <extra-block on="java" id="magenta_shulker_box"/>
+            <extra-block on="java" id="orange_shulker_box"/>
+            <extra-block on="java" id="pink_shulker_box"/>
+            <extra-block on="java" id="purple_shulker_box"/>
+            <extra-block on="java" id="red_shulker_box"/>
+            <extra-block on="java" id="white_shulker_box"/>
+            <extra-block on="java" id="yellow_shulker_box"/>
+        </block-type>
+
+        <block-type id="stained_glass" java="black_stained_glass" java-requires-adapter="true">
+            <uses-property named="dye_color" on-java="false"/>
+
+            <extra-block on="java" id="blue_stained_glass"/>
+            <extra-block on="java" id="brown_stained_glass"/>
+            <extra-block on="java" id="cyan_stained_glass"/>
+            <extra-block on="java" id="gray_stained_glass"/>
+            <extra-block on="java" id="green_stained_glass"/>
+            <extra-block on="java" id="light_blue_stained_glass"/>
+            <extra-block on="java" id="light_gray_stained_glass"/>
+            <extra-block on="java" id="lime_stained_glass"/>
+            <extra-block on="java" id="magenta_stained_glass"/>
+            <extra-block on="java" id="orange_stained_glass"/>
+            <extra-block on="java" id="pink_stained_glass"/>
+            <extra-block on="java" id="purple_stained_glass"/>
+            <extra-block on="java" id="red_stained_glass"/>
+            <extra-block on="java" id="white_stained_glass"/>
+            <extra-block on="java" id="yellow_stained_glass"/>
+        </block-type>
+
+        <block-type id="stained_glass_pane" java="black_stained_glass_pane" java-requires-adapter="true">
+            <uses-property named="dye_color" on-java="false"/>
+
+            <extra-block on="java" id="blue_stained_glass_pane"/>
+            <extra-block on="java" id="brown_stained_glass_pane"/>
+            <extra-block on="java" id="cyan_stained_glass_pane"/>
+            <extra-block on="java" id="gray_stained_glass_pane"/>
+            <extra-block on="java" id="green_stained_glass_pane"/>
+            <extra-block on="java" id="light_blue_stained_glass_pane"/>
+            <extra-block on="java" id="light_gray_stained_glass_pane"/>
+            <extra-block on="java" id="lime_stained_glass_pane"/>
+            <extra-block on="java" id="magenta_stained_glass_pane"/>
+            <extra-block on="java" id="orange_stained_glass_pane"/>
+            <extra-block on="java" id="pink_stained_glass_pane"/>
+            <extra-block on="java" id="purple_stained_glass_pane"/>
+            <extra-block on="java" id="red_stained_glass_pane"/>
+            <extra-block on="java" id="white_stained_glass_pane"/>
+            <extra-block on="java" id="yellow_stained_glass_pane"/>
+        </block-type>
+
         <block-type id="blackstone"/>
         <block-type id="blast_furnace"/>
-        <block-type id="blue_bed"/>
-        <block-type id="blue_glazed_terracotta"/>
-        <block-type id="blue_shulker_box"/>
-        <block-type id="blue_stained_glass"/>
-        <block-type id="blue_stained_glass_pane"/>
         <block-type id="bone_block"/>
         <block-type id="bookshelf"/>
         <block-type id="brewing_stand"/>
         <block-type id="bricks" bedrock="brick_block"/>
-        <block-type id="brown_bed"/>
-        <block-type id="brown_glazed_terracotta"/>
         <block-type id="brown_mushroom_block"/>
         <block-type id="brown_mushroom"/>
-        <block-type id="brown_shulker_box"/>
-        <block-type id="brown_stained_glass"/>
-        <block-type id="brown_stained_glass_pane"/>
         <block-type id="bubble_column"/>
         <block-type id="cactus">
             <uses-property named="age15"/>
@@ -1382,11 +1491,6 @@
         <block-type id="crying_obsidian"/>
         <block-type id="cut_red_sandstone"/>
         <block-type id="cut_sandstone"/>
-        <block-type id="cyan_bed"/>
-        <block-type id="cyan_glazed_terracotta"/>
-        <block-type id="cyan_shulker_box"/>
-        <block-type id="cyan_stained_glass"/>
-        <block-type id="cyan_stained_glass_pane"/>
         <block-type id="damaged_anvil"/>
         <block-type id="dandelion" bedrock="yellow_flower" />
         <block-type id="daylight_detector"/>
@@ -1443,16 +1547,6 @@
             <extra-block on="java" id="fern"/>
         </block-type>
         <block-type id="gravel"/>
-        <block-type id="gray_bed"/>
-        <block-type id="gray_glazed_terracotta"/>
-        <block-type id="gray_shulker_box"/>
-        <block-type id="gray_stained_glass"/>
-        <block-type id="gray_stained_glass_pane"/>
-        <block-type id="green_bed"/>
-        <block-type id="green_glazed_terracotta"/>
-        <block-type id="green_shulker_box"/>
-        <block-type id="green_stained_glass"/>
-        <block-type id="green_stained_glass_pane"/>
         <block-type id="grindstone"/>
         <block-type id="hay_block"/>
         <block-type id="hopper"/>
@@ -1482,7 +1576,6 @@
         <block-type id="lantern"/>
         <block-type id="lapis_block"/>
         <block-type id="lapis_ore"/>
-        <block-type id="large_fern"/>
         <block-type id="lava" java-requires-adapter="true" bedrock-requires-adapter="true">
             <uses-property named="liquid_depth"/>
             <uses-property named="flowing" on-java="false" on-bedrock="false"/>
@@ -1491,31 +1584,11 @@
         </block-type>
         <block-type id="lectern"/>
         <block-type id="lever"/>
-        <block-type id="light_blue_bed"/>
-        <block-type id="light_blue_glazed_terracotta"/>
-        <block-type id="light_blue_shulker_box"/>
-        <block-type id="light_blue_stained_glass"/>
-        <block-type id="light_blue_stained_glass_pane"/>
-        <block-type id="light_gray_bed"/>
-        <block-type id="light_gray_glazed_terracotta"/>
-        <block-type id="light_gray_shulker_box"/>
-        <block-type id="light_gray_stained_glass"/>
-        <block-type id="light_gray_stained_glass_pane"/>
+
         <block-type id="light_gray_terracotta"/>
-        <block-type id="lilac"/>
         <block-type id="lily_pad"/>
-        <block-type id="lime_bed"/>
-        <block-type id="lime_glazed_terracotta"/>
-        <block-type id="lime_shulker_box"/>
-        <block-type id="lime_stained_glass"/>
-        <block-type id="lime_stained_glass_pane"/>
         <block-type id="lodestone"/>
         <block-type id="loom"/>
-        <block-type id="magenta_bed"/>
-        <block-type id="magenta_glazed_terracotta"/>
-        <block-type id="magenta_shulker_box"/>
-        <block-type id="magenta_stained_glass"/>
-        <block-type id="magenta_stained_glass_pane"/>
         <block-type id="magma_block"/>
         <block-type id="melon"/>
         <block-type id="mossy_cobblestone"/>
@@ -1540,17 +1613,6 @@
             <uses-property named="powered" />
         </block-type>
         <block-type id="obsidian"/>
-        <block-type id="orange_bed"/>
-        <block-type id="orange_glazed_terracotta"/>
-        <block-type id="orange_shulker_box"/>
-        <block-type id="orange_stained_glass"/>
-        <block-type id="orange_stained_glass_pane"/>
-        <block-type id="peony"/>
-        <block-type id="pink_bed"/>
-        <block-type id="pink_glazed_terracotta"/>
-        <block-type id="pink_shulker_box"/>
-        <block-type id="pink_stained_glass"/>
-        <block-type id="pink_stained_glass_pane"/>
         <block-type id="piston_head"/>
         <block-type id="piston"/>
         <block-type id="player_head"/>
@@ -1606,11 +1668,6 @@
             <extra-block on="java" id="prismarine_bricks"/>
         </block-type>
         <block-type id="pumpkin"/>
-        <block-type id="purple_bed"/>
-        <block-type id="purple_glazed_terracotta"/>
-        <block-type id="purple_shulker_box"/>
-        <block-type id="purple_stained_glass"/>
-        <block-type id="purple_stained_glass_pane"/>
         <block-type id="purpur_block"/>
         <block-type id="purpur_pillar"/>
         <block-type id="quartz_block"/>
@@ -1621,16 +1678,11 @@
             <uses-property named="regular_rail_shape"/>
         </block-type>
         
-        <block-type id="red_bed"/>
-        <block-type id="red_glazed_terracotta"/>
         <block-type id="red_mushroom_block"/>
         <block-type id="red_mushroom"/>
         <block-type id="red_nether_bricks"/>
         <block-type id="red_sand"/>
         <block-type id="red_sandstone"/>
-        <block-type id="red_shulker_box"/>
-        <block-type id="red_stained_glass"/>
-        <block-type id="red_stained_glass_pane"/>
         <block-type id="respawn_anchor"/>
         <block-type id="redstone_block"/>
         <block-type id="redstone_lamp"/>
@@ -1640,7 +1692,6 @@
         <block-type id="redstone_wire"/>
         <block-type id="repeater"/>
         <block-type id="repeating_command_block"/>
-        <block-type id="rose_bush"/>
         <block-type id="sand"/>
         <block-type id="sandstone"/>
         <block-type id="scaffolding"/>
@@ -1648,7 +1699,10 @@
         <block-type id="sea_pickle"/>
         <block-type id="seagrass"/>
         <block-type id="shroomlight"/>
-        <block-type id="shulker_box"/>
+        <block-type id="shulker_box" bedrock="undyed_shulker_box" bedrock-requires-adapter="true">
+            <uses-property named="facing_direction"/>
+            <uses-block-entity named="shulker_box_content"/>
+        </block-type>
         <block-type id="skeleton_skull"/>
         <block-type id="skeleton_wall_skull"/>
         <block-type id="slime_block"/>
@@ -1675,9 +1729,7 @@
         <block-type id="structure_block"/>
         <block-type id="structure_void"/>
         <block-type id="sugar_cane"/>
-        <block-type id="sunflower"/>
         <block-type id="sweet_berry_bush"/>
-        <block-type id="tall_grass"/>
         <block-type id="tall_seagrass"/>
         <block-type id="target"/>
         <block-type id="terracotta" bedrock="hardened_clay" bedrock-requires-adapter="true" java-requires-adapter="true">
@@ -1729,45 +1781,13 @@
         <block-type id="weeping_vines_plant"/>
         <block-type id="wet_sponge"/>
         <block-type id="wheat"/>
-        <block-type id="white_bed"/>
-        <block-type id="white_glazed_terracotta"/>
-        <block-type id="white_shulker_box"/>
-        <block-type id="white_stained_glass"/>
-        <block-type id="white_stained_glass_pane"/>
         <block-type id="wither_rose"/>
         <block-type id="wither_skeleton_skull"/>
         <block-type id="wither_skeleton_wall_skull"/>
-        <block-type id="yellow_bed"/>
-        <block-type id="yellow_glazed_terracotta"/>
-        <block-type id="yellow_shulker_box"/>
-        <block-type id="yellow_stained_glass"/>
-        <block-type id="yellow_stained_glass_pane"/>
         <block-type id="zombie_head"/>
         <block-type id="zombie_wall_head"/>
         <!-- ~~ ~~~~~~~ ~~~~ -->
         <block-type id="noteblock" />
-        <block-type id="bed">
-            <uses-property named="bed_direction" />
-            <uses-property named="bed_part" />
-            <uses-property named="bed_occupied" />
-
-            <extra-block on="both" id="white_bed" />
-            <extra-block on="both" id="orange_bed" />
-            <extra-block on="both" id="magenta_bed" />
-            <extra-block on="both" id="light_blue_bed" />
-            <extra-block on="both" id="yellow_bed" />
-            <extra-block on="both" id="lime_bed" />
-            <extra-block on="both" id="pink_bed" />
-            <extra-block on="both" id="gray_bed" />
-            <extra-block on="both" id="light_gray_bed" />
-            <extra-block on="both" id="cyan_bed" />
-            <extra-block on="both" id="purple_bed" />
-            <extra-block on="both" id="blue_bed" />
-            <extra-block on="both" id="brown_bed" />
-            <extra-block on="both" id="green_bed" />
-            <extra-block on="both" id="red_bed" />
-            <extra-block on="both" id="black_bed" />
-        </block-type>
         <block-type id="golden_rail" />
         <block-type id="deadbush" />
         <block-type id="pistonarmcollision" />
@@ -1812,7 +1832,6 @@
         <block-type id="unpowered_comparator" />
         <block-type id="powered_comparator" />
         <block-type id="quartz_ore" />
-        <block-type id="stained_glass_pane" />
         <block-type id="leaves2" />
         <block-type id="log2" />
         <block-type id="slime" />
@@ -1856,13 +1875,11 @@
         <block-type id="frame"/>
         <block-type id="colored_torch_rg"/>
         <block-type id="colored_torch_bp"/>
-        <block-type id="undyed_shulker_box"/>
         <block-type id="end_bricks" />
         <block-type id="allow" />
         <block-type id="deny" />
         <block-type id="magma" />
         <block-type id="red_nether_brick" />
-        <block-type id="silver_glazed_terracotta" />
         <block-type id="chalkboard" />
         <block-type id="concrete" java="white_concrete" java-requires-adapter="true">
             <uses-property named="dye_color" on-java="false"/>
@@ -1904,7 +1921,6 @@
         </block-type>
         <block-type id="chemistry_table" />
         <block-type id="underwater_torch" />
-        <block-type id="stained_glass" />
         <block-type id="camera" />
         <block-type id="glowingobsidian" />
         <block-type id="netherreactor" />
