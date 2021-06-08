@@ -92,7 +92,7 @@ data class ModelData (
         INT_LIST;
         
         override fun toString(): String {
-            return name.lowercase(Locale.getDefault())
+            return name.lowercase(Locale.ENGLISH)
         }
     }
 }

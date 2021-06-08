@@ -228,9 +228,9 @@
             <boolean/>
         </block-property>
         <block-property id="axis" bedrock="pillar_axis">
-            <value bedrock="0" default="true">y</value>
-            <value bedrock="1">x</value>
-            <value bedrock="2">z</value>
+            <value default="true">y</value>
+            <value>x</value>
+            <value>z</value>
         </block-property>
         <block-property id="full_bark" java-requires-adapter="true" bedrock-requires-adapter="true">
             <boolean/>
@@ -392,6 +392,14 @@
             <value bedrock="oxeye">oxeye_daisy</value>
             <value>cornflower</value>
             <value>lily_of_the_valley</value>
+        </block-property>
+        <block-property id="double_plant_type">
+            <value default="true">sunflower</value>
+            <value bedrock="syringa">lilac</value>
+            <value bedrock="grass">tall_grass</value>
+            <value bedrock="fern">large_fern</value>
+            <value bedrock="rose">rose_bush</value>
+            <value bedrock="paeonia">peony</value>
         </block-property>
         <block-property id="stone_type" java-requires-adapter="true">
             <value default="true">stone</value>
@@ -566,7 +574,16 @@
         <block-property id="liquid_depth" java="level">
             <int-range to="15"/>
         </block-property>
-        <block-property id="flowing" bedrock-requires-adapter="true" java="true">
+        <block-property id="flowing" bedrock-requires-adapter="true" java-requires-adapter="true">
+            <boolean/>
+        </block-property>
+        <block-property id="tall_grass_type" java-requires-adapter="true">
+            <value bedrock="default" default="true">grass</value>
+            <value>tall</value>
+            <value>fern</value>
+            <value java="_missing_">snow</value>
+        </block-property>
+        <block-property id="snowy">
             <boolean/>
         </block-property>
     </block-properties>
@@ -1416,9 +1433,15 @@
         <block-type id="glowstone"/>
         <block-type id="gold_block"/>
         <block-type id="gold_ore"/>
-        <block-type id="grass_block"/>
+        <block-type id="grass_block" bedrock="grass">
+            <uses-property named="snowy" on-bedrock="false"/>
+        </block-type>
         <block-type id="grass_path"/>
-        <block-type id="grass"/>
+        <block-type id="grass" bedrock="tallgrass" java-requires-adapter="true">
+            <uses-property named="tall_grass_type" on-java="false"/>
+
+            <extra-block on="java" id="fern"/>
+        </block-type>
         <block-type id="gravel"/>
         <block-type id="gray_bed"/>
         <block-type id="gray_glazed_terracotta"/>
@@ -1746,7 +1769,6 @@
             <extra-block on="both" id="black_bed" />
         </block-type>
         <block-type id="golden_rail" />
-        <block-type id="tallgrass" />
         <block-type id="deadbush" />
         <block-type id="pistonarmcollision" />
         <block-type id="wool" java="white_wool" java-requires-adapter="true">
@@ -1768,8 +1790,6 @@
             <extra-block on="java" id="red_wool"        inherit-properties="false"/>
             <extra-block on="java" id="black_wool"      inherit-properties="false"/>
         </block-type>
-        <block-type id="yellow_flower" />
-        <block-type id="red_flower" />
         <block-type id="brick_block" />
         <block-type id="mob_spawner" />
         <block-type id="lit_furnace" />
@@ -1807,27 +1827,36 @@
             <extra-block on="java" id="yellow_carpet"     inherit-properties="false"/>
             <extra-block on="java" id="lime_carpet"       inherit-properties="false"/>
             <extra-block on="java" id="pink_carpet"       inherit-properties="false"/>
-            <extra-block on="java" id="gray_carpet"       inherit-properties="false"/>
+            <extra-block on="java" id="gray_carpet" inherit-properties="false"/>
             <extra-block on="java" id="light_gray_carpet" inherit-properties="false"/>
-            <extra-block on="java" id="cyan_carpet"       inherit-properties="false"/>
-            <extra-block on="java" id="purple_carpet"     inherit-properties="false"/>
-            <extra-block on="java" id="blue_carpet"       inherit-properties="false"/>
-            <extra-block on="java" id="brown_carpet"      inherit-properties="false"/>
-            <extra-block on="java" id="green_carpet"      inherit-properties="false"/>
-            <extra-block on="java" id="red_carpet"        inherit-properties="false"/>
-            <extra-block on="java" id="black_carpet"      inherit-properties="false"/>
+            <extra-block on="java" id="cyan_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="purple_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="blue_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="brown_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="green_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="red_carpet" inherit-properties="false"/>
+            <extra-block on="java" id="black_carpet" inherit-properties="false"/>
         </block-type>
-        <block-type id="double_plant" />
-        <block-type id="daylight_detector_inverted" />
-        <block-type id="double_stone_slab2" />
-        <block-type id="stone_slab2" />
-        <block-type id="hard_glass_pane" />
-        <block-type id="hard_stained_glass_pane" />
-        <block-type id="chemical_heat" />
-        <block-type id="frame" />
-        <block-type id="colored_torch_rg" />
-        <block-type id="colored_torch_bp" />
-        <block-type id="undyed_shulker_box" />
+        <block-type id="double_plant" java="sunflower" java-requires-adapter="true">
+            <uses-property named="double_plant_type" on-java="false"/>
+            <uses-property named="tall_block_half"/>
+
+            <extra-block on="java" id="lilac"/>
+            <extra-block on="java" id="tall_grass"/>
+            <extra-block on="java" id="large_fern"/>
+            <extra-block on="java" id="rose_bush"/>
+            <extra-block on="java" id="peony"/>
+        </block-type>
+        <block-type id="daylight_detector_inverted"/>
+        <block-type id="double_stone_slab2"/>
+        <block-type id="stone_slab2"/>
+        <block-type id="hard_glass_pane"/>
+        <block-type id="hard_stained_glass_pane"/>
+        <block-type id="chemical_heat"/>
+        <block-type id="frame"/>
+        <block-type id="colored_torch_rg"/>
+        <block-type id="colored_torch_bp"/>
+        <block-type id="undyed_shulker_box"/>
         <block-type id="end_bricks" />
         <block-type id="allow" />
         <block-type id="deny" />
