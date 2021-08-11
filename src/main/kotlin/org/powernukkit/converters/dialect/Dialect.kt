@@ -16,18 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.powernukkit.converters.storage.api
+package org.powernukkit.converters.dialect
 
 /**
  * @author joserobjr
  * @since 2020-10-21
  */
-enum class Dialect {
-    VANILLA_BEDROCK_EDITION,
-    VANILLA_JAVA_EDITION,
-    MODDED_JAVA_EDITION,
-    NUKKIT,
-    POWER_NUKKIT,
-    CLOUDBURST_SERVER,
-    POCKET_MINE,
+enum class Dialect(val default: IDialect): IDialect by default {
+    VANILLA_BEDROCK_EDITION(VanillaBedrockEditionDialect()),
+    VANILLA_JAVA_EDITION(VanillaJavaEditionDialect()),
+    FORGE_JAVA_EDITION(ForgeJavaEditionDialect()),
+    NUKKIT(NukkitDialect()),
+    POWER_NUKKIT(PowerNukkitDialect()),
+    CLOUDBURST_SERVER(CloudburstServerDialect()),
+    POCKET_MINE(PocketMineDialect()),
+    ;
+    override val type: Dialect? get() = this
 }

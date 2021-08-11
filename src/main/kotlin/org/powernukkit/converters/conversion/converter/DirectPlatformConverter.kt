@@ -25,6 +25,7 @@ import org.powernukkit.converters.conversion.adapter.Adapters
 import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PositionedStructure
+import org.powernukkit.converters.storage.api.Chunk
 
 /**
  * @author joserobjr
@@ -77,6 +78,11 @@ open class DirectPlatformConverter<FromPlatform : Platform<FromPlatform>, ToPlat
         fromPlatform, toPlatform,
         blockConverter
     )
+
+    override fun convertChunkData(fromChunk: Chunk<FromPlatform>, toChunk: Chunk<ToPlatform>): List<ConversionProblem> {
+        // TODO implement
+        return emptyList()
+    }
 
     final override fun convertStructure(
         from: PositionedStructure<FromPlatform>

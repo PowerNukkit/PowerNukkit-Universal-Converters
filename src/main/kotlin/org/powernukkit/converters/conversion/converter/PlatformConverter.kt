@@ -22,8 +22,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.powernukkit.converters.conversion.job.ConversionProcess
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PositionedStructure
+import org.powernukkit.converters.storage.api.Chunk
+import org.powernukkit.converters.storage.api.ProviderWorld
+import org.powernukkit.converters.storage.api.ReceivingWorld
+import org.powernukkit.converters.storage.api.StorageProblemManager
 
 /**
  * @author joserobjr
@@ -42,4 +52,34 @@ abstract class PlatformConverter<FromPlatform : Platform<FromPlatform>, ToPlatfo
         to: SendChannel<PositionedStructure<ToPlatform>>,
         problems: SendChannel<ConversionProblem>? = null,
     ): Job
+
+    abstract fun convertChunkData(fromChunk: Chunk<FromPlatform>, toChunk: Chunk<ToPlatform>): List<ConversionProblem>
+
+    fun CoroutineScope.convertWorldAsync(
+        from: ProviderWorld<FromPlatform>,
+        to: ReceivingWorld<ToPlatform>,
+        problemManager: StorageProblemManager
+    ): ConversionProcess<FromPlatform, ToPlatform> {
+        val chunksConverted = MutableStateFlow(0L)
+        val job = launch {
+            from.chunkFlow().collect { chunk ->
+                val currentChunkPos = chunk.chunkPos
+                val toChunk = to.getOrCreateEmptyChunk(currentChunkPos)
+                convertChunkData(chunk, toChunk)
+                chunk.structureFlow().collect {
+                    val (newStructure, problems) = convertStructure(it)
+                    val finalStructure = newStructure.takeIf { problems.isNotEmpty() }
+                        ?: problemManager.handleConvertStructureProblems(this@PlatformConverter, it, newStructure, problemManager)
+                    finalStructure.chunkPositions().forEach { chunkPos ->
+                        val chunkToAdd =
+                            if (chunkPos == currentChunkPos) toChunk else to.getOrCreateEmptyChunk(chunkPos)
+                        chunkToAdd += newStructure
+                    }
+                }
+                chunksConverted.update { it + 1 }
+            }
+        }
+
+        return ConversionProcess(this@PlatformConverter, from, to, chunksConverted.asStateFlow(), job)
+    }
 }

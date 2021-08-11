@@ -20,11 +20,9 @@ package org.powernukkit.converters.storage.api
 
 import br.com.gamemods.nbtmanipulator.NbtCompound
 import br.com.gamemods.nbtmanipulator.NbtTag
+import org.powernukkit.converters.conversion.converter.PlatformConverter
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.api.block.PlatformBlockProperty
-import org.powernukkit.converters.platform.api.block.PlatformBlockPropertyValue
-import org.powernukkit.converters.platform.api.block.PlatformBlockState
-import org.powernukkit.converters.platform.api.block.PlatformBlockType
+import org.powernukkit.converters.platform.api.block.*
 import org.powernukkit.converters.storage.leveldb.LevelDBChunkSection
 import org.powernukkit.converters.storage.leveldb.LevelDBFailedChunkSection
 
@@ -78,5 +76,14 @@ open class StorageProblemManager {
     ): LevelDBChunkSection<P> {
         //TODO
         return chunkSection
+    }
+
+    fun <FromPlatform: Platform<FromPlatform>, ToPlatform: Platform<ToPlatform>> handleConvertStructureProblems(
+        converter: PlatformConverter<FromPlatform, ToPlatform>,
+        fromStructure: PositionedStructure<FromPlatform>,
+        newStructure: PositionedStructure<ToPlatform>,
+        problemManager: StorageProblemManager
+    ): PositionedStructure<ToPlatform> {
+        TODO("Not yet implemented")
     }
 }

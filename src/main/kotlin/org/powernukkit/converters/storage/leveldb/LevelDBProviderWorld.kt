@@ -24,6 +24,7 @@ import com.google.common.cache.CacheBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.powernukkit.converters.conversion.job.InputWorld
+import org.powernukkit.converters.dialect.IDialect
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlockState
 import org.powernukkit.converters.storage.api.ProviderWorld
@@ -51,8 +52,10 @@ class LevelDBProviderWorld<P : Platform<P>>(
     override val levelData: LevelData,
     problemManager: StorageProblemManager,
     override val storageEngine: LevelDBStorageEngine,
+    override val dialect: IDialect,
+    inputWorld: InputWorld<P>? = null,
     levelDBFactory: LevelDBFactory = LevelDB.defaultFactory
-) : ProviderWorld<P>(problemManager) {
+) : ProviderWorld<P>(problemManager, inputWorld) {
     private val blockStateCache = CacheBuilder.newBuilder()
         .expireAfterAccess(5, TimeUnit.MINUTES)
         .build<Int, PlatformBlockState<P>>()
@@ -61,13 +64,14 @@ class LevelDBProviderWorld<P : Platform<P>>(
         private val log = InlineLogger()
     }
 
-    @Suppress("UNCHECKED_CAST")
-    constructor(storageEngine: LevelDBStorageEngine, inputWorld: InputWorld) : this(
-        inputWorld.platform as P,
+    constructor(storageEngine: LevelDBStorageEngine, inputWorld: InputWorld<P>, platform: P) : this(
+        platform,
         inputWorld.levelFolder.toPath(),
         inputWorld.levelData,
         inputWorld.problemManager,
-        storageEngine
+        storageEngine,
+        inputWorld.dialect,
+        inputWorld,
     )
 
     private val db = levelDBFactory.open(worldDir.resolve("db").toFile())
@@ -151,9 +155,7 @@ class LevelDBProviderWorld<P : Platform<P>>(
         }
 
     override fun chunkFlow(): Flow<LevelDBChunk<P>> = flow {
-        db.createSnapshot().use { snapshot ->
-            emitAll(snapshot.chunkFlow())
-        }
+        emitAll(db.chunkFlow())
     }.flowOn(Dispatchers.IO)
 
     private fun LevelDBReadContainer.chunkFlow(): Flow<LevelDBChunk<P>> =

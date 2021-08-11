@@ -23,6 +23,7 @@ import br.com.gamemods.regionmanipulator.RegionIO
 import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.*
 import org.intellij.lang.annotations.Language
+import org.powernukkit.converters.dialect.Dialect
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.storage.alpha.AlphaStorageEngine
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
@@ -55,7 +56,7 @@ class StorageProber(
             when (dialect) {
                 Dialect.VANILLA_BEDROCK_EDITION -> MinecraftEdition.BEDROCK
                 Dialect.VANILLA_JAVA_EDITION -> MinecraftEdition.JAVA
-                Dialect.MODDED_JAVA_EDITION -> MinecraftEdition.JAVA
+                Dialect.FORGE_JAVA_EDITION -> MinecraftEdition.JAVA
                 Dialect.NUKKIT -> MinecraftEdition.BEDROCK
                 Dialect.POWER_NUKKIT -> MinecraftEdition.BEDROCK
                 Dialect.CLOUDBURST_SERVER -> MinecraftEdition.BEDROCK
@@ -101,13 +102,13 @@ class StorageProber(
     private fun detectAnvilDialect(): List<Dialect> {
         originalLevelData.serverBrands?.let { brands ->
             if (brands == listOf("vanilla")) {
-                return listOf(Dialect.MODDED_JAVA_EDITION)
+                return listOf(Dialect.FORGE_JAVA_EDITION)
             }
         }
 
         originalLevelData.dataFile?.let { dataFile ->
             if ((dataFile.tag as? NbtCompound)?.getNullableCompound("fml") != null) {
-                return listOf(Dialect.MODDED_JAVA_EDITION)
+                return listOf(Dialect.FORGE_JAVA_EDITION)
             }
         }
 

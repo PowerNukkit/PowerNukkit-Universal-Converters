@@ -19,11 +19,11 @@
 package org.powernukkit.converters.storage.api.leveldata.model
 
 import br.com.gamemods.nbtmanipulator.NbtFile
+import org.powernukkit.converters.dialect.IDialect
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.storage.api.Dialect
-import org.powernukkit.converters.storage.api.StorageEngineType
+import org.powernukkit.converters.storage.api.StorageEngine
 import java.awt.image.BufferedImage
 import java.nio.file.Path
 import java.time.Instant
@@ -52,15 +52,15 @@ import java.time.Instant
 data class LevelData(
     // Internal data
     val dataFile: NbtFile? = null,
-    val storageEngineType: StorageEngineType? = null,
-    val dialect: Dialect? = null,
+    val storageEngineType: StorageEngine? = null,
+    val dialect: IDialect? = null,
     val folder: Path? = null,
 
     // Since JE inf-dev
     val spawn: BlockPos? = null,
     val randomSeed: Long? = null, // Position changed in JE 1.16+
     val lastPlayed: Instant? = null,
-    val time: Long?,
+    val time: Long? = null,
     val sizeOnDisk: Long? = null, // Removed in JE 1.16+
 
     // Since Alpha

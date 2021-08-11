@@ -18,18 +18,20 @@
 
 package org.powernukkit.converters.conversion.job
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /**
  * @author joserobjr
  * @since 2020-11-15
  */
-@ExperimentalCoroutinesApi
 data class MutableEstimation(
     val current: MutableStateFlow<Int>,
     val total: MutableStateFlow<Int>,

@@ -31,6 +31,7 @@ import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.storage.api.Chunk
 
 /**
  * @author joserobjr
@@ -42,6 +43,10 @@ class ChainedConverter<FromPlatform : Platform<FromPlatform>, ToPlatform : Platf
     private val toUniversalConverter: ToUniversalConverter<FromPlatform>,
     private val fromUniversalConverter: FromUniversalConverter<ToPlatform>,
 ) : PlatformConverter<FromPlatform, ToPlatform>(fromPlatform, toPlatform) {
+    override fun convertChunkData(fromChunk: Chunk<FromPlatform>, toChunk: Chunk<ToPlatform>): List<ConversionProblem> {
+        return emptyList()
+    }
+
     override fun convertStructure(from: PositionedStructure<FromPlatform>): Pair<PositionedStructure<ToPlatform>, List<ConversionProblem>> {
         val totalProblems = mutableListOf<ConversionProblem>()
         val (universalStructure, universalProblems) = toUniversalConverter.convertStructure(from)

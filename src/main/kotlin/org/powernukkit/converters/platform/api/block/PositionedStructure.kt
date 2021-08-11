@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.platform.api.block
 
+import br.com.gamemods.regionmanipulator.ChunkPos
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.Platform
 
@@ -28,4 +29,12 @@ import org.powernukkit.converters.platform.api.Platform
 data class PositionedStructure<P : Platform<P>>(
     val worldPos: BlockPos,
     val content: ImmutableStructure<P>
-)
+) {
+    fun chunkPositions(): Set<ChunkPos> {
+        val blocks = content.blocks
+        if (blocks.size == 1) {
+            return setOf(worldPos.chunkPos)
+        }
+        return blocks.keys.map { (worldPos + it).chunkPos }.toSet()
+    }
+}

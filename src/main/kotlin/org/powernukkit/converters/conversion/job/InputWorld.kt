@@ -18,13 +18,11 @@
 
 package org.powernukkit.converters.conversion.job
 
+import org.powernukkit.converters.dialect.IDialect
 import org.powernukkit.converters.platform.api.MinecraftEdition
-import org.powernukkit.converters.platform.bedrock.BedrockPlatform
-import org.powernukkit.converters.platform.java.JavaPlatform
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.storage.api.Dialect
 import org.powernukkit.converters.storage.api.StorageEngine
-import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import java.io.File
@@ -33,20 +31,18 @@ import java.io.File
  * @author joserobjr
  * @since 2020-11-15
  */
-class InputWorld(
-    val levelFolder: File,
-    val levelData: LevelData,
-    val storageEngine: StorageEngineType,
-    val dialect: Dialect,
-    val minecraftEdition: MinecraftEdition,
-    val universalPlatform: UniversalPlatform,
-    val problemManager: StorageProblemManager
-) {
-    val platform = when (minecraftEdition) {
-        MinecraftEdition.UNIVERSAL -> throw UnsupportedOperationException("Input world can't be Universal")
-        MinecraftEdition.JAVA -> JavaPlatform(universalPlatform, dialect)
-        MinecraftEdition.BEDROCK -> BedrockPlatform(universalPlatform, dialect)
+class InputWorld<P: Platform<P>>(
+    override val levelFolder: File,
+    override val levelData: LevelData,
+    override val storageEngine: StorageEngine,
+    override val dialect: IDialect,
+    override val minecraftEdition: MinecraftEdition,
+    override val universalPlatform: UniversalPlatform,
+    val problemManager: StorageProblemManager,
+): World<P> {
+    init {
+        require(minecraftEdition != MinecraftEdition.UNIVERSAL) {
+            "Input world can't be Universal"
+        }
     }
-
-    suspend fun load(storage: StorageEngine = storageEngine.default) = storage.loadWorld(this@InputWorld)
 }

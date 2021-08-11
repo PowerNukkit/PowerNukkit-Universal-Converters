@@ -20,6 +20,8 @@ package org.powernukkit.converters.storage.api
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.powernukkit.converters.conversion.job.InputWorld
+import org.powernukkit.converters.dialect.IDialect
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.storage.api.leveldata.model.LevelData
 import java.io.Closeable
@@ -28,10 +30,11 @@ import java.io.Closeable
  * @author joserobjr
  * @since 2020-10-23
  */
-abstract class ProviderWorld<P : Platform<P>>(protected val problemManager: StorageProblemManager) : Closeable {
+abstract class ProviderWorld<P : Platform<P>>(protected val problemManager: StorageProblemManager, val inputWorld: InputWorld<P>?) : Closeable {
     abstract val platform: P
     abstract val levelData: LevelData
     abstract val storageEngine: StorageEngine
+    abstract val dialect: IDialect
 
     open fun countChunks() = chunkFlow().map { 1 }
     open fun countBlocks() = chunkFlow().map { it.countNonAirBlocks() }

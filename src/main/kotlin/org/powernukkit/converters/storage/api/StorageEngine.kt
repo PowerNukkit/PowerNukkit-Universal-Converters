@@ -20,21 +20,25 @@ package org.powernukkit.converters.storage.api
 
 import kotlinx.coroutines.Deferred
 import org.powernukkit.converters.conversion.job.InputWorld
-import org.powernukkit.converters.platform.universal.UniversalPlatform
-import java.io.File
+import org.powernukkit.converters.conversion.job.OutputWorld
+import org.powernukkit.converters.conversion.job.PlatformProvider
+import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
  * @since 2020-10-23
  */
-abstract class StorageEngine {
-    abstract suspend fun loadWorld(
-        inputWorld: InputWorld,
-    ): ProviderWorld<*>
+interface StorageEngine {
+    val type: StorageEngineType?
 
-    abstract suspend fun prepareToReceive(
-        toFile: File,
-        fromWorld: Deferred<ProviderWorld<*>>,
-        universalPlatformLoader: Deferred<UniversalPlatform>
-    ): ReceivingWorld<*>
+    suspend fun <P: Platform<P>> loadWorld(
+        inputWorld: InputWorld<P>,
+        platform: P,
+    ): ProviderWorld<P>
+
+    suspend fun <FromPlatform: Platform<FromPlatform>, ToPlatform: Platform<ToPlatform>> prepareToReceive(
+        fromWorld: Deferred<ProviderWorld<FromPlatform>>,
+        toWorld: OutputWorld<ToPlatform>,
+        using: PlatformProvider,
+    ): ReceivingWorld<ToPlatform>
 }

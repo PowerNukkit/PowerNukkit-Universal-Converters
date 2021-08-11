@@ -26,7 +26,7 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.storage.api.Chunk
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import kotlin.contracts.ExperimentalContracts
@@ -81,7 +81,11 @@ class AlphaChunk<P : Platform<P>>(
 
     override fun countNonAirBlocks() = data["Level"]["Blocks"]?.byteArrayOrNull?.count { it != 0.toByte() } ?: 0
 
-    override fun structureFlow(): Flow<PlatformStructure<P>> {
+    override fun structureFlow(): Flow<PositionedStructure<P>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun set(blockInWorld: BlockPos, block: PlatformBlock<P>) {
         TODO("Not yet implemented")
     }
 

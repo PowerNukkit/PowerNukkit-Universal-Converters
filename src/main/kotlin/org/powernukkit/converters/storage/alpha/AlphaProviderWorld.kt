@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.powernukkit.converters.conversion.job.InputWorld
+import org.powernukkit.converters.dialect.IDialect
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.storage.api.Chunk
 import org.powernukkit.converters.storage.api.ProviderWorld
@@ -46,16 +47,19 @@ class AlphaProviderWorld<P : Platform<P>> private constructor(
     private val worldDir: Path,
     override val levelData: LevelData,
     problemManager: StorageProblemManager,
-    override val storageEngine: AlphaStorageEngine
-) : ProviderWorld<P>(problemManager) {
+    override val storageEngine: AlphaStorageEngine,
+    override val dialect: IDialect,
+    inputWorld: InputWorld<P>? = null,
+) : ProviderWorld<P>(problemManager, inputWorld) {
 
-    @Suppress("UNCHECKED_CAST")
-    constructor(storageEngine: AlphaStorageEngine, inputWorld: InputWorld) : this(
-        inputWorld.platform as P,
+    constructor(storageEngine: AlphaStorageEngine, inputWorld: InputWorld<P>, platform: P) : this(
+        platform,
         inputWorld.levelFolder.toPath(),
         inputWorld.levelData,
         inputWorld.problemManager,
-        storageEngine
+        storageEngine,
+        inputWorld.dialect,
+        inputWorld,
     )
 
     private fun readChunk(pos: AlphaChunkPos) = try {

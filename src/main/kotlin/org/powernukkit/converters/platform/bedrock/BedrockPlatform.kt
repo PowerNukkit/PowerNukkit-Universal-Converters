@@ -29,7 +29,7 @@ import org.powernukkit.converters.platform.bedrock.block.*
 import org.powernukkit.converters.platform.bedrock.entity.BedrockEntity
 import org.powernukkit.converters.platform.bedrock.entity.BedrockEntityType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.storage.api.Dialect
+import org.powernukkit.converters.dialect.Dialect
 
 /**
  * @author joserobjr

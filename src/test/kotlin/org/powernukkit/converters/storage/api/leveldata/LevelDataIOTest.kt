@@ -23,7 +23,7 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.storage.api.Dialect
+import org.powernukkit.converters.dialect.Dialect
 import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.version.Version
 import java.io.File

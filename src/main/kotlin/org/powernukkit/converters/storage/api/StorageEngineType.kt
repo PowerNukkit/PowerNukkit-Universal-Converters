@@ -28,10 +28,12 @@ import org.powernukkit.converters.storage.region.McRegionsStorageEngine
  * @author joserobjr
  * @since 2020-10-19
  */
-enum class StorageEngineType(val default: StorageEngine) {
+enum class StorageEngineType(val default: StorageEngine): StorageEngine by default {
     ALPHA(AlphaStorageEngine()),
     REGIONS(McRegionsStorageEngine()),
     ANVIL(AnvilStorageEngine()),
     POCKET_MINE(PocketMineStorageEngine()),
     LEVELDB(LevelDBStorageEngine()),
+    ;
+    override val type: StorageEngineType? get() = this
 }

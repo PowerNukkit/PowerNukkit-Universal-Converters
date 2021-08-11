@@ -61,10 +61,11 @@
 
     <properties>
         <jvm.options>-Xjvm-default</jvm.options>
-        <kotlin.version>1.5.10</kotlin.version>
-        <kotlinx.coroutines.version>1.5.0</kotlinx.coroutines.version>
+        <kotlin.version>1.5.21</kotlin.version>
+        <kotlinx.coroutines.version>1.5.1</kotlinx.coroutines.version>
+        <kotlinx.cli.version>0.3.2</kotlinx.cli.version>
         <!--<kotlinx.serialization.version>1.2.1</kotlinx.serialization.version>-->
-        <ktor.utils.version>1.6.0</ktor.utils.version>
+        <ktor.utils.version>1.6.2</ktor.utils.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <kotlin.code.style>official</kotlin.code.style>
@@ -74,10 +75,17 @@
         <maven.test.skip>false</maven.test.skip>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.jupiter.version>5.6.0</junit.jupiter.version>
+        <junit.jupiter.version>5.7.2</junit.jupiter.version>
         <junit.platform.version>1.3.2</junit.platform.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <log4j2.version>2.14.0</log4j2.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <log4j2.version>2.14.1</log4j2.version>
+        <jackson.version>2.12.4</jackson.version>
+        <mockk.version>1.12.0</mockk.version>
+        <version.lib.version>0.1.0-SNAPSHOT</version.lib.version>
+        <region.manipulator.version>2.0.0</region.manipulator.version>
+        <nbt.manipulator.version>3.0.0-SNAPSHOT</nbt.manipulator.version>
+        <bedrock.leveldb.version>0.11.0-PN</bedrock.leveldb.version>
+        <kotlin.inline.logger.version>1.0.3</kotlin.inline.logger.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -135,6 +143,11 @@
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
@@ -153,6 +166,11 @@
             <artifactId>kotlinx-coroutines-swing</artifactId>
             <version>${kotlinx.coroutines.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-cli-jvm</artifactId>
+            <version>${kotlinx.cli.version}</version>
+        </dependency>
         <!--<dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-json</artifactId>
@@ -166,27 +184,27 @@
         <dependency>
             <groupId>br.com.gamemods</groupId>
             <artifactId>region-manipulator</artifactId>
-            <version>2.0.0</version>
+            <version>${region.manipulator.version}</version>
         </dependency>
         <dependency>
             <groupId>br.com.gamemods</groupId>
             <artifactId>nbt-manipulator</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>${nbt.manipulator.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.11.3</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.11.3</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.michael-bull.kotlin-inline-logger</groupId>
             <artifactId>kotlin-inline-logger-jvm</artifactId>
-            <version>1.0.2</version>
+            <version>${kotlin.inline.logger.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -214,7 +232,7 @@
         <dependency>
             <groupId>org.powernukkit</groupId>
             <artifactId>version-library</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${version.lib.version}</version>
         </dependency>
         <dependency>
             <groupId>io.gomint</groupId>
@@ -244,7 +262,7 @@
         <dependency>
             <groupId>org.powernukkit.bedrock.leveldb</groupId>
             <artifactId>bedrock-leveldb</artifactId>
-            <version>0.11.0-PN</version>
+            <version>${bedrock.leveldb.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -261,7 +279,7 @@
         <dependency>
             <groupId>io.mockk</groupId>
             <artifactId>mockk</artifactId>
-            <version>1.10.2</version>
+            <version>${mockk.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

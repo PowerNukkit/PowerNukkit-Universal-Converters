@@ -18,12 +18,16 @@
 
 package org.powernukkit.converters.storage.api
 
+import br.com.gamemods.regionmanipulator.ChunkPos
+import org.powernukkit.converters.conversion.job.OutputWorld
 import org.powernukkit.converters.platform.api.Platform
 
 /**
  * @author joserobjr
  * @since 2020-10-23
  */
-abstract class ReceivingWorld<P : Platform<P>> {
+abstract class ReceivingWorld<P : Platform<P>>(val outputWorld: OutputWorld<P>?) {
+    abstract fun getOrCreateEmptyChunk(chunkPos: ChunkPos): Chunk<P>
+
     abstract val platform: P
 }

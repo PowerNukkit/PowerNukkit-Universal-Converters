@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.powernukkit.converters.TestConstants
+import org.powernukkit.converters.dialect.Dialect
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.LevelDataIO
@@ -57,7 +58,8 @@ internal class LevelDBProviderWorldTest {
             testWorld,
             LevelDataIO.readLevelDataBlocking(testWorld.resolve("level.dat").toFile()),
             storageProblemManager,
-            LevelDBStorageEngine()
+            LevelDBStorageEngine(),
+            Dialect.VANILLA_BEDROCK_EDITION
         )
     }
 

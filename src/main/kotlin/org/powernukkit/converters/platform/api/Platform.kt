@@ -19,6 +19,7 @@
 package org.powernukkit.converters.platform.api
 
 import org.powernukkit.converters.conversion.adapter.PlatformAdapters
+import org.powernukkit.converters.conversion.universal.ChainedConverter
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
 import org.powernukkit.converters.platform.api.block.*
@@ -36,6 +37,15 @@ abstract class Platform<P : Platform<P>>(
 
     abstract fun convertToUniversal(adapters: PlatformAdapters<P, UniversalPlatform>? = null): ToUniversalConverter<P>
     abstract fun convertFromUniversal(adapters: PlatformAdapters<UniversalPlatform, P>? = null): FromUniversalConverter<P>
+    fun <FromPlatform : Platform<FromPlatform>> convertFromUniversal(
+        fromToConversion: ToUniversalConverter<FromPlatform>,
+        adapters: PlatformAdapters<UniversalPlatform, P>? = null,
+    ): ChainedConverter<FromPlatform, P> {
+        return ChainedConverter(
+            fromToConversion.fromPlatform, this as P,
+            fromToConversion, convertFromUniversal(adapters)
+        )
+    }
 
     abstract fun createPlatformBlock(
         blockState: PlatformBlockState<P>,

@@ -18,6 +18,8 @@
 
 package org.powernukkit.converters.math
 
+import br.com.gamemods.regionmanipulator.ChunkPos
+
 /**
  * @author joserobjr
  * @since 2020-10-10
@@ -28,6 +30,8 @@ data class BlockPos(val xPos: Int, val yPos: Int, val zPos: Int) {
         yPos + pos.yPos,
         zPos + pos.zPos,
     )
+
+    val chunkPos: ChunkPos get() = ChunkPos(xPos shr 4, zPos shr 4)
 
     override fun toString(): String {
         return "[$xPos, $yPos, $zPos]"

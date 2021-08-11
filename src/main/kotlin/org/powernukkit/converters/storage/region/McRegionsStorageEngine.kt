@@ -20,26 +20,30 @@ package org.powernukkit.converters.storage.region
 
 import kotlinx.coroutines.Deferred
 import org.powernukkit.converters.conversion.job.InputWorld
-import org.powernukkit.converters.platform.universal.UniversalPlatform
+import org.powernukkit.converters.conversion.job.OutputWorld
+import org.powernukkit.converters.conversion.job.PlatformProvider
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.ReceivingWorld
 import org.powernukkit.converters.storage.api.StorageEngine
-import java.io.File
+import org.powernukkit.converters.storage.api.StorageEngineType
 
 /**
  * @author joserobjr
  * @since 2020-10-23
  */
-class McRegionsStorageEngine : StorageEngine() {
-    override suspend fun loadWorld(inputWorld: InputWorld): ProviderWorld<*> {
+class McRegionsStorageEngine : StorageEngine {
+    override val type: StorageEngineType get() = StorageEngineType.REGIONS
+
+    override suspend fun <P : Platform<P>> loadWorld(inputWorld: InputWorld<P>, platform: P): ProviderWorld<P> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun prepareToReceive(
-        toFile: File,
-        fromWorld: Deferred<ProviderWorld<*>>,
-        universalPlatformLoader: Deferred<UniversalPlatform>
-    ): ReceivingWorld<*> {
+    override suspend fun <FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> prepareToReceive(
+        fromWorld: Deferred<ProviderWorld<FromPlatform>>,
+        toWorld: OutputWorld<ToPlatform>,
+        using: PlatformProvider
+    ): ReceivingWorld<ToPlatform> {
         TODO("Not yet implemented")
     }
 }

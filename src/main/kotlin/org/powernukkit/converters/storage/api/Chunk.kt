@@ -24,7 +24,7 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.contains
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 
 /**
  * @author joserobjr
@@ -38,9 +38,20 @@ abstract class Chunk<P : Platform<P>>(val problemManager: StorageProblemManager)
     abstract val blockEntityCount: Int
     abstract fun countNonAirBlocks(): Int
 
-    abstract fun structureFlow(): Flow<PlatformStructure<P>>
+    abstract fun structureFlow(): Flow<PositionedStructure<P>>
 
     abstract operator fun get(blockInWorld: BlockPos): PlatformBlock<P>
+    abstract operator fun set(blockInWorld: BlockPos, block: PlatformBlock<P>)
 
     open operator fun contains(blockInWorld: BlockPos) = blockInWorld in chunkPos
+
+    open operator fun plusAssign(structure: PositionedStructure<P>) {
+        val structureWorldPos = structure.worldPos
+        structure.content.blocks.forEach { (posInStructure, block) ->
+            val posInWorld = structureWorldPos + posInStructure
+            if (posInWorld in this) {
+                this[posInWorld] = block
+            }
+        }
+    }
 }

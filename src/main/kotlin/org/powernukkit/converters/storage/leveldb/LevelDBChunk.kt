@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.api.block.PlatformBlock
-import org.powernukkit.converters.platform.api.block.PlatformStructure
+import org.powernukkit.converters.platform.api.block.PositionedStructure
 import org.powernukkit.converters.storage.api.Chunk
 import org.powernukkit.converters.storage.api.StorageProblemManager
 
@@ -61,11 +61,15 @@ class LevelDBChunk<P : Platform<P>>(
         TODO("Not yet implemented")
     }
 
-    override fun structureFlow(): Flow<PlatformStructure<P>> {
+    override fun structureFlow(): Flow<PositionedStructure<P>> {
         TODO("Not yet implemented")
     }
 
     override fun get(blockInWorld: BlockPos): PlatformBlock<P> {
+        TODO("Not yet implemented")
+    }
+
+    override fun set(blockInWorld: BlockPos, block: PlatformBlock<P>) {
         TODO("Not yet implemented")
     }
 }

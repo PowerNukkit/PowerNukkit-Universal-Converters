@@ -18,6 +18,7 @@
 
 package org.powernukkit.converters.storage.leveldb
 
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
@@ -25,9 +26,11 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.powernukkit.converters.conversion.job.InputWorld
+import org.powernukkit.converters.conversion.job.PlatformProvider
+import org.powernukkit.converters.conversion.job.load
+import org.powernukkit.converters.dialect.Dialect
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
-import org.powernukkit.converters.storage.api.Dialect
 import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.LevelDataIO
@@ -51,15 +54,16 @@ internal class LevelDBStorageEngineTest {
     fun loadWorld() {
         val dbDir = File("sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0")
         runBlocking {
-            InputWorld(
+            val universalPlatform = DefinitionLoader().loadBuiltin()
+            InputWorld<Nothing>(
                 dbDir,
                 LevelDataIO.readLevelDataBlocking(dbDir.resolve("level.dat")),
                 StorageEngineType.LEVELDB,
                 Dialect.VANILLA_BEDROCK_EDITION,
                 MinecraftEdition.BEDROCK,
-                DefinitionLoader().loadBuiltin(),
+                universalPlatform,
                 StorageProblemManager()
-            ).load().use { provider ->
+            ).load(PlatformProvider(async { universalPlatform })).use { provider ->
                 println("Loaded")
                 var current = 0
                 val total = provider.countChunks()

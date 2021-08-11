@@ -53,7 +53,7 @@ open class AnvilStorage<P : Platform<P>>(
         }
         return launch {
             with(LevelDataIO) {
-                readLevelData(folder.resolve("level.dat")).await()
+                readLevelDataAsync(folder.resolve("level.dat")).await()
             }
         }
     }

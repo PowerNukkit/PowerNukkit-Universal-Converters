@@ -24,12 +24,13 @@ import com.github.michaelbull.logging.InlineLogger
 import kotlinx.coroutines.Deferred
 import org.intellij.lang.annotations.Language
 import org.powernukkit.converters.conversion.job.InputWorld
+import org.powernukkit.converters.conversion.job.OutputWorld
+import org.powernukkit.converters.conversion.job.PlatformProvider
 import org.powernukkit.converters.platform.api.Platform
-import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.ReceivingWorld
 import org.powernukkit.converters.storage.api.StorageEngine
-import java.io.File
+import org.powernukkit.converters.storage.api.StorageEngineType
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
@@ -40,17 +41,18 @@ import java.util.stream.Stream
  * @author joserobjr
  * @since 2020-10-23
  */
-class AlphaStorageEngine : StorageEngine() {
+class AlphaStorageEngine : StorageEngine {
+    override val type: StorageEngineType get() = StorageEngineType.ALPHA
 
-    override suspend fun loadWorld(inputWorld: InputWorld) = AlphaProviderWorld<Platform<*>>(this, inputWorld)
-
-    override suspend fun prepareToReceive(
-        toFile: File,
-        fromWorld: Deferred<ProviderWorld<*>>,
-        universalPlatformLoader: Deferred<UniversalPlatform>
-    ): ReceivingWorld<*> {
+    override suspend fun <P: Platform<P>> loadWorld(inputWorld: InputWorld<P>, platform: P) = AlphaProviderWorld(this, inputWorld, platform)
+    override suspend fun <FromPlatform : Platform<FromPlatform>, ToPlatform : Platform<ToPlatform>> prepareToReceive(
+        fromWorld: Deferred<ProviderWorld<FromPlatform>>,
+        toWorld: OutputWorld<ToPlatform>,
+        using: PlatformProvider
+    ): ReceivingWorld<ToPlatform> {
         TODO("Not yet implemented")
     }
+
 
     companion object {
         private val log = InlineLogger()

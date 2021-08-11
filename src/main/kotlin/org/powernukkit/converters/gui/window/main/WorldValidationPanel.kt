@@ -101,7 +101,7 @@ class WorldValidationPanel(
 
         updateValue(levelNameLabel, levelName, levelData.levelName)
         updateValue(editionLabel, edition, levelData.versionData?.minecraftEdition?.name?.capitalize())
-        updateValue(dialectLabel, dialect, levelData.dialect?.name?.capitalize())
+        updateValue(dialectLabel, dialect, levelData.dialect?.toString()?.capitalize())
         updateValue(
             versionLabel,
             version,

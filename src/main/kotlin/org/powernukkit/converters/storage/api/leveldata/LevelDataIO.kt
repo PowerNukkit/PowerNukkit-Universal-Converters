@@ -27,7 +27,7 @@ import org.powernukkit.converters.math.BlockPos
 import org.powernukkit.converters.math.EntityPos
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
-import org.powernukkit.converters.storage.api.Dialect
+import org.powernukkit.converters.dialect.Dialect
 import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.converters.storage.api.leveldata.model.*
 import org.powernukkit.version.Version
@@ -588,7 +588,7 @@ object LevelDataIO {
     fun readLevelDataBlocking(levelDataFile: File) =
         try {
             runBlocking(Dispatchers.IO + CoroutineName("Awaiting level.dat: $levelDataFile")) {
-                readLevelData(levelDataFile).await()
+                readLevelDataAsync(levelDataFile).await()
             }
         } catch (e: Throwable) {
             throw ExecutionException(e)
@@ -598,58 +598,62 @@ object LevelDataIO {
      * @throws FileNotFoundException If the levelDataFile is not a file.
      * @throws InvalidLevelDataException If an error occurred while attempting to load or parse the file.
      */
-    fun CoroutineScope.readLevelData(levelDataFile: File, timeout: Long = 10_000) =
+    fun CoroutineScope.readLevelDataAsync(levelDataFile: File, timeout: Long = 10_000) =
         async(Dispatchers.IO + CoroutineName("Reading level.dat: $levelDataFile")) {
-            if (!levelDataFile.isFile) {
-                throw FileNotFoundException(levelDataFile.toString())
-            }
+            readLevelData(levelDataFile, timeout)
+        }
 
-            val icon = async {
-                listOf(
-                    async { loadIcon(levelDataFile.resolveSibling("icon.png"), timeout) },
-                    async { loadIcon(levelDataFile.resolveSibling("world_icon.jpeg"), timeout) }
-                ).firstOrNull { it.await() != null }?.await()
-            }
+    suspend fun readLevelData(levelDataFile: File, timeout: Long = 10_000) = withContext(Dispatchers.IO) {
+        if (!levelDataFile.isFile) {
+            throw FileNotFoundException(levelDataFile.toString())
+        }
 
-            val nbtFile = try {
-                withTimeout(timeout) {
-                    runInterruptible {
-                        NbtIO.readNbtFileDetectingSettings(levelDataFile).also {
-                            check(it.tag is NbtCompound) {
-                                "The root tag of the NBT structure in $levelDataFile is not a compound, " +
-                                        "it is a ${it.tag::class.java.simpleName}"
-                            }
+        val icon = async {
+            listOf(
+                async { loadIcon(levelDataFile.resolveSibling("icon.png"), timeout) },
+                async { loadIcon(levelDataFile.resolveSibling("world_icon.jpeg"), timeout) }
+            ).firstOrNull { it.await() != null }?.await()
+        }
+
+        val nbtFile = try {
+            withTimeout(timeout) {
+                runInterruptible {
+                    NbtIO.readNbtFileDetectingSettings(levelDataFile).also {
+                        check(it.tag is NbtCompound) {
+                            "The root tag of the NBT structure in $levelDataFile is not a compound, " +
+                                    "it is a ${it.tag::class.java.simpleName}"
                         }
                     }
                 }
-            } catch (cause: Exception) {
-                coroutineContext.cancelChildren()
-                throw InvalidLevelDataException(
-                    "Could not load the level.dat file $levelDataFile, the file is invalid.",
-                    cause
-                ).also {
-                    log.error(it) {
-                        "Failed to load the level.dat file: $levelDataFile"
-                    }
+            }
+        } catch (cause: Exception) {
+            coroutineContext.cancelChildren()
+            throw InvalidLevelDataException(
+                "Could not load the level.dat file $levelDataFile, the file is invalid.",
+                cause
+            ).also {
+                log.error(it) {
+                    "Failed to load the level.dat file: $levelDataFile"
                 }
             }
+        }
 
-            val nbtData = nbtFile.compound.let { root ->
-                root["Data"].compoundOrNull ?: root
-            }
+        val nbtData = nbtFile.compound.let { root ->
+            root["Data"].compoundOrNull ?: root
+        }
 
-            if ("Time" !in nbtData && "SpawnX" !in nbtData) {
-                coroutineContext.cancelChildren()
-                throw InvalidLevelDataException(
-                    "The level.dat file is a NBT file but the internal structure don't looks like from a level.dat file. "
-                )
-            }
-
-            parseLevelData(nbtFile).copy(
-                folder = levelDataFile.parentFile.absoluteFile.toPath(),
-                icon = icon.await()
+        if ("Time" !in nbtData && "SpawnX" !in nbtData) {
+            coroutineContext.cancelChildren()
+            throw InvalidLevelDataException(
+                "The level.dat file is a NBT file but the internal structure don't looks like from a level.dat file. "
             )
         }
+
+        parseLevelData(nbtFile).copy(
+            folder = levelDataFile.parentFile.absoluteFile.toPath(),
+            icon = icon.await()
+        )
+    }
 
     suspend fun loadIcon(iconFile: File, timeout: Long = 10_000): BufferedImage? {
         return try {

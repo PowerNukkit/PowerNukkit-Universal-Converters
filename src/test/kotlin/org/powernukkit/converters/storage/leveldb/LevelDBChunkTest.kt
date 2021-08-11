@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.powernukkit.converters.TestConstants
+import org.powernukkit.converters.dialect.Dialect
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.storage.api.ProviderWorld
@@ -62,7 +63,8 @@ internal class LevelDBChunkTest {
             testWorld,
             LevelDataIO.readLevelDataBlocking(testWorld.resolve("level.dat").toFile()),
             storageProblemManager,
-            LevelDBStorageEngine()
+            LevelDBStorageEngine(),
+            Dialect.VANILLA_BEDROCK_EDITION,
         )
         every { storageProblemManager.handleReadChunkSectionFailure(any(), any<LevelDBFailedChunkSection<*>>()) }
             .returnsArgument(1)

@@ -18,7 +18,6 @@
 
 package org.powernukkit.converters.conversion.job
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 
@@ -26,7 +25,6 @@ import kotlinx.coroutines.flow.StateFlow
  * @author joserobjr
  * @since 2020-11-15
  */
-@ExperimentalCoroutinesApi
 data class Estimation(
     val current: StateFlow<Int>,
     val total: StateFlow<Int>,

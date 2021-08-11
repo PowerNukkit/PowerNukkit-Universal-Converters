@@ -22,6 +22,7 @@ import org.powernukkit.converters.conversion.adapter.PlatformAdapters
 import org.powernukkit.converters.conversion.adapter.plus
 import org.powernukkit.converters.conversion.universal.from.FromUniversalConverter
 import org.powernukkit.converters.conversion.universal.to.ToUniversalConverter
+import org.powernukkit.converters.dialect.Dialect
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.api.NamespacedId
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
@@ -32,7 +33,6 @@ import org.powernukkit.converters.platform.java.block.*
 import org.powernukkit.converters.platform.java.entity.JavaEntity
 import org.powernukkit.converters.platform.java.entity.JavaEntityType
 import org.powernukkit.converters.platform.universal.UniversalPlatform
-import org.powernukkit.converters.storage.api.Dialect
 import java.util.*
 
 /**

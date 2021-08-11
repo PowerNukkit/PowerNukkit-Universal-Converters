@@ -19,6 +19,7 @@
 package org.powernukkit.converters.conversion.job
 
 import kotlinx.coroutines.*
+import org.powernukkit.converters.platform.api.Platform
 import org.powernukkit.converters.platform.universal.UniversalPlatform
 import org.powernukkit.converters.storage.api.ProviderWorld
 import org.powernukkit.converters.storage.api.StorageProber
@@ -32,11 +33,10 @@ import kotlin.coroutines.CoroutineContext
  * @author joserobjr
  * @since 2020-11-15
  */
-@ExperimentalCoroutinesApi
 class ConversionJob(
     val levelDatFile: File,
     levelData: LevelData,
-    universalPlatform: UniversalPlatform,
+    val universalPlatform: UniversalPlatform,
     val problemManager: StorageProblemManager,
     parent: Job
 ) : CoroutineScope {
@@ -90,19 +90,24 @@ class ConversionJob(
         )
     }
 
-    var inputWorld: InputWorld? = null
+    var inputWorld: InputWorld<*>? = null
         private set(settings) {
             stopCounting()
             provider?.close()
 
             field = settings
             runBlocking {
-                provider = settings?.load()
+                provider = settings?.loadUnchecked(PlatformProvider(async { universalPlatform }))
             }
             startCounting()
         }
 
     var provider: ProviderWorld<*>? = null; private set
+
+    @Suppress("UNCHECKED_CAST")
+    private suspend fun <P: Platform<P>> loadWorld(inputWorld: InputWorld<*>, platform: Platform<*>): ProviderWorld<P> {
+        return (inputWorld as InputWorld<P>).storageEngine.loadWorld(inputWorld, platform as P)
+    }
 
     init {
         launch {
@@ -111,7 +116,7 @@ class ConversionJob(
             val dialect = definitiveData.dialect ?: return@launch
             val minecraftEdition = definitiveData.versionData?.minecraftEdition ?: return@launch
 
-            inputWorld = InputWorld(
+            inputWorld = InputWorld<Nothing>(
                 levelDatFile.parentFile,
                 levelData, storageEngine, dialect, minecraftEdition,
                 universalPlatform, problemManager
