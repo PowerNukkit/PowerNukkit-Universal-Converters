@@ -39,6 +39,7 @@ import org.powernukkit.converters.storage.api.leveldata.LevelDataIO
 import java.nio.file.Paths
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 /**
  * @author joserobjr
@@ -96,7 +97,7 @@ internal class LevelDBChunkTest {
 
     @Test
     fun getChunkSectionCount() {
-        assertEquals(0, chunk.chunkSectionCount)
+        assertEquals(16, chunk.chunkSectionCount)
     }
 
     @Test
@@ -123,7 +124,7 @@ internal class LevelDBChunkTest {
 
     @Test
     fun getVersion() {
-        assertEquals(0, chunk.version)
+        assertEquals(19, chunk.version)
     }
 
     @Test
@@ -133,17 +134,17 @@ internal class LevelDBChunkTest {
 
     @Test
     fun getFinalized() {
-        assertEquals(0, chunk.finalized)
+        assertEquals(2, chunk.finalized)
     }
 
     @Test
     fun getBlockEntities() {
-        assertNotNull(chunk.blockEntities)
+        assertNull(chunk.blockEntities)
     }
 
     @Test
     fun getEntities() {
-        assertNotNull(chunk.entities)
+        assertNull(chunk.entities)
     }
 
     @Test
@@ -153,27 +154,27 @@ internal class LevelDBChunkTest {
 
     @Test
     fun getPendingTicks() {
-        assertNotNull(chunk.pendingTicks)
+        assertNull(chunk.pendingTicks)
     }
 
     @Test
     fun getRandomTicks() {
-        assertNotNull(chunk.randomTicks)
+        assertNull(chunk.randomTicks)
     }
 
     @Test
     fun getBiomeState() {
-        assertNotNull(chunk.biomeState)
+        assertNull(chunk.biomeState)
     }
 
     @Test
     fun getBorderBlocks() {
-        assertNotNull(chunk.borderBlocks)
+        assertNull(chunk.borderBlocks)
     }
 
     @Test
     fun getHardcodedSpawns() {
-        assertNotNull(chunk.hardcodedSpawns)
+        assertNull(chunk.hardcodedSpawns)
     }
 
     @Test

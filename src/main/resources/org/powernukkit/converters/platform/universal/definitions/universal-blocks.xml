@@ -85,6 +85,17 @@
         <block-property id="trapdoor_direction" bedrock="direction" java="facing">
             <copy-values from="stairs_direction"/>
         </block-property>
+        <block-property id="chest_type" bedrock-requires-adapter="true">
+            <value>left</value>
+            <value>right</value>
+            <value>single</value>
+        </block-property>
+        <block-property id="chest_direction" java="facing" bedrock="facing_direction">
+            <value bedrock="2" default="true">north</value>
+            <value bedrock="3">south</value>
+            <value bedrock="4">west</value>
+            <value bedrock="5">east</value>
+        </block-property>
         <block-property id="facing_direction" java="facing">
             <value bedrock="0" default="true">down</value>
             <value bedrock="1">up</value>
@@ -232,11 +243,35 @@
             <value>x</value>
             <value>z</value>
         </block-property>
+        <block-property id="portal_axis" java="axis">
+            <value default="true">x</value>
+            <value>z</value>
+        </block-property>
         <block-property id="full_bark" java-requires-adapter="true" bedrock-requires-adapter="true">
             <boolean/>
         </block-property>
         <block-property id="redstone_signal" java="power">
             <int-range to="15"/>
+        </block-property>
+        <block-property id="redstone_east" java="east">
+            <value default="true">none</value>
+            <value>side</value>
+            <value>up</value>
+        </block-property>
+        <block-property id="redstone_west" java="east">
+            <value default="true">none</value>
+            <value>side</value>
+            <value>up</value>
+        </block-property>
+        <block-property id="redstone_north" java="east">
+            <value default="true">none</value>
+            <value>side</value>
+            <value>up</value>
+        </block-property>
+        <block-property id="redstone_south" java="east">
+            <value default="true">none</value>
+            <value>side</value>
+            <value>up</value>
         </block-property>
         <block-property id="sapling_type">
             <copy-values from="burnable_wood" />
@@ -590,6 +625,59 @@
             <value>normal</value>
             <value>red</value>
         </block-property>
+        <block-property id="east">
+            <boolean/>
+        </block-property>
+        <block-property id="north">
+            <boolean/>
+        </block-property>
+        <block-property id="south">
+            <boolean/>
+        </block-property>
+        <block-property id="up">
+            <boolean/>
+        </block-property>
+        <block-property id="west">
+            <boolean/>
+        </block-property>
+        <block-property id="vine_direction_bits">
+            <value bedrock="0">up_or_down</value>
+            <value bedrock="1">south</value>
+            <value bedrock="2">west</value>
+            <value bedrock="3">south_and_west</value>
+            <value bedrock="4">north</value>
+            <value bedrock="5">north_and_south</value>
+            <value bedrock="6">north_and_west</value>
+            <value bedrock="7">north_and_south_and_west</value>
+            <value bedrock="8">east</value>
+            <value bedrock="9">east_and_south</value>
+            <value bedrock="10">east_and_west</value>
+            <value bedrock="11">east_and_south_and_west</value>
+            <value bedrock="12">east_and_north</value>
+            <value bedrock="13">east_and_north_and_south</value>
+            <value bedrock="14">east_and_north_and_west</value>
+            <value bedrock="15">east_and_north_and_south_and_west</value>
+        </block-property>
+        <block-property id="seagrass_type" java="half" bedrock="sea_grass_type">
+            <value java="_missing_" default="true">default</value>
+            <value java="lower">double_bot</value>
+            <value java="upper">double_top</value>
+        </block-property>
+        <block-property id="infestation_type" bedrock="monster_egg_stone_type" java-requires-adapter="true">
+            <value java="infested_stone" default="true">stone</value>
+            <value java="infested_chiseled_stone_bricks">chiseled_stone_brick</value>
+            <value java="infested_cobblestone">cobblestone</value>
+            <value java="infested_cracked_stone_bricks">cracked_stone_brick</value>
+            <value java="infested_mossy_stone_bricks">mossy_stone_brick</value>
+            <value java="infested_stone_bricks">stone_brick</value>
+            <value java="infested_deepslate" bedrock="_missing_">deepslate</value>
+        </block-property>
+        <block-property id="twisting_vines_age" java="age">
+            <int-range to="25"/>
+        </block-property>
+        <block-property id="extended">
+            <boolean/>
+        </block-property>
     </block-properties>
     <block-entities>
         <block-entity id="sign_text" java="sign" bedrock="Sign">
@@ -675,6 +763,7 @@
         <block-entity id="bed_data" java="_missing_" bedrock="Bed">
             <data name="color" type="dye_color"/>
         </block-entity>
+        <block-entity id="piston_data" java="piston" bedrock=""></block-entity>
     </block-entities>
     <block-types>
         <block-type id="button" java="oak_button" bedrock="wooden_button" java-requires-adapter="true" bedrock-requires-adapter="true">
@@ -1220,13 +1309,13 @@
         </block-type>
         
         <block-type id="beehive">
-            <uses-property named="facing_direction"/>
+            <uses-property named="horizontal_direction"/>
             <uses-property named="honey_level"/>
             <uses-block-entity named="beehive_content"/>
         </block-type>
         
         <block-type id="bee_nest">
-            <uses-property named="facing_direction"/>
+            <uses-property named="horizontal_direction"/>
             <uses-property named="honey_level"/>
             <uses-block-entity named="beehive_content"/>
         </block-type>
@@ -1442,7 +1531,12 @@
         </block-type>
         <block-type id="cave_air" bedrock="_missing_" bedrock-requires-adapter="true"/>
         <block-type id="chain_command_block" />
-        <block-type id="chest"/>
+        <block-type id="chest" bedrock-requires-adapter="true">
+            <uses-property named="chest_direction"  />
+            <uses-property named="chest_type" on-bedrock="false" />
+            <uses-property named="waterlogged" on-bedrock="false" on-universal="false" />
+            <uses-block-entity named="chest_content"/>
+        </block-type>
         <block-type id="chipped_anvil"/>
         <block-type id="chiseled_nether_bricks"/>
         <block-type id="chiseled_polished_blackstone"/>
@@ -1551,7 +1645,10 @@
             <extra-block on="java" id="fern"/>
         </block-type>
         <block-type id="gravel"/>
-        <block-type id="grindstone"/>
+        <block-type id="grindstone">
+            <uses-property named="horizontal_direction" />
+            <uses-property named="attachment"/>
+        </block-type>
         <block-type id="hay_block"/>
         <block-type id="hopper"/>
         <block-type id="honey_block"/>
@@ -1601,7 +1698,9 @@
         <block-type id="mycelium"/>
         <block-type id="nether_bricks"/>
         <block-type id="nether_gold_ore"/>
-        <block-type id="nether_portal"/>
+        <block-type id="nether_portal" bedrock="portal">
+            <uses-property named="portal_axis" />
+        </block-type>
         <block-type id="nether_quartz_ore"/>
         <block-type id="nether_sprouts"/>
         <block-type id="nether_wart_block"/>
@@ -1617,7 +1716,11 @@
         </block-type>
         <block-type id="obsidian"/>
         <block-type id="piston_head"/>
-        <block-type id="piston"/>
+        <block-type id="piston" bedrock-requires-adapter="true">
+            <uses-property named="facing_direction"/>
+            <uses-property named="extended" on-bedrock="false" />
+            <uses-block-entity named="piston_data" on-java="false" />
+        </block-type>
         <block-type id="player_head"/>
         <block-type id="player_wall_head"/>
         <block-type id="podzol"/>
@@ -1670,7 +1773,9 @@
             <extra-block on="java" id="dark_prismarine"/>
             <extra-block on="java" id="prismarine_bricks"/>
         </block-type>
-        <block-type id="pumpkin"/>
+        <block-type id="pumpkin">
+            <uses-property named="horizontal_direction" on-java="false" />
+        </block-type>
         <block-type id="purpur_block"/>
         <block-type id="purpur_pillar"/>
         <block-type id="quartz_block"/>
@@ -1691,7 +1796,13 @@
         <block-type id="redstone_ore"/>
         <block-type id="redstone_torch"/>
         <block-type id="redstone_wall_torch"/>
-        <block-type id="redstone_wire"/>
+        <block-type id="redstone_wire" bedrock-requires-adapter="true">
+            <uses-property named="redstone_signal" />
+            <uses-property named="redstone_east" on-bedrock="false" />
+            <uses-property named="redstone_north" on-bedrock="false" />
+            <uses-property named="redstone_south" on-bedrock="false" />
+            <uses-property named="redstone_west" on-bedrock="false" />
+        </block-type>
         <block-type id="repeater"/>
         <block-type id="repeating_command_block"/>
         <block-type id="sand" java-requires-adapter="true">
@@ -1703,7 +1814,11 @@
         <block-type id="scaffolding"/>
         <block-type id="sea_lantern"/>
         <block-type id="sea_pickle"/>
-        <block-type id="seagrass"/>
+        <block-type id="seagrass" java-requires-adapter="true">
+            <uses-property named="seagrass_type"/>
+            
+            <extra-block on="java" id="tall_seagrass" inherit-properties="false" />
+        </block-type>
         <block-type id="shroomlight"/>
         <block-type id="shulker_box" bedrock="undyed_shulker_box" bedrock-requires-adapter="true">
             <uses-property named="facing_direction"/>
@@ -1734,7 +1849,9 @@
         <block-type id="stonecutter"/>
         <block-type id="structure_block"/>
         <block-type id="structure_void"/>
-        <block-type id="sugar_cane"/>
+        <block-type id="sugar_cane" bedrock="reeds">
+            <uses-property named="age15" />
+        </block-type>
         <block-type id="sweet_berry_bush"/>
         <block-type id="tall_seagrass"/>
         <block-type id="target"/>
@@ -1767,9 +1884,19 @@
         <block-type id="tripwire_hook"/>
         <block-type id="tripwire"/>
         <block-type id="turtle_egg"/>
-        <block-type id="twisting_vines"/>
+        <block-type id="twisting_vines" java-requires-adapter="true">
+            <uses-property named="twisting_vines_age"/>
+            <extra-block on="java" id="twisting_vines_plant" inherit-properties="false"/>
+        </block-type>
         <block-type id="twisting_vines_plant"/>
-        <block-type id="vine"/>
+        <block-type id="vine" bedrock-requires-adapter="true">
+            <uses-property named="vine_direction_bits" on-java="false" on-universal="false" />
+            <uses-property named="east" on-bedrock="false" />
+            <uses-property named="north" on-bedrock="false" />
+            <uses-property named="south" on-bedrock="false" />
+            <uses-property named="up" on-bedrock="false" />
+            <uses-property named="west" on-bedrock="false" />
+        </block-type>
         <block-type id="void_air" bedrock="_missing_" bedrock-requires-adapter="true"/>
         <block-type id="wall_torch"/>
         <block-type id="warped_fungus"/>
@@ -1822,13 +1949,20 @@
         <block-type id="lit_redstone_ore" />
         <block-type id="unlit_redstone_torch" />
         <block-type id="snow_layer" />
-        <block-type id="reeds" />
-        <block-type id="portal" />
         <block-type id="lit_pumpkin" />
         <block-type id="unpowered_repeater" />
         <block-type id="powered_repeater" />
         <block-type id="invisiblebedrock" />
-        <block-type id="monster_egg" />
+        <block-type id="infested_block" bedrock="monster_egg" java="infested_stone" java-requires-adapter="true">
+            <uses-property named="infestation_type" on-java="false" />
+            
+            <extra-block on="java" id="infested_cobblestone" />
+            <extra-block on="java" id="infested_stone_bricks" />
+            <extra-block on="java" id="infested_cracked_stone_bricks" />
+            <extra-block on="java" id="infested_mossy_stone_bricks" />
+            <extra-block on="java" id="infested_chiseled_stone_bricks" />
+            <extra-block on="java" id="infested_deepslate" />
+        </block-type>
         <block-type id="stonebrick" />
         <block-type id="melon_block" />
         <block-type id="waterlily" />

@@ -84,3 +84,5 @@ buildNumber.properties
 
 /logs
 
+/.gradle
+/build
