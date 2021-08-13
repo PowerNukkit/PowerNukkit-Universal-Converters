@@ -70,6 +70,11 @@ internal class LevelDBProviderWorldTest {
     }
 
     @Test
+    internal fun testNoChange() {
+
+    }
+
+    @Test
     internal fun testCountChunks() {
         val final = runBlocking {
             provider.countChunks()

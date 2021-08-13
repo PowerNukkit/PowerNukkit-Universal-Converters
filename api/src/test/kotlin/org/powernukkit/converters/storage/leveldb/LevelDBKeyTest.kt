@@ -20,8 +20,9 @@ package org.powernukkit.converters.storage.leveldb
 
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.powernukkit.converters.internal.temporaryCopy
 import org.powernukkit.converters.storage.leveldb.iq80.IQ80LevelDB
-import java.io.File
+import java.nio.file.Paths
 
 /**
  * @author joserobjr
@@ -32,8 +33,8 @@ internal class LevelDBKeyTest {
     @Disabled
     fun testing() {
         val stringPattern = Regex("^\\w+$")
-        val dbDir = File("../sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0/db")
-        IQ80LevelDB(dbDir).use { db ->
+        val dbDir = Paths.get("../sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0/db").temporaryCopy()
+        IQ80LevelDB(dbDir.toFile()).use { db ->
             /*db.keyIterator().use { iter -> 
                 iter.forEach { bytes ->
                     var str = String(bytes)

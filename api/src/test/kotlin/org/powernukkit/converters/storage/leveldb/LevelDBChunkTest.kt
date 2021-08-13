@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.powernukkit.converters.TestConstants
 import org.powernukkit.converters.dialect.Dialect
+import org.powernukkit.converters.internal.temporaryCopy
 import org.powernukkit.converters.platform.api.block.PlatformBlockType
 import org.powernukkit.converters.platform.bedrock.BedrockPlatform
 import org.powernukkit.converters.storage.api.ProviderWorld
@@ -58,7 +59,7 @@ internal class LevelDBChunkTest {
     @BeforeEach
     fun setUp() {
         bedrockPlatform = BedrockPlatform(TestConstants.universalPlatform)
-        val testWorld = Paths.get("../sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0")
+        val testWorld = Paths.get("../sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0").temporaryCopy()
         provider = LevelDBProviderWorld(
             bedrockPlatform,
             testWorld,

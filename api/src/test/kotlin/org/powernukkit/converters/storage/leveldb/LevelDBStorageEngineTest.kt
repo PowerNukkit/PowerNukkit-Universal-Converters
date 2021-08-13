@@ -29,12 +29,13 @@ import org.powernukkit.converters.conversion.job.InputWorld
 import org.powernukkit.converters.conversion.job.PlatformProvider
 import org.powernukkit.converters.conversion.job.load
 import org.powernukkit.converters.dialect.Dialect
+import org.powernukkit.converters.internal.temporaryCopy
 import org.powernukkit.converters.platform.api.MinecraftEdition
 import org.powernukkit.converters.platform.universal.definitions.DefinitionLoader
 import org.powernukkit.converters.storage.api.StorageEngineType
 import org.powernukkit.converters.storage.api.StorageProblemManager
 import org.powernukkit.converters.storage.api.leveldata.LevelDataIO
-import java.io.File
+import java.nio.file.Paths
 
 /**
  * @author joserobjr
@@ -52,7 +53,7 @@ internal class LevelDBStorageEngineTest {
 
     @Test
     fun loadWorld() {
-        val dbDir = File("../sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0")
+        val dbDir = Paths.get("../sample-worlds/Fresh default worlds/Windows 10 Edition/1.16.40.2.0").temporaryCopy().toFile()
         runBlocking {
             val universalPlatform = DefinitionLoader().loadBuiltin()
             InputWorld<Nothing>(

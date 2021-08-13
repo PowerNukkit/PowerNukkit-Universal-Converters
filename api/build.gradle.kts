@@ -20,7 +20,6 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.dokka")
     jacoco
-    application
 }
 
 val jacksonVersion = "2.12.4"
