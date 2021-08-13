@@ -763,7 +763,7 @@
         <block-entity id="bed_data" java="_missing_" bedrock="Bed">
             <data name="color" type="dye_color"/>
         </block-entity>
-        <block-entity id="piston_data" java="piston" bedrock=""></block-entity>
+        <block-entity id="piston_data" java="piston" bedrock="Piston"/>
     </block-entities>
     <block-types>
         <block-type id="button" java="oak_button" bedrock="wooden_button" java-requires-adapter="true" bedrock-requires-adapter="true">
@@ -1659,12 +1659,6 @@
             <extra-block on="both" id="packed_ice" inherit-properties="false"/>
             <extra-block on="both" id="blue_ice"   inherit-properties="false"/>
         </block-type>
-        <block-type id="infested_chiseled_stone_bricks"/>
-        <block-type id="infested_cobblestone"/>
-        <block-type id="infested_cracked_stone_bricks"/>
-        <block-type id="infested_mossy_stone_bricks"/>
-        <block-type id="infested_stone"/>
-        <block-type id="infested_stone_bricks"/>
         <block-type id="iron_bars"/>
         <block-type id="iron_block"/>
         <block-type id="iron_ore"/>
