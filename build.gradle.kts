@@ -1,3 +1,21 @@
+/*
+ *  PowerNukkit Universal Worlds & Converters for Minecraft
+ *  Copyright (C) 2021  José Roberto de Araújo Júnior
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 plugins {
     kotlin("jvm") version "1.5.21"
     id("org.jetbrains.dokka") version "1.5.0"
@@ -5,69 +23,69 @@ plugins {
     jacoco
 }
 
-repositories {
-    mavenCentral()
-    maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
-}
-
 val kotlinVersion = "1.5.21"
 val kotlinCoroutinesVersion = "1.5.1"
-val jacksonVersion = "2.12.4"
 val log4j2Version = "2.14.1"
 val junitVersion = "5.7.2"
 
-dependencies {
-    implementation(kotlin("stdlib", kotlinVersion))
-    implementation(kotlin("stdlib-jdk8", kotlinVersion))
-    implementation(kotlin("reflect", kotlinVersion))
-    implementation(kotlin("reflect", kotlinVersion))
-    implementation(kotlinx("coroutines-core", kotlinCoroutinesVersion))
-    implementation(kotlinx("coroutines-swing", kotlinCoroutinesVersion))
-    implementation(kotlinx("cli-jvm", "0.3.2"))
-    implementation("io.ktor", "ktor-utils-jvm", "1.6.2")
-    implementation("br.com.gamemods", "region-manipulator", "2.0.0")
-    implementation("br.com.gamemods", "nbt-manipulator", "3.0.0")
-    implementation("com.fasterxml.jackson.dataformat", "jackson-dataformat-xml", jacksonVersion)
-    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", jacksonVersion)
-    implementation("com.michael-bull.kotlin-inline-logger", "kotlin-inline-logger-jvm", "1.0.3")
-    implementation("org.powernukkit", "version-library", "1.0.0")
-    implementation("org.powernukkit.bedrock.leveldb", "bedrock-leveldb", "0.11.0-PN")
-    implementation("io.gomint", "leveldb-jni", "1.3.0-SNAPSHOT")
-    implementation("org.slf4j", "slf4j-api", "1.7.32")
-    runtimeOnly(log4j("slf4j-impl"))
-    runtimeOnly(log4j("api"))
-    runtimeOnly(log4j("core"))
+allprojects {
+    repositories {
+        mavenCentral()
+        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+    }
 
-    testImplementation(kotlin("test-junit5", kotlinVersion))
-    testImplementation("io.mockk", "mockk", "1.12.0")
-    testImplementation("org.junit.jupiter", "junit-jupiter-api", junitVersion)
-    testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", junitVersion)
+    afterEvaluate {
+        dependencies {
+            implementation(kotlin("stdlib", kotlinVersion))
+            implementation(kotlin("stdlib-jdk8", kotlinVersion))
+            implementation(kotlin("reflect", kotlinVersion))
+            implementation(kotlinx("coroutines-core", kotlinCoroutinesVersion))
+
+            implementation("com.michael-bull.kotlin-inline-logger", "kotlin-inline-logger-jvm", "1.0.3")
+            implementation("org.slf4j", "slf4j-api", "1.7.32")
+
+            testImplementation(kotlin("test-junit5", kotlinVersion))
+            testImplementation("io.mockk", "mockk", "1.12.0")
+            testImplementation("org.junit.jupiter", "junit-jupiter-api", junitVersion)
+            testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", junitVersion)
+
+            runtimeOnly(log4j("slf4j-impl"))
+            runtimeOnly(log4j("api"))
+            runtimeOnly(log4j("core"))
+        }
+
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            kotlinOptions {
+                freeCompilerArgs = freeCompilerArgs + listOf(
+                    "-Xjvm-default=all",
+                    "-Xopt-in=kotlin.RequiresOptIn",
+                    //"-Xexplicit-api=strict",
+                )
+            }
+        }
+
+        tasks {
+            jar {
+                exclude("*.xcf")
+            }
+
+            test {
+                useJUnitPlatform()
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation(project(":cli"))
+    implementation(project(":gui"))
+    implementation(log4j("api"))
+    implementation(log4j("core"))
 }
 
 application {
-    mainClass.set("org.powernukkit.converters.WorldConverterCLI")
+    mainClass.set("org.powernukkit.converters.WorldConverterLauncher")
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-Xjvm-default=all",
-            "-Xopt-in=kotlin.RequiresOptIn",
-            //"-Xexplicit-api=strict",
-        )
-    }
-}
-
-tasks {
-    jar {
-        exclude("*.xcf")
-    }
-
-    test {
-        useJUnitPlatform()
-    }
-}
-
 
 //<editor-fold desc="DSL" defaultstate="collapsed">
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
